@@ -3,3 +3,4 @@ site/images/sets
 site/images/symbols
 site/dependencies
 node_modules
+.vscode
