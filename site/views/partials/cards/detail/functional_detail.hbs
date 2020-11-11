@@ -1,0 +1,15 @@
+{{#if (and card.card_faces card.card_faces.0.side)}}
+    {{#each card.card_faces}}
+        {{#if (isFrontFace this)}}
+            <div class="cardFront">
+        {{else}}
+            <div class="cardBack" style="display: none;">
+        {{/if}}
+        {{> cards/detail/face_detail face=this symbols=../symbols language=../language}}
+        </div>
+    {{/each}}
+{{else if (and card.card_faces card.oracle_text)}}
+    {{> cards/detail/face_detail face=card symbols=symbols language=language}}
+{{else}}
+    {{> cards/detail/face_detail face=card symbols=symbols language=language}}
+{{/if}}

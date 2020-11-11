@@ -1,0 +1,250 @@
+<script>
+    function formatState (opt) {
+        if (!opt.id) {
+            return opt.text;
+        }
+
+        var optimage = $(opt.element).data('image'); 
+        if (typeof optimage != 'undefined' && optimage != null) {
+            var $state = $(
+                '<span>&nbsp;<img src="' + optimage + '" width="15px" height="15px"/> ' + opt.text + '</span>'
+            );
+        } else {
+            var $state = $(
+                '<span>&nbsp;' + opt.text + '</span>'
+            );
+        }
+
+        return $state;
+    };
+
+    $(document).ready(function() {
+        $('#subTypes').select2({
+            placeholder: "Sous-types",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+        $('#types').select2({
+            css: "padding-left: 0.375rem",
+            placeholder: "Types",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+        $('#keywords').select2({
+            placeholder: "Mots clés",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+    });
+</script>
+
+<style>
+    #types input {
+        padding-left: 0.375rem
+    }
+</style>
+
+<div class="row">
+    <div class="col-8">
+        <h1 class="text-left">
+            Recherche avancée
+        </h1>
+    </div>
+</div>
+<hr>
+
+<form id="formAdvancedSearch">
+    <div class="form-group row">
+        <label for="name" class="col-sm-2 col-form-label">Nom</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="name" id="name" placeholder="Nom de la carte">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="type" class="col-sm-2 col-form-label">Type</label>
+        <div class="col-sm-5">
+            <select name="types" id="types" class="form-control js-example-basic-multiple" multiple="multiple" placeholder="Type">
+                {{#each types}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-sm-5">
+            <select name="subTypes" id="subTypes" class="form-control js-example-basic-multiple" multiple="multiple" placeholder="Sous-type">
+                {{#each subTypes}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="text" class="col-sm-2 col-form-label">Texte</label>
+        <div class="col-sm-10">
+            <input type="string" class="form-control" name="text" id="text" placeholder="Texte">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="textAmb" class="col-sm-2 col-form-label">Texte d'ambiance</label>
+        <div class="col-sm-10">
+            <input type="string" class="form-control" name="textAmb" id="textAmb" placeholder="Texte d'ambiance">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="cmc" class="col-sm-2 col-form-label">Coût de mana</label>
+        <div class="col-sm-10">
+            <input type="string" class="form-control" name="cmc" id="cmc" placeholder="Coût de mana">
+        </div>
+    </div>
+    {{> cards/search/search_set sets=sets}}
+    <div class="form-group row">
+        <div class="col-sm-2">Rareté</div>
+        <div class="col-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="rarity" value="common" id="commonRarity">
+                <label class="form-check-label" for="commonRarity">
+                    Commune
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="rarity" value="uncommon" id="uncoRarity">
+                <label class="form-check-label" for="uncoRarity">
+                    Peu commune
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="rarity" value="rare" id="rareRarity">
+                <label class="form-check-label" for="rareRarity">
+                    Rare
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="rarity" value="mythic" id="mythicRarity">
+                <label class="form-check-label" for="mythicRarity">
+                    Mythique
+                </label>
+            </div>
+        </div>
+    </div>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-label col-sm-2 pt-0">Version</legend>
+            <div class="col-sm-3">
+                <div class="form-check advanced-search">
+                    <input class="form-check-input" type="radio" name="versions" id="firstEdition" value="firstEdition">
+                    <label class="form-check-label" for="firstEdition">
+                        1<sup>ères</sup> éditions
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-check advanced-search">
+                    <input class="form-check-input" type="radio" name="versions" id="allEditions" value="all">
+                    <label class="form-check-label" for="allEditions">
+                        Toutes les éditions
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-check advanced-search">
+                    <input class="form-check-input" type="radio" name="versions" id="noDouble" value="noDouble" checked>
+                    <label class="form-check-label" for="noDouble">
+                        Indifférent, sans doublons
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group row">
+        <div class="col-sm-2">Identité de couleur</div>
+        <div class="col">
+            <select class="custom-select" name="colorIdentityConstraint" id="colorIdentityConstraint">
+                <option selected value="equal">Égale</option>
+                <option value="with">Contient</option>
+                <option value="among">Parmis</option>
+            </select>
+        </div>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edhIdentity" value="W" id="whiteCI">
+                <label class="form-check-label" for="whiteCI">
+                    <img src='/images/symbols/W.svg' width='20'></img>
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edhIdentity" value="U" id="blueCI">
+                <label class="form-check-label" for="blueCI">
+                    <img src='/images/symbols/U.svg' width='20'></img>
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edhIdentity" value="B" id="blackCI">
+                <label class="form-check-label" for="blackCI">
+                    <img src='/images/symbols/B.svg' width='20'></img>
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edhIdentity" value="R" id="redCI">
+                <label class="form-check-label" for="redCI">
+                    <img src='/images/symbols/R.svg' width='20'></img>
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edhIdentity" value="G" id="greenCI">
+                <label class="form-check-label" for="greenCI">
+                    <img src='/images/symbols/G.svg' width='20'></img>
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="edhIdentity" value="C" id="C">
+                <label class="form-check-label" for="C">
+                    <img src='/images/symbols/C.svg' width='20'></img>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="frame" class="col-sm-2 col-form-label">Mots clés</label>
+        <div class="col-sm-10">
+            <select name="keywords" id="keywords" class="form-control js-example-basic-multiple" multiple="multiple">
+                {{#each keywords}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="frame" class="col-sm-2 col-form-label">Cadre de la carte</label>
+        <div class="col-sm-10">
+            <select name="frame_effect" id="frame_effect" class="form-control">
+                <option value="" selected>Indifférent</option>
+                <option value="none" selected>Aucun</option>
+                {{#each effects}}
+                    <option value="{{this}}">{{formatEffects this}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="allow-bottom-glue"></div>
+    <div class="allow-bottom-glue"></div>
+    <div class="allow-bottom-glue"></div>
+    <div class="allow-bottom-glue"></div>
+    <div class="form-group row fixed-bottom bg-secondary bottom-glue">
+        <button class="col-sm-12 btn btn-secondary" method="post" formaction="/cards/advanced_search" form="formAdvancedSearch" type="submit" id="sendAdvancedSearch">Rechercher avec ces paramètres</button>
+    </div>
+</form>

@@ -1,0 +1,19 @@
+<div class="modal fade" id="addToDecksModal" tabindex="-1" role="dialog" aria-labelledby="addToDecksModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addToDecksModal">Ajouter cette carte à un deck</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Choisir un ou plusieurs decks auxquels vous voulez associer cette carte.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="addToDecksDismiss" data-dismiss="modal">Annuler</button>
+        <button onclick="sendAddToDeckRequest()" id="addToDecksValidate" class="btn btn-success" code="code" name="name">Ajouter</button>
+      </div>
+    </div>
+  </div>
+</div>

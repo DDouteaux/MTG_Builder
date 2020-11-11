@@ -1,0 +1,37 @@
+<script>
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sets = urlParams.get('sets');
+
+        var url = new URL(window.location);
+        var preselectedSets = url.searchParams.get("sets");
+        
+        if (typeof preselectedSets !== 'undefined' && preselectedSets != null) {
+            if (typeof preselectedSets === 'string') {
+                preselectedSets = [preselectedSets];
+            }
+            preselectedSets.forEach(set => {
+                $('#set-' + set).attr("selected", "selected");
+            })
+        }
+
+        $('#sets').select2({
+            placeholder: "Éditions",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+
+        $('#select2-sets-result-pxoc-' + sets).attr('aria-selected', true);
+    });
+</script>
+
+<div class="form-group row">
+    <label for="sets" class="col-sm-2 col-form-label">Éditions</label>
+    <div class="col-sm-10">
+        <select name="sets" id="sets" class="form-control js-example-basic-multiple" multiple="multiple">
+            {{#each sets}}
+                <option id="set-{{this.code}}" value="{{this.code}}" data-image="/images/sets/{{this.icon}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+</div>

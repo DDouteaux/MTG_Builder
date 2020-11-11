@@ -1,0 +1,220 @@
+<script>
+    $(document).ready(function() {
+        $('#updateSetList').tooltip();
+        $('.sync-set').tooltip();
+        $('.delete-set').tooltip();
+        $('#getPrices').tooltip();
+        $('#getAllData').tooltip();
+        $('#getAllImages').tooltip();
+        $('#getSymbols').tooltip();
+
+        $('#sets').DataTable({
+            "columnDefs": [
+                 { "width": "40%", "targets": 0 },
+                 { "width": "20%", "targets": 1 },
+                 { "width": "20%", "targets": 2 },
+                 { "width": "20%", "orderable": false, "targets": 3 }
+            ],
+            "order": [[ 2, "desc" ]],
+            "autoWidth": false,
+            "initComplete": function(){ 
+                $("#sets").show(); 
+            },
+            "language": {
+                "url": "/dependencies/dataTables/French.json"
+            }
+        });
+    });
+
+    function updateDeleteModalContent(code, name) {
+        $('#deleteModalLabel').html('Suppression de ' + name);
+        $('#deleteSet').attr('code', code);
+        $('#deleteSet').attr('name', name);
+    }
+
+    function sendDeleteRequest() {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/sets/delete', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                console.log(http.response);
+                response = JSON.parse(http.response);
+                handleHTTPResponses(http.readyState, http.status, response);
+                var table = $('#sets').DataTable();
+                table.row($('tr#' + response.setCode)).remove().draw();
+            }
+        };
+        http.send("setCode=" + $('#deleteSet').attr('code') + "&setName=" + $('#deleteSet').attr('name'));
+    }
+
+    function sendSynchronizeRequest(code, name) {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/sets/addOrUpdate', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                response = JSON.parse(http.response);
+                handleHTTPResponses(http.readyState, http.status, response);
+            }
+        };
+        http.send("setCode=" + code + "&setName=" + name);
+    }
+    
+    function sendGetSymbols() {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/symbols', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                response = JSON.parse(http.response);
+                handleHTTPResponses(http.readyState, http.status, response);
+            }
+        };
+        http.send();
+    }
+
+    function sendGetPrices() {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/prices', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                response = JSON.parse(http.response);
+                handleHTTPResponses(http.readyState, http.status, response);
+            }
+        };
+        http.send();
+    }
+
+    function sendGetData() {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/data', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                response = JSON.parse(http.response);
+                handleHTTPResponses(http.readyState, http.status, response);
+            }
+        };
+        http.send();
+    }
+
+    function sendGetImages() {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/images', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                response = JSON.parse(http.response);
+                handleHTTPResponses(http.readyState, http.status, response);
+            }
+        };
+        http.send();
+    }
+
+    function sendGetExtensions() {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/settings/sets', true);
+        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE && http.status == 200) {
+                document.location.reload();
+            }
+        };
+        http.send();
+    }
+</script>
+
+<div class="row">
+    <div class="col-8">
+        <h1 class="text-left">
+            Mises à jour de la base de cartes
+        </h1>
+    </div>
+    <div class="col">
+        <button id="getPrices" onclick='sendGetPrices()' style="margin-left:10px; margin-right:10px;" class="float-right btn btn-primary" type="submit" data-toggle="tooltip" data-placement="left" title="Mettre à jour les prix">
+            <i class="fas fa-euro-sign fa-xs"></i>
+        </button>
+        <button id="getAllData" onclick='sendGetData()' style="margin-left:10px; margin-right:10px;" class="float-right btn btn-primary" type="submit" data-toggle="tooltip" data-placement="left" title="Mettre à jour les informations">
+            <i class="fas fa-table fa-xs"></i>
+        </button>
+        <button id="getAllImages" onclick='sendGetImages()' style="margin-left:10px; margin-right:10px;" class="float-right btn btn-primary" type="submit" data-toggle="tooltip" data-placement="left" title="Récupérer toutes les images">
+            <i class="fas fa-image fa-xs"></i>
+        </button>
+        <button id="getSymbols" onclick='sendGetSymbols()' style="margin-left:10px; margin-right:10px;" class="float-right btn btn-primary" type="submit" data-toggle="tooltip" data-placement="left" title="Récupérer les symboles">
+            <i class="fas fa-skull fa-xs"></i>
+        </button>
+        <button id="updateSetList" onclick='sendGetExtensions()' style="margin-left:10px; margin-right:10px;" class="float-right btn btn-primary" type="submit" data-toggle="tooltip" data-placement="left" title="Synchroniser la liste des extensions">
+            <i class="fas fa-sync-alt fa-xs"></i>
+        </button>
+    </div>
+</div>
+
+{{#if sets}}
+    <hr>
+    <div class="table-responsive-sm table-hover container-fluid">
+        <table id="sets" class="table" style="display: none;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Édition</th>
+                    <th>Nombre de cartes</th>
+                    <th>Date de parution</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each sets}}
+                    <tr id={{this.code}}>
+                        <th scope="row">
+                            <div class="container">
+                                <div class="row">
+                                    <img src="/images/sets/{{this.icon}}" width="30" height="30" alt="">
+                                    <div class="col-sm-1"></div>
+                                    {{this.name}}
+                                </div>
+                            </div>
+                        </th>
+                        <td>{{this.card_count}}</td>
+                        <td>{{this.released_at}}</td>
+                        <td>
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <button method="post" formaction="/settings/sets/addOrUpdate" class="btn btn-xs btn-success sync-set" type="submit" data-toggle="tooltip" onclick='sendSynchronizeRequest("{{this.code}}", "{{this.name}}")' data-placement="top" title="Synchroniser les cartes">
+                                        <i class="fas fa-sync-alt fa-xs"></i>
+                                    </button>
+                                    <div class="col-1"></div>
+                                    <span class="sync-set" data-toggle="tooltip" data-placement="top" title="Supprimer">
+                                        <button type="button" class="btn btn-xs btn-danger delete-set" data-toggle="modal" data-target="#deleteModal" onclick='updateDeleteModalContent("{{this.code}}", "{{this.name}}")'>
+                                            <i class="fas fa-trash-alt fa-xs"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+{{/if}}
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Suppression d'une édition</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Les informations de stockage de vos cartes seront conservées.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="deleteDismiss" data-dismiss="modal">Annuler</button>
+        <button onclick="sendDeleteRequest()" id="deleteSet" class="btn btn-danger" code="code" name="name">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

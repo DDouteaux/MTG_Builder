@@ -1,0 +1,93 @@
+<script>
+    $(document).ready(function() {
+        var table = $('#cards').DataTable({
+            "columnDefs": [
+                { "targets": 0, "visible": false,  "type": "num" },
+                { "targets": 1, "width": "5%",  "orderData": [0] },
+                { "targets": 2, "visible": false },
+                {{#if isCollection}}
+                    { "targets": 3, "width": "40%", "orderData": [2] },
+                {{else}}
+                    { "targets": 3, "width": "20%", "orderData": [2] },
+                {{/if}}
+                { "targets": 4, "visible": false },
+                { "targets": 5, "width": "10%", "orderData": [4] },
+                { "targets": 6, "visible": false },
+                { "targets": 7, "width": "5%", },
+                {{#if isCollection}}
+                    { "targets": 8, "visible": false },
+                    { "targets": 9, "width": "10%", "orderData": [8] },
+                    { "targets": 10, "width": "15%", "orderData": [10] },
+                    { "targets": 11, "width": "15%", "orderData": [11] }
+                {{else}}
+                    { "targets": 8, "width": "60%", "orderable": false }
+                {{/if}}
+            ],
+            "fixedHeader": true,
+            "orderCellsTop": true,
+            "order": [[ 0, "asc" ]],
+            "autoWidth": false,
+            "initComplete": function() { 
+                $("#cards").show();
+
+                var columnRarity = this.api().column(7);
+                $('#cards_filter').prepend('<label id="selectRarityFilter">Rareté&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+                var select = $('<select class="filter"><option value=""></option></select>')
+                    .appendTo('#selectRarityFilter')
+                    .on('change', function() {
+                        var val = $(this).val();
+                        columnRarity.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                    });
+
+                columnRarity.data().unique().sort().each(function(d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+
+                var columnColor = this.api().column(6);
+                $('#cards_filter').prepend('<label id="selectColorFilter">Couleur&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+                var select = $('<select class="filter"><option value=""></option></select>')
+                    .appendTo('#selectColorFilter')
+                    .on('change', function() {
+                        var val = $(this).val();
+                        columnColor.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                    });
+
+                columnColor.data().unique().sort().each(function(d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+
+            },
+            "language": {
+                "url": "/dependencies/dataTables/French.json"
+            }
+        });
+    });
+</script>
+
+<style>
+    .dataTables_wrapper .dataTables_filter select {
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        padding: 5px;
+        background-color: transparent;
+        margin-left: 3px;
+    }
+</style>
+
+{{#if cards}}
+    <div class="table-responsive-sm table-hover container-fluid">
+        <table id="cards" class="table" style="display: none;">
+            {{> cards/list/table_header isCollection=isCollection}}
+            {{> cards/list/table_content cards=cards symbols=symbols isCollection=isCollection}}
+        </table>
+    </div>
+{{else if isCollection}}
+    <div class="table-responsive-sm table-hover container-fluid">
+        <table id="cards" class="table" style="display: none;">
+            {{> cards/list/table_header isCollection=isCollection}}
+            {{> cards/list/table_content cards=cards symbols=symbols isCollection=isCollection}}
+        </table>
+    </div>
+{{else}}
+Pas de résultats
+{{/if}}

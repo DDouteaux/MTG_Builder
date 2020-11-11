@@ -1,0 +1,11 @@
+{{#if face.card_faces}}
+    {{> cards/detail/cmc_text face=face.card_faces.[0] symbols=symbols language=language}}
+    <hr>
+    {{> cards/detail/cmc_text face=face.card_faces.[1] symbols=symbols language=language}}
+{{else}}
+    {{> cards/detail/cmc_text face=face symbols=symbols language=language}}
+{{/if}}
+<hr>
+Illustration : {{face.artist}}
+<hr>
+{{> cards/detail/validity card=face}}

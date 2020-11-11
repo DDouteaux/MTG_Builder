@@ -1,0 +1,72 @@
+{
+	"dynamic": "false",
+    "properties": {
+        "block": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "card_count": {
+            "type": "integer"
+        },
+        "code": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "foil_only": {
+            "type": "boolean"
+        },
+        "icon": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "name": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "nonfoil_only": {
+            "type": "boolean"
+        },
+        "parent_set_code": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "released_at": {
+            "type": "date",
+            "format": "yyyy-MM-dd"
+        },
+        "set_type": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        }
+    }
+}

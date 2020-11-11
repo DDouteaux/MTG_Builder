@@ -1,0 +1,38 @@
+<div class="offset-md-2 col-sm-8">
+    <form method="post" action="/user/signin" id="formUser">
+        <div class="form-group row">
+            <label for="pseudo" class="text-left col-sm-3 col-form-label">Pseudo</label>
+            <div class="col-sm-9">
+                <input type="text" style="width:100%" class="form-control" name="pseudo" id="pseudo" placeholder="Ton pseudo...">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="pwd" class="text-left col-sm-3 col-form-label">Mot de passe</label>
+            <div class="col-sm-9">
+                <input type="text" style="width:100%" class="form-control" name="pwd" id="pwd" placeholder="Ton mot de passe...">
+            </div>
+        </div>
+        <button method="post" formaction="/user/signin" form="formUser" type="submit" style="width:100%" class="btn btn-primary" id="sendFormUser">Se connecter</button>
+    </form>
+    <hr>
+        <div class="w-50 mx-auto">
+            Pas encore de compte ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-secondary" href="/user/signup">Créer mon compte</a>
+        </div>
+</div>
+
+<script>
+    $( document ).ready(() => {
+       if ($.cookie("token")) {
+            decodedToken = jwt_decode($.cookie("token"))
+            $('#pseudo').val(decodedToken.pseudo);
+            $("#" + decodedToken.avatar.replace(" ", "_")).prop("checked", true);
+        }
+    })
+
+    $(document).keypress((e) => {
+        if(e.which == 13) {
+            $('#sendFormUser').click();
+        }
+    });
+</script>

@@ -1,0 +1,66 @@
+<tbody>
+    {{#each cards}}
+        <tr id={{this._id}}>
+            <th>{{this.collector_number}}</th>
+            <th><a href='/cards/{{this._id}}'>{{this.collector_number}}</a></th>
+            <th>{{this.name}}</th>
+            <th><a href='/cards/{{this._id}}'>{{this.name}}</a></th>
+            <td>{{this.cmc}}</td>
+            <td class='clickable-row' data-href='/cards/{{this._id}}'>
+                {{#if this.card_faces}}
+                    {{#each this.card_faces}}
+                        {{{replaceSymbols this.mana_cost ../../symbols}}}
+                        {{#if this.mana_cost}}
+                            {{#unless @last}}
+                                <hr>
+                            {{/unless}}
+                        {{/if}}
+                    {{/each}}
+                {{else}}
+                    {{{replaceSymbols this.mana_cost ../symbols}}}
+                {{/if}}
+            </td>
+            <td>
+                {{{displayColor this.colors this.card_faces}}}
+            </td>
+            <td class='clickable-row' data-href='/cards/{{this._id}}'>{{formatRarity this.rarity}}</td>
+            {{#if ../isCollection}}
+                <td class='clickable-row' data-href='/cards/{{this._id}}'>{{this.set}}</td>
+                <td class='clickable-row' style="text-align: center;" data-href='/cards/{{this._id}}'><img id="setLogo" src="/images/sets/{{this.set}}.svg" class="img-responsive center-block" width="20px"></img></td>
+                <td class="auto-update">
+                    <div class="input-group">
+                        <div class="input-group-prepend plus">
+                            <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                        </div>
+                        <input onchange="countChange(this, event)" type="text" class="w-auto form-control input-count" id="regular-{{this._id}}" name="{{this._id}}"/>
+                        <div class="input-group-append minus">
+                            <span class="input-group-text"><i class="fas fa-minus"></i></span>
+                        </div>
+                    </div>
+                </td>
+                <td class="auto-update">
+                    <div class="input-group">
+                        <div class="input-group-prepend plus">
+                            <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                        </div>
+                        <input onchange="countChange(this, event)" type="text" class="w-auto form-control input-count" id="foil-{{this._id}}" name="{{this._id}}"/>
+                        <div class="input-group-append minus">
+                            <span class="input-group-text"><i class="fas fa-minus"></i></span>
+                        </div>
+                    </div>
+                </td>
+            {{else}}
+                <td class='clickable-row' data-href='/cards/{{this._id}}'>
+                    {{#if this.card_faces}}
+                        {{#each this.card_faces}}
+                            {{{replaceSymbols this.oracle_text ../../symbols}}}
+                            {{#unless @last}}<hr>{{/unless}}
+                        {{/each}}
+                    {{else}}
+                        {{{replaceSymbols this.oracle_text ../symbols}}}
+                    {{/if}}
+                </td>
+            {{/if}}
+        </tr>
+    {{/each}}
+</tbody>

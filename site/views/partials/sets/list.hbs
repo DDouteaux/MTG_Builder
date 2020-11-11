@@ -1,0 +1,64 @@
+<script>
+    $(document).ready(function() {
+        $('#sets').DataTable({
+            "columnDefs": [
+                 { "width": "40%", "targets": 0 },
+                 { "width": "20%", "targets": 1 },
+                 { "width": "20%", "targets": 2 },
+                 { "width": "20%", "orderable": false, "targets": 3 }
+            ],
+            "order": [[ 2, "desc" ]],
+            "autoWidth": false,
+            "initComplete": function(){ 
+                $("#sets").show(); 
+            },
+            "language": {
+                "url": "/dependencies/dataTables/French.json"
+            }
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-8">
+        <h1 class="text-left">
+            Éditions
+        </h1>
+    </div>
+</div>
+
+{{#if sets}}
+    <hr>
+    <div class="table-responsive-sm table-hover container-fluid">
+        <table id="sets" class="table" style="display: none;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Édition</th>
+                    <th>Nombre de cartes</th>
+                    <th>Date de parution</th>
+                    <th>Langues</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each sets}}
+                    <tr id={{this.code}} class='clickable-row' data-href='/sets/{{this.code}}'>
+                        <th scope="row">
+                            <div class="container">
+                                <div class="row">
+                                    <img src="/images/sets/{{this.icon}}" width="30" height="30" alt="">
+                                    <div class="col-sm-1"></div>
+                                    {{this.name}}
+                                </div>
+                            </div>
+                        </th>
+                        <td>{{this.card_count}}</td>
+                        <td>{{this.released_at}}</td>
+                        <td>
+                            EN
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+{{/if}}

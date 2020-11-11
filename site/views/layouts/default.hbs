@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />  
+        <title>Niv-Mizzet deckbuilding</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <!-- JQuery -->
+        <script src="/dependencies/jquery/jquery.min.js"></script>
+        <script src="/dependencies/jquery/jquery.cookie.js"></script>
+
+        <!-- DataTales -->
+        <script type="text/javascript" language="javascript" src="/dependencies/dataTables/dataTables.min.js"></script>
+        <link rel="stylesheet" href="/dependencies/dataTables/dataTables.min.css">
+
+        <!-- Select2 -->
+        <script type="text/javascript" language="javascript" src="/dependencies/select2/select2.min.js"></script>
+        <link rel="stylesheet" href="/dependencies/select2/select2.min.css">
+
+        <!-- Popper -->
+        <script type="text/javascript" language="javascript" src="/dependencies/popper/popper.min.js"></script>
+
+        <!-- JWT-Decode -->
+        <script src="/dependencies/jwt/jwt-decode.min.js"></script>
+
+        <!-- Bootstrap -->
+        <script src="/dependencies/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/dependencies/bootstrap/css/bootstrap.min.css">
+
+        <!-- Socket.IO -->
+        <script src="/socket.io/socket.io.js"></script>
+        
+        <!-- Fontawesom -->
+        <link rel="stylesheet" href="/dependencies/fontawesome-free-5.12.1-web/css/all.css">
+
+        <!-- Theme perso -->
+        <link rel="stylesheet" href="/styles/niv.css">
+        
+    </head>
+
+    <style>
+        table.dataTable thead .sorting_asc {
+            background-image: url("/images/dataTables/sort_asc.png")
+        }
+
+        table.dataTable thead .sorting_desc {
+            background-image: url("/images/dataTables/sort_desc.png")
+        }
+
+        table.dataTable thead .sorting {
+            background-image: url("/images/dataTables/sort_both.png")
+        }
+
+        table.dataTable thead .sorting_asc_disabled {
+            background-image: url("/images/dataTables/sort_asc_disabled.png")
+        }
+
+        table.dataTable thead .sorting_desc_disabled {
+            background-image: url("/images/dataTables/sort_desc_disabled.png")
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+    </style>
+
+    <body>
+        <nav class="navbar navbar-header navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">
+                <img src="/images/niv.jpg" width="30" height="30" alt="">  Niv-Mizzet
+            </a>
+
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cartes</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/cards/">Toute la liste</a>
+                            <a class="dropdown-item" href="/cards/advanced_search">Recherche avancée</a>
+                            <a class="dropdown-item" href="/cards/random">Au hasard</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/sets">Éditions</a>
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/decks">Decks</a>
+                </li>
+                {{#if decoded}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Paramétrages</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/settings/appearance">Apparence</a>
+                            <a class="dropdown-item" href="/settings/extensions">Mises à jour</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mon compte</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/user/cards">Ma collection</a>
+                            <a class="dropdown-item" href="/user/decks">Mes decks</a>
+                            <a class="dropdown-item" href="/user/info">Mes informations</a>
+                            <a class="dropdown-item" href="/user/logout">Déconnexion</a>
+                        </div>
+                    </li>
+                {{else}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/signin">Connexion</a>
+                    </li>
+                {{/if}}
+                </ul>
+                <form class="form-inline my-2 my-lg-0" id="navbarSearch" method="get" formaction="/cards/search">
+                    <div class="input-group">
+                        <input class="form-control" name="searchString" type="search" placeholder="Rechercher..." aria-label="Rechercher...">
+                        <div class="input-group-append">
+                            <button class="btn my-2 my-sm-0 btn-secondary" for="navbarSearch" type="submit" method="get" formaction="/cards/search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </nav>
+        <div class="col-sm-12 my-3">
+            <div class="alert alert-danger collapse" role="alert" id="displayError">
+                <span id="contentError"></span>
+            </div>
+            <div class="alert alert-info collapse" role="alert" id="displayInfo">
+                <span id="contentInfo"></span>
+            </div>
+            {{{body}}}
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if(error) {
+            $("#contentError").append(error);
+            $("#displayError").show();
+            setTimeout(function() {
+                $("#displayError").fadeOut();
+            }, 2000);
+        }
+        const info = urlParams.get('info');
+        if(info) {
+            $("#contentInfo").append(info);
+            $("#displayInfo").show();
+            setTimeout(function() {
+                $("#displayInfo").fadeOut();
+            }, 2000);
+
+        }
+        $('.dataTable .clickable-row').click(function() {
+            window.open(
+                $(this).data("href"),
+                '_blank'
+            );
+        });
+    })
+
+    function handleHTTPResponses(readyState, status, response) {
+        if (readyState == XMLHttpRequest.DONE && status == 200) {
+            $('#displayInfo').hide();
+            $('#deleteDismiss').click();
+            $("#contentInfo").html(response.message);
+            $('#displayInfo').fadeIn();
+            setTimeout(function() {
+                $("#displayInfo").fadeOut();
+            }, 2000);
+        } else if (readyState == XMLHttpRequest.DONE) {
+            if (status == 400) {
+                message = response
+            } else {
+                message = "Erreur serveur. Veuillez contacter votre administrateur."
+            }
+            $('#displayError').hide();
+            $('#deleteDismiss').click();
+            $("#contentError").html(message);
+            $('#displayError').fadeIn();
+            setTimeout(function() {
+                $("#displayError").fadeOut();
+            }, 2000);
+        }
+    }
+
+    function formatState (opt) {
+        if (!opt.id) {
+            return opt.text;
+        }
+
+        var optimage = $(opt.element).data('image'); 
+        if (typeof optimage != 'undefined' && optimage != null) {
+            var $state = $(
+                '<span>&nbsp;<img src="' + optimage + '" width="15px" height="15px"/> ' + opt.text + '</span>'
+            );
+        } else {
+            var $state = $(
+                '<span>&nbsp;' + opt.text + '</span>'
+            );
+        }
+
+        return $state;
+    };
+</script>

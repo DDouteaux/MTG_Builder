@@ -1,0 +1,33 @@
+<br>
+{{{replaceSymbols face.mana_cost symbols}}} (CMC : {{face.cmc}})
+{{#if (isFrench language)}}
+    <hr>
+    {{face.frenchDetails.type_line}}
+    {{#if face.frenchDetails.text}}
+        <hr>
+        {{{replaceSymbols face.frenchDetails.text symbols}}}
+    {{/if}}
+    {{#if face.frenchDetails.flavor_text}}
+        <hr>
+        <i>{{{face.frenchDetails.flavor_text}}}</i>
+    {{/if}}
+{{else}}
+    <hr>
+    {{face.type_line}}
+    {{#if face.oracle_text}}
+        <hr>
+        {{{replaceSymbols face.oracle_text symbols}}}
+    {{/if}}
+    {{#if face.flavor_text}}
+        <hr>
+        <i>{{{face.flavor_text}}}</i>
+    {{/if}}
+{{/if}}
+{{#if face.power}}
+    <hr>
+    {{face.power}}&nbsp;/&nbsp;{{face.toughness}}
+{{/if}}
+{{#if face.loyalty}}
+    <hr>
+    Loyauté : {{face.loyalty}}
+{{/if}}

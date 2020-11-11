@@ -1,0 +1,44 @@
+{
+  "name": "niv-mizzet",
+  "version": "1.0.0",
+  "description": "Application de build pour MTG",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "MTG",
+    "Niv-Mizzet",
+    "confinement bis",
+    "jeu"
+  ],
+  "author": "DDouteaux",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^3.2.0",
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.4.1",
+    "chalk": "^3.0.0",
+    "colors": "^1.4.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "elastic-builder": "^2.8.0",
+    "elasticsearch": "^16.7.1",
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.0",
+    "get-json": "^1.0.1",
+    "hbs": "^4.1.1",
+    "http": "0.0.0",
+    "jquery": "^3.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "mongoose": "^5.9.5",
+    "node-redis-scan": "^1.1.1",
+    "redis": "^3.0.2",
+    "serve-favicon": "^2.5.0",
+    "socket.io": "^2.3.0",
+    "sync-request": "^6.1.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}

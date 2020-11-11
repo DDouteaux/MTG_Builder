@@ -1,0 +1,113 @@
+<script>
+
+    function updateCountValue(div, event, modifier) {
+        var cell = $('#cards').DataTable().cell($(div).parent().parent());
+        inputDiv = $(event.currentTarget).parent().parent().find('input');
+        value = parseInt(inputDiv.val());
+        if (isNaN(value)) {
+            newValue = 0;
+            inputDiv.val(0);
+            inputDiv.attr('value', 0);
+        } else {
+            newValue = value + modifier;
+            if (newValue < 0) {
+                newValue = 0;
+            }
+            inputDiv.val(value + modifier);
+            inputDiv.attr('value', value + modifier);
+        }
+        cell.data().replace('value="' + value, 'value="' + newValue)
+        cell.data(cell.data().replace('value="' + value, 'value="' + newValue)).draw();
+    }
+
+    $(document).ready(() => {
+        $('#sendUpdateCollectionCounts').click( () => {
+            cards = {};
+            inputs = [].concat.apply([], $('#cards').DataTable().data()).filter(x => x.indexOf('input') > 0);
+            inputs.map(input => {
+                card = input.match(/name="([^\"]+)"/i)[1];
+                if (!(card in cards)) {
+                    cards[card] = { 'cardId': card, 'normal': 0, 'foil': 0 };
+                }
+                value = input.match(/value="([^\"]+)"/i)[1];
+                if (typeof value != undefined && value != null) {
+                    if (input.indexOf("regular-") > 0) {
+                        cards[card]["normal"] = value;
+                    } else if (input.indexOf("foil-") > 0) {
+                        cards[card]["foil"] = value;
+                    }
+                }
+            });
+            
+            var http = new XMLHttpRequest();
+            http.open('POST', '/user/cards/update', true);
+            http.setRequestHeader("Content-Type", "application/json");
+            http.onreadystatechange = function () {
+                if (http.readyState == XMLHttpRequest.DONE) {
+                    response = JSON.parse(http.response);
+                    handleHTTPResponses(http.readyState, http.status, response);
+                }
+            };
+            http.send(JSON.stringify(cards));
+        });
+
+        $('#cards tbody').on('click', '.plus', function (event) {
+            updateCountValue(this, event, 1);
+        });
+
+        $('#cards tbody').on('click', '.minus', function (event) {
+            updateCountValue(this, event, -1);
+        });
+
+        {{#each collectionCounts}}
+            $('#regular-{{this.cardId}}').val({{this.normal}});
+            $('#regular-{{this.cardId}}').attr('value', {{this.normal}});
+            $('#foil-{{this.cardId}}').val({{this.foil}});
+            $('#foil-{{this.cardId}}').attr('value', {{this.foil}});
+        {{/each}}
+    });
+
+    function countChange(div, event) {
+        inputDiv = $(div);
+        var cell = $('#cards').DataTable().cell(event.path[2]);
+        value = parseInt(inputDiv.val());
+        console.log(value)
+        if (isNaN(value)) {
+            value = 0;
+        }
+        cell.data().replace(/value="[0-9]+"/, 'value="' + value + '"');
+        cell.data(cell.data().replace(/value="[0-9]+"/, 'value="' + value + '"')).draw();
+    }
+</script>
+
+<div class="row">
+    <div class="col-8">
+        <h1 class="text-left">
+            {{ title }}
+        </h1>
+    </div>
+</div>
+<hr>
+
+<form id="filterCollection" class="col-12">
+    <div class="row">
+        <div class="col-10">
+            {{> cards/search/search_set sets=sets}}
+        </div>
+        <div class="col-2">
+            <button class="btn btn-secondary col-12" id="sendFilterCollection">Filtrer</button>
+        </div>
+    </div>
+</form>
+<hr>
+
+<form id="updateCollectionCounts" class="col-12">
+    {{> cards/list/table cards=cards symbols=symbols isCollection=isCollection}}
+    <div class="allow-bottom-glue"></div>
+    <div class="allow-bottom-glue"></div>
+    <div class="allow-bottom-glue"></div>
+    <div class="allow-bottom-glue"></div>
+    <div class="form-group row fixed-bottom bg-success bottom-glue">
+        <button type="button" class="btn btn-success col-12" target="/user/cards/updates" method="POST" id="sendUpdateCollectionCounts">Mettre à jour les comptes</button>
+    </div>
+</form>
