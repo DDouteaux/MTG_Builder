@@ -11,3 +11,17 @@
     border-bottom: 1px solid #212529;
     color: rgb(187, 11, 11);
 }
+
+/* Deck card type */
+.deck-card:hover:after {
+    font-family: "Font Awesome 5 Free";
+    content: "\f00d";
+    padding-left: 3px;
+    font-weight: 900;
+    float: right;
+}
+
+.deck-card:hover {
+    border-bottom: 1px solid #212529;
+    color: rgb(187, 11, 11);
+}

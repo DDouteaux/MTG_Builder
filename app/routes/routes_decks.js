@@ -1,3 +1,4 @@
+var cards = require.main.require('./app/controllers/cards/get');
 var deck_modify = require.main.require('./app/controllers/decks/modify');
 var deck_create = require.main.require('./app/controllers/decks/create');
 var deck_get = require.main.require('./app/controllers/decks/get')
@@ -20,7 +21,27 @@ module.exports = function(app, baseDir) {
     app.get('/decks/:id', (req, res) => {
         logger.route("GET /decks/:id");
         deck_get.getDeckById(req.params.id, (err, deck) => {
-            res.render('partials/decks/detail', { formats: formats, states: states, deck: deck });
+            if (deck.userId === req.decoded.username) {
+                deck_get.getCardsFromDeck(req.params.id, req.decoded.username, (err, deckCards) => {
+                    if (typeof err === 'undefined' || err == null) {
+                        cardIds = deckCards.map(dc => dc.cardId);
+                        cards.getCards(cardIds, (err, cards) => {
+                            if (typeof err === 'undefined' || err == null) {
+                                cards.forEach(card => {
+                                    dc = deckCards.filter(dc => dc.cardId === card.id)[0];
+                                    card.count = dc.count;
+                                    card.deckPart = dc.deckPart;
+                                });
+                                res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req });
+                            } else {
+                                res.redirect('/?error=' + err);
+                            }
+                        });
+                    } else {
+                        res.redirect('/?error=' + err);
+                    }
+                });
+            }
         });
     })
 
@@ -48,7 +69,7 @@ module.exports = function(app, baseDir) {
 
     app.post('/decks/addCard', (req, res) => {
         decks = [];
-        if (typeof req.body != 'undefined' && req.body != null 
+        if (typeof req.body != 'undefined' || req.body != null 
             && typeof req.body.decks != 'undefined' && req.body.decks != null && req.body.decks != '') {
             if (typeof req.body.decks === "string") {
                 decks.push(req.body.decks);
@@ -58,8 +79,11 @@ module.exports = function(app, baseDir) {
         }
         if (decks.length > 0) {
             deck_modify.addCardToDeck(req.body.decks, req.body.cardId, req.body.count, req.body.deckPart, req.decoded.username, (err, data) => {
-                console.log(data)
-                res.status(200).send({message: data});
+                if (typeof err === 'undefined' || err == null) {
+                    res.status(200).send({message: data});
+                } else {
+                    res.status(400).send({message: err});
+                }
             });
         } else {
             res.status(400).send({message: "Pas de decks fourni"});

@@ -61,12 +61,22 @@
             Deck : {{ deck.title }}
         </h1>
     </div>
+    <div class="col-4">
+        <button id="returnToDeckList" type="button" class="btn btn-default float-right" onclick="location.href='/user/decks'">
+            <i class="far fa-list-alt"></i>&nbsp;Retour à la liste
+        </button>
+    </div>
 </div>
 <hr/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-6">
-            Contenu du deck {{deck.cards}}
+            {{#each cards}}
+                <div class="deck-card">
+                    x{{this.count}} {{this.name}}
+                </div>
+                <br>
+            {{/each}}
         </div>
         <div class="col-6">
             <ul class="nav nav-tabs" role="tablist">

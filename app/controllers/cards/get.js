@@ -36,6 +36,40 @@ function getCard(_id, callback) {
     });
 }
 
+function getCards(ids, callback) {
+    logger.debug("Méthode models/controllers/cards/getCards");
+    const getAllSetsBody = esb.requestBodySearch()
+                                .query(esb.termsQuery('_id', ids));
+    logger.info(JSON.stringify(getAllSetsBody.toJSON()));
+    es.client.search({  
+        index: 'cards',
+        body: getAllSetsBody.toJSON()
+    }, (err, res, status) => {
+        sets = []
+        if (err) {
+            logger.error("Erreur lors de la récupération des cartes : " + ids);
+            logger.error(err);
+            callback();
+            return;
+        }
+        else {
+            cards = []
+            if (res.hits.hits.length == 0) {
+                logger.warn("Pas de résultats pour la liste d'id fournie");
+                callback("Pas de résultats pour la liste d'id fournie");
+                return;
+            } else {
+                res.hits.hits.forEach(hit => {
+                    card = hit._source;
+                    card.id = hit._id;
+                    cards.push(card);
+                })
+            }
+            callback(null, cards);
+        }
+    });
+}
+
 function getAllCards(callback) {
     logger.debug("Méthode models/controllers/cards/getAllCards");
     const finAllCardsUnique = esb.requestBodySearch()
@@ -225,7 +259,6 @@ function add_musnt_match_clause_for_arrays(key, values, advancedSearchBoolQuery)
     }
 }
 
-
 function add_should_match_clause_for_arrays(key, values, advancedSearchBoolQuery) {
     if (values && values.length > 0) {
         values.forEach(value => {
@@ -262,6 +295,7 @@ function add_filter_clause_for_arrays(key, values, advancedSearchBoolQuery) {
 }
 
 module.exports = { getCard: getCard,
+                   getCards: getCards,
                    getAllCards: getAllCards,
                    search: search,
                    randomCard: randomCard,

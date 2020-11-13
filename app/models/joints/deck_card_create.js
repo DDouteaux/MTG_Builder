@@ -6,13 +6,13 @@ async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) 
     logger.debug("Méthode models/decks/deck_cards/addCardToDeck");
 
     results = await Deck.find({ deckId: deckId }, { __v: 0, _id: 0 }).exec().catch(err => {
-        logger.error("models/decks/deck_cards/addCardToDeck : Erreur de lecture sur la base");
+        logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur de lecture sur la base");
         callback("Le deck n'a pas été trouvé");
         return;
     });
 
     if (results.length > 1) {
-        logger.warn("models/decks/deck_cards/addCardToDeck : Plus d'un deck possible pour l'id " + deckId);
+        logger.warn("models/joints/deck_cards_create/addCardToDeck : Plus d'un deck possible pour l'id " + deckId);
         callback("Plusieurs decks possibles");
         return;
     }
@@ -30,6 +30,8 @@ async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) 
             deckPart = DeckPartsEnum.MAIN;
         }
 
+        console.log("cardId : " + cardId);
+        console.log("deckId : " + deckId)
         this.findOneAndUpdate({
             cardId: cardId,
             deckId: deckId
@@ -44,10 +46,15 @@ async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) 
         },
         (err, doc) => {
             if(err) {
-                logger.error("models/decks/deck_cards/addCardToDeck : Erreur de lecture sur la base");
-                callback("Erreur à l'ajout des cartes", []);
+                logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur de lecture sur la base");
+                if (err.codeName === 'DuplicateKey') {
+                    callback("Cette carte est déjà ajoutée au deck.", []);
+                    return;
+                }
+                callback("Erreur à l'ajout des cartes.", []);
                 return;
             } else {
+                console.log(err);
                 callback(err, "La carte a été ajouté au deck " + results[0].title + ".");
             }
         });
