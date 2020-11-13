@@ -4,58 +4,7 @@
         Object.entries(formats).forEach(key => {
             $('#format').append('<option value="' + key[0] + '">' + key[1] + '</option>')
         });
-
-        var table = $('#decks').DataTable({
-            "columnDefs": [
-                { "targets": 0, "width": "20%", "orderData": [0] },
-                { "targets": 1, "width": "20%", "orderData": [1] },
-                { "targets": 2, "width": "20%", "orderData": [2] },
-                { "targets": 3, "width": "20%", "orderData": [3] },
-                { "targets": 4, "width": "20%", "orderData": [4] },
-            ],
-            "fixedHeader": true,
-            "orderCellsTop": true,
-            "order": [[ 0, "asc" ]],
-            "autoWidth": false,
-            "initComplete": function() { 
-                $('.deck-format').each((index, cellContent) => {
-                    cellContent.innerText = formats[cellContent.innerText];
-                })
-
-                $("#decks").show();
-
-                var columnFormat = this.api().column(1);
-                $('#decks_filter').prepend('<label id="selectFormatFilter">Format&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-                var select = $('<select class="filter"><option value=""></option></select>')
-                    .appendTo('#selectFormatFilter')
-                    .on('change', function() {
-                        var val = $(this).val();
-                        columnFormat.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
-                    });
-
-                columnFormat.data().unique().sort().each(function(d, j) {
-                    select.append('<option value="' + d + '">' + d + '</option>');
-                });
-
-                var columnState = this.api().column(2);
-                $('#decks_filter').prepend('<label id="selectStateFilter">État&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-                var select = $('<select class="filter"><option value=""></option></select>')
-                    .appendTo('#selectStateFilter')
-                    .on('change', function() {
-                        var val = $(this).val();
-                        columnState.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
-                    });
-
-                columnState.data().unique().sort().each(function(d, j) {
-                    select.append('<option value="' + d + '">' + d + '</option>');
-                });
-
-            },
-            "language": {
-                "url": "/dependencies/dataTables/French.json"
-            }
-        });
-    })
+    });
 </script>
 
 <style>
@@ -79,28 +28,7 @@
 </div>
 
 <hr>
-<div class="table-responsive-sm table-hover container-fluid">
-    <table id="decks" class="table" style="display: none;">
-        <thead>
-            <th>Titre</th>
-            <th>Format</th>
-            <th>État</th>
-            <th>Mise à jour</th>
-            <th>Source</th>
-        </thead>
-        <tbody>
-            {{#each decks}}
-            <tr id={{this.deckId}}>
-                <th><a href='/decks/{{this.deckId}}'>{{this.title}}</a></th>
-                <td class='clickable-row' data-href='/decks/{{this.deckId}}' class="deck-format">{{this.format}}</td>
-                <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.state}}</td>
-                <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.lastUpdateDate}}</td>
-                <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.source}}</td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</div>
+{{> decks/list/table decks=decks public=public}}
 
 <div class="modal fade" id="createDeckModal" tabindex="-1" role="dialog" aria-labelledby="createDeckModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

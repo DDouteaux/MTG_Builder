@@ -188,6 +188,11 @@ app.engine('hbs', handlebars({
             } else {
                 return 'planeswalker.svg';
             }
+        },
+
+        displayDate: (datetime) => {
+            date = new Date(datetime);
+            return date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear();
         }
     }
 }));

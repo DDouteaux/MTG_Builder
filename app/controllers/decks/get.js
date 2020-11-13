@@ -21,5 +21,12 @@ function getDeckById(deckId, callback) {
     }
 }
 
+function getPublicDecks(callback) {
+    logger.debug("Méthode models/controllers/decks/get/getPublicDecks");
+
+    Deck.getPublicDecks(callback);
+}
+
 module.exports = { getDecksOfUser: getDecksOfUser,
-                   getDeckById: getDeckById };
+                   getDeckById: getDeckById,
+                   getPublicDecks: getPublicDecks };

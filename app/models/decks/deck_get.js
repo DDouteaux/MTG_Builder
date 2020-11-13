@@ -44,6 +44,26 @@ function getDeckById(deckId, callback) {
     });
 }
 
+function getPublicDecks(callback) {
+    logger.debug("Méthode models/decks/deck_get/getPublicDecks");
+    this.find(
+        {
+            public: true
+        },
+        {
+            __v: 0,
+            _id: 0
+        }
+    ).exec(function(err, results) {
+        if(err) {
+            logger.error("models/decks/deck_get/getPublicDecks : Erreur de lecture sur la base");
+            callback(err, []);
+        } else {
+            callback(err, JSON.parse(JSON.stringify(results)));
+        }
+    });
+}
+
 function getDecksOfUserPlugin(schema, options) {
     schema.statics.getDecksOfUser = getDecksOfUser;
 }
@@ -52,5 +72,10 @@ function getDeckByIdPlugin(schema, options) {
     schema.statics.getDeckById = getDeckById;
 }
 
+function getPublicDecksPlugin(schema, options) {
+    schema.statics.getPublicDecks = getPublicDecks;
+}
+
 module.exports = { getDecksOfUserPlugin: getDecksOfUserPlugin,
-                   getDeckByIdPlugin: getDeckByIdPlugin };
+                   getDeckByIdPlugin: getDeckByIdPlugin,
+                   getPublicDecksPlugin: getPublicDecksPlugin };

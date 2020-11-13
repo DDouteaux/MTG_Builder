@@ -7,7 +7,13 @@ var logger = require.main.require('./app/loader/logger');
 module.exports = function(app, baseDir) {
     app.get('/decks', (req, res) => {
         logger.route("GET /decks");
-        res.render('partials/decks/list');
+        deck_get.getPublicDecks((err, decks) => {
+            if (typeof err === 'undefined' || err == null) {
+                res.render('partials/decks/list', { public: true, formats: formats, states: states, decks: decks });
+            } else {
+                res.render('partials/decks/list', { public: true, formats: formats, states: states, decks: [] });
+            }
+        });
     })
 
     app.get('/decks/:id', (req, res) => {

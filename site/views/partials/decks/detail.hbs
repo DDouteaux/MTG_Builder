@@ -1,4 +1,14 @@
 <script>
+    {{#if user.decoded}}
+        function editToDisplay(event) {
+            toHide = $(event.target);
+            toShow = $(toHide.parent().find('.show-edit').filter(div => $(div) != toHide)[0]);
+            toShow.html(toHide.val());
+            toShow.toggle();
+            toHide.toggle();
+        }
+    {{/if}}
+
     $(document).ready(() => {
         formats = JSON.parse(JSON.stringify({{{stringifyIt formats }}}))
         selectedFormat = "{{deck.format}}"
@@ -19,6 +29,29 @@
                 $('#state').append('<option value="' + key[0] + '">' + key[1] + '</option>')
             }
         });
+
+        {{#if user.decoded}}
+            $('.show-edit').on('click', function(event) {
+                toHide = $(event.target);
+                toShow = $(toHide.parent().find('.edit-toggle').filter(div => $(div) != toHide)[0]);
+                toShow.toggle();
+                toHide.toggle();
+                if (toShow.is("input") || toShow.is("textarea")) {
+                    toShow.focus();
+                    tmpStr = toShow.val();
+                    toShow.val('');
+                    toShow.val(tmpStr);
+                } else if (toShow.is("select")) {
+                    dropDown(toShow);
+                }
+            })
+
+            $('textarea.edit-toggle, input.edit-toggle').on('keydown', function(event) {
+                if (event.which == 13 || event.keyCode == 13) {
+                    editToDisplay(event);
+                }
+            })
+        {{/if}}
     });
 </script>
 
@@ -52,49 +85,73 @@
                 <div class="tab-pane fade show active" id="deckDetail" role="tabpanel" aria-labelledby="deckDetail-tab">
                     <div class="mt-3"></div>
                     <div class="form-group row">
-                        <label for="title" class="col-sm-3 col-form-label">Titre</label>
+                        <label for="title" class="col-sm-3">Titre</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="title" name="title" placeholder="Titre" value="{{deck.title}}">
+                            <input class="edit-toggle form-control" style="display: none" id="title" name="title" placeholder="Titre" value="{{deck.title}}">
+                            <div class="edit-toggle show-edit w-100">{{deck.title}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="format" class="col-sm-3 col-form-label">Format</label>
+                        <label for="format" class="col-sm-3">Format</label>
                         <div class="col-sm-9">
-                            <select id="format" name="format" class="form-control">
+                            <select id="format" name="format" onchange="editToDisplay(event);" style="display: none" class="form-control edit-toggle">
                                 {{#if deck.format}}
                                     <option value="">Format</option>
                                 {{else}}
                                     <option selected value="">Format</option>
                                 {{/if}}
                             </select>
+                            <div class="edit-toggle show-edit w-100">{{deck.format}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="state" class="col-sm-3 col-form-label">État</label>
+                        <label for="state" class="col-sm-3">État</label>
                         <div class="col-sm-9">
-                            <select id="state" name="state" class="form-control">
+                            <select id="state" name="state" onchange="editToDisplay(event);" style="display: none" class="form-control edit-toggle">
                             </select>
+                            <div class="edit-toggle show-edit w-100">{{deck.state}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="source" class="col-sm-3 col-form-label">Source</label>
+                        <label for="source" class="col-sm-3">Source</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="source" name="source" placeholder="Source" value="{{deck.source}}">
+                            <input style="display: none" class="form-control edit-toggle" id="source" name="source" placeholder="Source" value="{{deck.source}}">
+                            <div class="edit-toggle show-edit w-100">&nbsp;{{deck.source}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="description" class="col-sm-3 col-form-label">Description</label>
+                        <label for="description" class="col-sm-3">Description</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" id="description" name="description" rows="3">{{ deck.description }}</textarea>
+                            <textarea style="display: none" class="form-control edit-toggle" id="description" name="description" rows="3">{{ deck.description }}</textarea>
+                            <div class="edit-toggle show-edit w-100">{{deck.description}}</div>
                         </div>
                     </div>
-                    Créé le : {{ deck.creationDate }}
-                    <br>
-                    Mis à jour le : {{ deck.lastUpdateDate }}
-                    <br>
-                    Dérivé de : {{ deck.derivedFrom }}
-                    <br>
-                    Public : {{ deck.public }}
+                    <div class="form-group row">
+                        <label for="createdAt" class="col-sm-3">Créé le</label>
+                        <div class="col-sm-9">
+                            <div>
+                                {{{displayDate deck.creationDate }}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="modifiedAt" class="col-sm-3">Mis à jour le</label>
+                        <div class="col-sm-9">
+                            {{{displayDate deck.lastUpdateDate }}}
+                        </div>
+                    </div>  
+                    <div class="form-group row">
+                        <label for="derivedFrom" class="col-sm-3">Dérivé de</label>
+                        <div class="col-sm-9">
+                            {{ deck.derivedFrom }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="public" class="col-sm-3">Public</label>
+                        <div class="col-sm-9">
+                            {{ deck.public }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
