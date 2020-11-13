@@ -13,7 +13,7 @@ module.exports = function(app, baseDir) {
     app.get('/decks/:id', (req, res) => {
         logger.route("GET /decks/:id");
         deck_get.getDeckById(req.params.id, (err, deck) => {
-            res.render('partials/decks/detail', { deck: deck });
+            res.render('partials/decks/detail', { formats: formats, states: states, deck: deck });
         });
     })
 
