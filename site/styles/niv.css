@@ -1,3 +1,4 @@
+/* Styles pour les boutons de formulaires */
 input[type="radio"] {
     display: none;
 }
@@ -30,6 +31,7 @@ input[type="checkbox"] + label {
     padding-left: 0;
 }
 
+/* Styles pour coller un bouton en bas de page */
 .bottom-glue {
     margin-bottom: 0;
     padding-top: 5px;
@@ -41,6 +43,7 @@ input[type="checkbox"] + label {
     padding-bottom: 15px;
 }
 
+/* Style pour les liens */
 a:visited {
     color: black;
     text-decoration: none;
@@ -59,4 +62,13 @@ a:hover {
 a:active {
     color: rgb(187, 11, 11);
     text-decoration: none;
+}
+
+/* Style des options de recherche pour les datatables */
+.dataTables_wrapper .dataTables_filter select {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 5px;
+    background-color: transparent;
+    margin-left: 3px;
 }
