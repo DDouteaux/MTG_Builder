@@ -22,9 +22,9 @@ module.exports = function(app, baseDir) {
         if (typeof req.decoded !== 'undefined' && req.decoded != null) {
             deck_get.getDecksOfUser(req.decoded.username, (err, decks) => {
                 if (typeof err === 'undefined' || err == null) {
-                    res.render('partials/decks/user', { formats: formats, states: states, decks: decks });
+                    res.render('partials/users/deck_list', { formats: formats, states: states, decks: decks });
                 } else {
-                    res.render('partials/decks/user', { formats: formats, states: states, decks: [] });
+                    res.render('partials/users/deck_list', { formats: formats, states: states, decks: [] });
                 }
             });
         }

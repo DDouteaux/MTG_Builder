@@ -54,7 +54,7 @@ module.exports = function(app, baseDir) {
         logger.route("GET /user/cards");
         if (JSON.stringify(req.query) === JSON.stringify({})) {
             sets.getSets(sets => {
-                res.render('partials/users/list', {
+                res.render('partials/users/card_list', {
                     title: "Ma collection",
                     cards: [],
                     symbols: [],
@@ -69,7 +69,7 @@ module.exports = function(app, baseDir) {
                         cardsIds = cards.map(card => card._id);
                         userId = req.decoded['username']
                         cards_collection.getCollectionCountsFromIds(cardsIds, userId, colectionCounts => {
-                            res.render('partials/users/list', {
+                            res.render('partials/users/card_list', {
                                 title: "Ma collection",
                                 cards: cards,
                                 symbols: symbols,
