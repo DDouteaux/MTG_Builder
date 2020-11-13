@@ -1,3 +1,5 @@
+const createDeck = require('./deck_create');
+const getDeck = require('./deck_get');
 var mongoose = require('mongoose');
 
 const CardForDeckSchema = mongoose.Schema({
@@ -17,11 +19,13 @@ const deckSchema = mongoose.Schema({
         format: String,
         userId: String,
         source: String,
-        sourceUrl: String,
-        description: String
+        description: String,
+        derivedFrom: String,
+        public: Boolean
 })
 
-//deckSchema.plugin(getUserData);
+deckSchema.plugin(createDeck);
+deckSchema.plugin(getDeck);
 
 var Deck = mongoose.model("Deck", deckSchema);
 

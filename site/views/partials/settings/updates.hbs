@@ -38,7 +38,6 @@
         http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         http.onreadystatechange = function () {
             if (http.readyState == XMLHttpRequest.DONE) {
-                console.log(http.response);
                 response = JSON.parse(http.response);
                 handleHTTPResponses(http.readyState, http.status, response);
                 var table = $('#sets').DataTable();

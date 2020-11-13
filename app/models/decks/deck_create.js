@@ -1,9 +1,9 @@
 var logger = require.main.require('./app/loader/logger');
 var md5 = require('md5');
 
-function createDeck(title, state, format, userId, source, sourceUrl, description, cards, callback) {
+function createDeck(title, state, format, userId, source, description, cards, callback) {
     logger.debug("Méthode models/decks/deck_create/createDeck");
-    
+
     deck = this({
         deckId: md5(title + userId + Date.now()),
         title: title,
@@ -14,10 +14,11 @@ function createDeck(title, state, format, userId, source, sourceUrl, description
         format: format,
         userId: userId,
         source: source,
-        sourceUrl: sourceUrl,
-        description: description
+        description: description,
+        derivedFrom: "",
+        public: false
     });
-
+    
     deck.save(function(err, data) {
         if(err) {
             logger.error("models/decks/deck_create/createDeck : Erreur de lecture/écriture sur la base");

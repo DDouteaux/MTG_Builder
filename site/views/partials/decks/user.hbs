@@ -1,6 +1,66 @@
+<script>
+    $(document).ready(() => {
+        formats = JSON.parse(JSON.stringify({{{stringifyIt formats }}}))
+        Object.entries(formats).forEach(key => {
+            $('#format').append('<option value="' + key[0] + '">' + key[1] + '</option>')
+        });
+
+        var table = $('#decks').DataTable({
+            "columnDefs": [
+                { "targets": 0, "width": "20%", "orderData": [0] },
+                { "targets": 1, "width": "20%", "orderData": [1] },
+                { "targets": 2, "width": "20%", "orderData": [2] },
+                { "targets": 3, "width": "20%", "orderData": [3] },
+                { "targets": 4, "width": "20%", "orderData": [4] },
+            ],
+            "fixedHeader": true,
+            "orderCellsTop": true,
+            "order": [[ 0, "asc" ]],
+            "autoWidth": false,
+            "initComplete": function() { 
+                $('.deck-format').each((index, cellContent) => {
+                    cellContent.innerText = formats[cellContent.innerText];
+                })
+
+                $("#decks").show();
+
+                var columnFormat = this.api().column(1);
+                $('#decks_filter').prepend('<label id="selectFormatFilter">Format&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+                var select = $('<select class="filter"><option value=""></option></select>')
+                    .appendTo('#selectFormatFilter')
+                    .on('change', function() {
+                        var val = $(this).val();
+                        columnFormat.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                    });
+
+                columnFormat.data().unique().sort().each(function(d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+
+                var columnState = this.api().column(2);
+                $('#decks_filter').prepend('<label id="selectStateFilter">État&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+                var select = $('<select class="filter"><option value=""></option></select>')
+                    .appendTo('#selectStateFilter')
+                    .on('change', function() {
+                        var val = $(this).val();
+                        columnState.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                    });
+
+                columnState.data().unique().sort().each(function(d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+
+            },
+            "language": {
+                "url": "/dependencies/dataTables/French.json"
+            }
+        });
+    })
+</script>
+
 <style>
     #createDeck:hover{
-            background-color: #212529;
+        background-color: #212529;
         color: white;
     }
 </style>
@@ -19,6 +79,28 @@
 </div>
 
 <hr>
+<div class="table-responsive-sm table-hover container-fluid">
+    <table id="decks" class="table" style="display: none;">
+        <thead>
+            <th>Titre</th>
+            <th>Format</th>
+            <th>État</th>
+            <th>Mise à jour</th>
+            <th>Source</th>
+        </thead>
+        <tbody>
+            {{#each decks}}
+            <tr id={{this.deckId}}>
+                <th>{{this.title}}</th>
+                <td class="deck-format">{{this.format}}</td>
+                <td>{{this.state}}</td>
+                <td>{{this.lastUpdateDate}}</td>
+                <td>{{this.source}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
 
 <div class="modal fade" id="createDeckModal" tabindex="-1" role="dialog" aria-labelledby="createDeckModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -29,40 +111,42 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                Veuillez renseigner les champs suivants.
-                <div class="mt-3"></div>
-                <form class="">
+            <form id="newDeckForm" action="/user/decks" method="post">
+                <div class="modal-body">
+                    Veuillez renseigner les champs suivants.
+                    <div class="mt-3"></div>
                     <div class="form-group row">
-                        <label for="inputTitle" class="col-sm-3 col-form-label">Titre</label>
+                        <label for="title" class="col-sm-3 col-form-label">Titre</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="title" placeholder="Titre">
+                            <input class="form-control" id="title" name="title" placeholder="Titre">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="format" class="col-sm-3 col-form-label">Format</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="format" placeholder="Format">
+                            <select id="format" name="format" class="form-control">
+                                <option value="">Format</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="source" class="col-sm-3 col-form-label">Source</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="format" placeholder="Source">
+                            <input class="form-control" id="source" name="source" placeholder="Source">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="description" class="col-sm-3 col-form-label">Description</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" id="description" rows="3"></textarea>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
                     </div>
-                </form>
-            </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="createDeckDismiss" data-dismiss="modal">Annuler</button>
-            <button onclick="sendCreateDeckRequest()" id="createDeckValidate" class="btn btn-success" code="code" name="name">Créer</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="createDeckDismiss" data-dismiss="modal">Annuler</button>
+                    <button type="submit" id="createDeckValidate" class="btn btn-success">Créer</button>
+                </div>
+            </form>
         </div>
     </div>
-  </div>
 </div>
