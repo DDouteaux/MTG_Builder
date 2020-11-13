@@ -11,4 +11,15 @@ function getDecksOfUser(userId, callback) {
     }
 }
 
-module.exports = { getDecksOfUser: getDecksOfUser };
+function getDeckById(deckId, callback) {
+    logger.debug("Méthode models/controllers/decks/get/getDeckById");
+
+    if (typeof deckId !== 'undefined' && deckId != null) {
+        Deck.getDeckById(deckId, callback)
+    } else {
+        callback("Aucun deck trouvé.");
+    }
+}
+
+module.exports = { getDecksOfUser: getDecksOfUser,
+                   getDeckById: getDeckById };

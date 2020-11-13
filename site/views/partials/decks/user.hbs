@@ -91,11 +91,11 @@
         <tbody>
             {{#each decks}}
             <tr id={{this.deckId}}>
-                <th>{{this.title}}</th>
-                <td class="deck-format">{{this.format}}</td>
-                <td>{{this.state}}</td>
-                <td>{{this.lastUpdateDate}}</td>
-                <td>{{this.source}}</td>
+                <th><a href='/decks/{{this.deckId}}'>{{this.title}}</a></th>
+                <td class='clickable-row' data-href='/decks/{{this.deckId}}' class="deck-format">{{this.format}}</td>
+                <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.state}}</td>
+                <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.lastUpdateDate}}</td>
+                <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.source}}</td>
             </tr>
             {{/each}}
         </tbody>

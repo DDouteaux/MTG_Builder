@@ -12,7 +12,9 @@ module.exports = function(app, baseDir) {
 
     app.get('/decks/:id', (req, res) => {
         logger.route("GET /decks/:id");
-        res.render('partials/decks/detail');
+        deck_get.getDeckById(req.params.id, (err, deck) => {
+            res.render('partials/decks/detail', { deck: deck });
+        });
     })
 
     app.get('/user/decks', (req, res) => {
@@ -24,8 +26,7 @@ module.exports = function(app, baseDir) {
                 } else {
                     res.render('partials/decks/user', { formats: formats, states: states, decks: [] });
                 }
-                
-            })
+            });
         }
     })
 
