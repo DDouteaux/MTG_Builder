@@ -76,3 +76,8 @@ a:active {
 .select2-container .select2-selection--single {
     height: 36px;
 }
+
+.countCardDeck:before {
+    content: "x";
+    display: "inline"
+}

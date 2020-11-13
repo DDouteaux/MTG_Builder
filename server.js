@@ -201,6 +201,37 @@ app.engine('hbs', handlebars({
         displayDate: (datetime) => {
             date = new Date(datetime);
             return date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear();
+        },
+
+        getDeckParts: (cards, part, deckParts) => {
+            if (['SIDEBOARD', 'COMPANION', 'COMMANDER'].indexOf(part) > -1) {
+                return cards.filter(card => card.deckPart === part);
+            } else {
+                if (part == 'Planeswalker') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Planeswalker') >= 0);
+                } else if (part == 'Creature') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Creature') >= 0 && card.type_line.indexOf('Land') < 0);
+                } else if (part == 'Instant') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Instant') >= 0 && card.type_line.indexOf('Creature') < 0);
+                } else if (part == 'Sorcery') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Sorcery') >= 0 && card.type_line.indexOf('Creature') < 0);
+                } else if (part == 'Enchantment') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Enchantment') >= 0 && card.type_line.indexOf('Creature') < 0);
+                } else if (part == 'Artifact') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Artifact') >= 0 && card.type_line.indexOf('Creature') < 0);
+                } else if (part == 'Land') {
+                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Land') >= 0 && card.type_line.indexOf('Creature') < 0 && card.type_line.indexOf('Instant') < 0 && card.type_line.indexOf('Sorcery') < 0);
+                }
+            }
+        },
+
+        cardNameInDeck: (cardName) => {
+            if (cardName.match(/(.*) \/\//) != null) {
+                return cardName.match(/(.*) \/\//)[1];
+            } else {
+                return cardName;
+            }
+            
         }
     }
 }));

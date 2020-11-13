@@ -30,6 +30,12 @@
             }
         });
 
+        $('.deck-part').each(function (index) {
+            if ($(this).html().trim() == "") {
+                $(this).parent().attr('style', 'display: none')
+            }
+        })
+
         {{#if user.decoded}}
             $('.show-edit').on('click', function(event) {
                 toHide = $(event.target);
@@ -70,13 +76,96 @@
 <hr/>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6">
-            {{#each cards}}
-                <div class="deck-card">
-                    x{{this.count}} {{this.name}}
+        <div class="col-6" style="font-size: 11pt">
+            <div class="deck-part-with-title">
+                <b>Compagnon</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "COMPANION" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
                 </div>
-                <br>
-            {{/each}}
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Commandant</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "COMMANDER" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Planeswalker</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Planeswalker" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Créatures</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Creature" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Éphémères</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Instant" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Rituels</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Sorcery" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Enchantements</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Enchantment" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Artefacts</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Artifact" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Terrains</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "Land" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+                <br/>
+            </div>
+            <div class="deck-part-with-title">
+                <b>Side</b>
+                <div class="deck-part">
+                    {{#each (getDeckParts cards "SIDEBOARD" deck_parts)}}
+                        {{> decks/detail/deck_line card=this symbols=../symbols}}
+                    {{/each}}
+                </div>
+            </div>
         </div>
         <div class="col-6">
             <ul class="nav nav-tabs" role="tablist">

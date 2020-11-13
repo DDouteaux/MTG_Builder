@@ -3,8 +3,10 @@ var deck_modify = require.main.require('./app/controllers/decks/modify');
 var deck_create = require.main.require('./app/controllers/decks/create');
 var deck_get = require.main.require('./app/controllers/decks/get')
 var formats = require.main.require('./app/models/enums/formats');
+var deck_parts = require.main.require('./app/models/enums/deck_parts');
 var states = require.main.require('./app/models/enums/states');
 var logger = require.main.require('./app/loader/logger');
+var symbols = require.main.require('./app/controllers/symbols/get');
 
 module.exports = function(app, baseDir) {
     app.get('/decks', (req, res) => {
@@ -32,7 +34,9 @@ module.exports = function(app, baseDir) {
                                     card.count = dc.count;
                                     card.deckPart = dc.deckPart;
                                 });
-                                res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req });
+                                symbols.getAll(symbols => {
+                                    res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req, deck_parts: deck_parts, symbols: symbols });
+                                });
                             } else {
                                 res.redirect('/?error=' + err);
                             }
