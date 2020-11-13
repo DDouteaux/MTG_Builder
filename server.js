@@ -178,11 +178,16 @@ app.engine('hbs', handlebars({
         },
 
         isFrenchVersion: (card) => {
-            if (typeof card.card_faces != 'undefined') {
-                console.log(card.card_faces[0].frenchDetails);
-                console.log(card.card_faces[1].frenchDetails);
-            }
             return card.inFrench;
+        },
+
+        getSetLogo: (setName, sets) => {
+            setDetail = sets.filter(set => set.code === setName);
+            if (typeof setDetail !== 'undefined' && setDetail != null && setDetail.length > 0) {
+                return setDetail[0].icon;
+            } else {
+                return 'planeswalker.svg';
+            }
         }
     }
 }));

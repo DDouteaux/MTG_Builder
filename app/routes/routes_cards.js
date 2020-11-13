@@ -73,30 +73,31 @@ module.exports = function(app, baseDir) {
         logger.route("GET /cards/" + req.params.id);
         symbols.getAll(symbols => {
             cards.getCard(req.params.id, card => {
-                if (card != 'undefined' && card != null) {
-                    if (['p', 't'].includes(card.set[0])) {
-                        card.setIcon = card.set.substring(1, card.set.length);
-                    } else {
-                        card.setIcon = card.set.substring(card.set.lastIndexOf('/') + 1)
-                    }
+                sets.getSets(sets => {
+                    if (card != 'undefined' && card != null) {
+                        if (['p', 't'].includes(card.set[0])) {
+                            card.setIcon = card.set.substring(1, card.set.length);
+                        } else {
+                            card.setIcon = card.set.substring(card.set.lastIndexOf('/') + 1)
+                        }
 
-                    if (typeof req.decoded != undefined && req.decoded != null) {
-                        cardsIds = [ card.id ]
-                        userId = req.decoded['username']
-                        cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
-                            console.log(collectionCounts[0])
-                            if (collectionCounts.length > 0) {
-                                res.render('partials/cards/detail', { card: card, symbols: symbols, count: JSON.parse(JSON.stringify(collectionCounts[0])) });
-                            } else {
-                                res.render('partials/cards/detail', { card: card, symbols: symbols });
-                            }
-                        });
+                        if (typeof req.decoded != undefined && req.decoded != null) {
+                            cardsIds = [ card.id ]
+                            userId = req.decoded['username']
+                            cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
+                                if (collectionCounts.length > 0) {
+                                    res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets, count: JSON.parse(JSON.stringify(collectionCounts[0])) });
+                                } else {
+                                    res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets });
+                                }
+                            });
+                        } else {
+                            res.render('partials/cards/detail', { card: card, symbols: symbols });
+                        }
                     } else {
-                        res.render('partials/cards/detail', { card: card, symbols: symbols });
+                        res.redirect('/cards/advanced_search');
                     }
-                } else {
-                    res.redirect('/cards/advanced_search');
-                }
+                });
             });
         });
     })

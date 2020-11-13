@@ -26,7 +26,7 @@
             <td class='clickable-row' data-href='/cards/{{this._id}}'>{{formatRarity this.rarity}}</td>
             {{#if ../isCollection}}
                 <td class='clickable-row' data-href='/cards/{{this._id}}'>{{this.set}}</td>
-                <td class='clickable-row' style="text-align: center;" data-href='/cards/{{this._id}}'><img id="setLogo" src="/images/sets/{{this.set}}.svg" class="img-responsive center-block" width="20px"></img></td>
+                <td class='clickable-row' style="text-align: center;" data-href='/cards/{{this._id}}'><img id="setLogo" src="/images/sets/{{{getSetLogo this.set ../sets}}}" class="img-responsive center-block" width="20px"></img></td>
                 <td class="auto-update">
                     <div class="input-group">
                         <div class="input-group-prepend plus">
