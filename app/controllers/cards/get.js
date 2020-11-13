@@ -43,6 +43,7 @@ function getCards(ids, callback) {
     logger.info(JSON.stringify(getAllSetsBody.toJSON()));
     es.client.search({  
         index: 'cards',
+        size: 1000,
         body: getAllSetsBody.toJSON()
     }, (err, res, status) => {
         sets = []
@@ -54,11 +55,7 @@ function getCards(ids, callback) {
         }
         else {
             cards = []
-            if (res.hits.hits.length == 0) {
-                logger.warn("Pas de résultats pour la liste d'id fournie");
-                callback("Pas de résultats pour la liste d'id fournie");
-                return;
-            } else {
+            if (res.hits.hits.length > 0) {
                 res.hits.hits.forEach(hit => {
                     card = hit._source;
                     card.id = hit._id;

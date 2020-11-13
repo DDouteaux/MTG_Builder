@@ -31,10 +31,12 @@ async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) 
         }
 
         console.log("cardId : " + cardId);
-        console.log("deckId : " + deckId)
+        console.log("deckId : " + deckId);
+        console.log("deckPart : " + deckPart)
         this.findOneAndUpdate({
             cardId: cardId,
-            deckId: deckId
+            deckId: deckId,
+            deckPart: deckPart
         },
         {
             cardId: cardId,
@@ -54,7 +56,6 @@ async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) 
                 callback("Erreur à l'ajout des cartes.", []);
                 return;
             } else {
-                console.log(err);
                 callback(err, "La carte a été ajouté au deck " + results[0].title + ".");
             }
         });

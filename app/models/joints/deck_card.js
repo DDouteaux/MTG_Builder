@@ -9,7 +9,7 @@ const CardForDeckSchema = mongoose.Schema({
         deckPart: String
 })
 
-CardForDeckSchema.index({ deckId: 1, cardId: 1}, { unique: true });
+CardForDeckSchema.index({ deckId: 1, cardId: 1, deckPart: 1}, { unique: true });
 
 CardForDeckSchema.plugin(addCardToDeck);
 CardForDeckSchema.plugin(getCardsFromDeck);
