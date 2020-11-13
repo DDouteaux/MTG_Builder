@@ -184,7 +184,8 @@ function advanced_search(searchParams, callback) {
     const advancedSearchQuery = esb.requestBodySearch()
                                     .query(advancedSearchBoolQuery)
                                     .size(10000);
-    console.log(JSON.stringify(advancedSearchBoolQuery.toJSON()));
+    logger.info("Requête exécutée :");
+    logger.info(JSON.stringify(advancedSearchBoolQuery.toJSON()));
 
     es.client.search({
         index: 'cards',
