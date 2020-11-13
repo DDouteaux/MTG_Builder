@@ -78,4 +78,5 @@ function getPublicDecksPlugin(schema, options) {
 
 module.exports = { getDecksOfUserPlugin: getDecksOfUserPlugin,
                    getDeckByIdPlugin: getDeckByIdPlugin,
-                   getPublicDecksPlugin: getPublicDecksPlugin };
+                   getPublicDecksPlugin: getPublicDecksPlugin,
+                   getDeckById: getDeckById };

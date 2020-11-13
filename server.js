@@ -154,6 +154,14 @@ app.engine('hbs', handlebars({
             return op1 || op2;
         },
 
+        formatEquals: (key, value, formats) => {
+            return formats[key] === value;
+        },
+
+        storeKey: (value) =>{
+            this.key = value;
+        },
+
         formatRarity: (rarity) => {
             if (rarity) {
                 return rarity.charAt(0).toUpperCase() + rarity.slice(1);

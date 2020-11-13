@@ -1,19 +1,133 @@
+<script>
+    $(document).ready(() => {
+        $('#decks').select2({
+            placeholder: "Decks",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+        $('#deckParts').select2({
+            placeholder: "Partie du deck",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+
+        $('select').select2({
+            width: '100%'
+        });
+    })
+
+    function countChange(div, modifier) {
+        inputDiv = $(div).parent().parent().find('input');
+        value = parseInt(inputDiv.val());
+        if (isNaN(value)) {
+            newValue = 1;
+        } else {
+            newValue = value + modifier
+            if (newValue <= 0) {
+                newValue = 1;
+            }
+        }
+        inputDiv.val(newValue);
+    }
+
+    function postAddToDeck(event) {
+        event.preventDefault()
+        $('#closeAddCard').click();
+        $.ajax({
+            url: '/decks/addCard',
+            type: 'POST',
+            data: {
+                decks: $('#decks').val(),
+                deckPart: $('#deckParts').val(),
+                count: $('#count').val(),
+                cardId: "{{card.id}}"
+            },
+            success: function(response) {
+                $('#displayInfo').hide();
+                $('#deleteDismiss').click();
+                $("#contentInfo").html(response.message);
+                $('#displayInfo').fadeIn();
+                setTimeout(function() {
+                    $("#displayInfo").fadeOut();
+                }, 3000);
+            },
+            error: function(err) {
+                console.log(err.responseJSON.message);
+                $('#displayError').hide();
+                $('#deleteDismiss').click();
+                $("#displayError").html(err.responseJSON.message);
+                $('#displayError').fadeIn();
+                setTimeout(function() {
+                    $("#displayError").fadeOut();
+                }, 3000);
+            }
+        });
+    }
+</script>
+
 <div class="modal fade" id="addToDecksModal" tabindex="-1" role="dialog" aria-labelledby="addToDecksModal" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addToDecksModal">Ajouter cette carte à un deck</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          Choisir un ou plusieurs decks auxquels vous voulez associer cette carte.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="addToDecksDismiss" data-dismiss="modal">Annuler</button>
-        <button onclick="sendAddToDeckRequest()" id="addToDecksValidate" class="btn btn-success" code="code" name="name">Ajouter</button>
-      </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToDecksModal">Ajouter cette carte à un deck</h5>
+                <button id="closeAddCard" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="addToDeckForm" onsubmit="postAddToDeck(event)">
+                <div class="modal-body">
+                    Choisir un ou plusieurs decks auxquels vous voulez associer cette carte.
+                    <div class="mt-3"></div>
+                    <div class="container-fluid">
+                        {{#if decks}}
+                            <div class="form-group row">
+                                <label for="decks" class="col-sm-3 col-form-label">Decks</label>
+                                <div class="col-sm-9">
+                                    <select id="decks" name="decks" class="form-control js-example-basic-multiple" multiple="multiple">
+                                        {{#each formats}}
+                                            <optgroup label="{{this}}">
+                                                {{#each ../decks}}
+                                                    {{#if (formatEquals this.format ../this ../../formats)}}
+                                                        <option value="{{this.deckId}}">{{this.title}}</option>
+                                                    {{/if}}
+                                                {{/each}}
+                                        </optgroup>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="deckParts" class="col-sm-3 col-form-label">Partie du deck</label>
+                                <div class="col-sm-9">
+                                    <select id="deckParts" name="deckParts" class="form-control js-example-basic-single">
+                                        {{#each deckParts}}
+                                            <option value="{{@key}}">{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="count" class="col-sm-3 col-form-label">Quantité</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group" id="countInput">
+                                        <div onclick="countChange(this, 1, event)" class="input-group-prepend plus">
+                                            <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                                        </div>
+                                        <input type="text" class="w-auto form-control input-count" id="count" name="count" value="1"/>
+                                        <div onclick="countChange(this, -1, event)" class="input-group-append minus">
+                                            <span class="input-group-text"><i class="fas fa-minus"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="addToDecksDismiss" data-dismiss="modal">Annuler</button>
+                    <button type="submit" id="addToDeckValidate" class="btn btn-success">Ajouter</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
