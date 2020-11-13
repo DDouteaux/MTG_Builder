@@ -16,8 +16,8 @@
             inputDiv.val(value + modifier);
             inputDiv.attr('value', value + modifier);
         }
-        cell.data().replace('value="' + value, 'value="' + newValue)
-        cell.data(cell.data().replace('value="' + value, 'value="' + newValue)).draw();
+        //cell.data().replace('value="' + value, 'value="' + newValue)
+        cell.data(cell.data().replace('value="' + value, 'value="' + newValue));
     }
 
     $(document).ready(() => {
@@ -71,12 +71,11 @@
         inputDiv = $(div);
         var cell = $('#cards').DataTable().cell(event.path[2]);
         value = parseInt(inputDiv.val());
-        console.log(value)
         if (isNaN(value)) {
             value = 0;
         }
-        cell.data().replace(/value="[0-9]+"/, 'value="' + value + '"');
-        cell.data(cell.data().replace(/value="[0-9]+"/, 'value="' + value + '"')).draw();
+        //cell.data().replace(/value="[0-9]+"/, 'value="' + value + '"');
+        cell.data(cell.data().replace(/value="[0-9]+"/, 'value="' + value + '"'));
     }
 </script>
 
