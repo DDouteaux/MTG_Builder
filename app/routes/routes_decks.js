@@ -52,20 +52,22 @@ module.exports = function(app, baseDir) {
             } else if (!deck.public) {
                 res.redirect('/?error=La page demandée n\'existe pas.');
             } else {
-                cardIds = deckCards.map(dc => dc.cardId);
-                cards.getCards(cardIds, (err, cards) => {
-                    if (typeof err === 'undefined' || err == null) {
-                        cards.forEach(card => {
-                            dc = deckCards.filter(dc => dc.cardId === card.id)[0];
-                            card.count = dc.count;
-                            card.deckPart = dc.deckPart;
-                        });
-                        symbols.getAll(symbols => {
-                            res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req, deck_parts: deck_parts, symbols: symbols });
-                        });
-                    } else {
-                        res.redirect('/?error=' + err);
-                    }
+                deck_get.getCardsFromDeck(req.params.id, deck.userId, (err, deckCards) => {
+                    cardIds = deckCards.map(dc => dc.cardId);
+                    cards.getCards(cardIds, (err, cards) => {
+                        if (typeof err === 'undefined' || err == null) {
+                            cards.forEach(card => {
+                                dc = deckCards.filter(dc => dc.cardId === card.id)[0];
+                                card.count = dc.count;
+                                card.deckPart = dc.deckPart;
+                            });
+                            symbols.getAll(symbols => {
+                                res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req, deck_parts: deck_parts, symbols: symbols });
+                            });
+                        } else {
+                            res.redirect('/?error=' + err);
+                        }
+                    });
                 });
             }
         });

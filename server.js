@@ -190,12 +190,13 @@ app.engine('hbs', handlebars({
         },
 
         getSetLogo: (setName, sets) => {
-            setDetail = sets.filter(set => set.code === setName);
-            if (typeof setDetail !== 'undefined' && setDetail != null && setDetail.length > 0) {
-                return setDetail[0].icon;
-            } else {
-                return 'planeswalker.svg';
+            if (typeof sets != 'undefined' && sets != null ) {
+                setDetail = sets.filter(set => set.code === setName);
+                if (typeof setDetail !== 'undefined' && setDetail != null && setDetail.length > 0) {
+                    return setDetail[0].icon;
+                } 
             }
+            return 'planeswalker.svg';
         },
 
         displayDate: (datetime) => {

@@ -100,7 +100,7 @@ module.exports = function(app, baseDir) {
                                 });
                             });
                         } else {
-                            res.render('partials/cards/detail', { card: card, symbols: symbols });
+                            res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets });
                         }
                     } else {
                         res.redirect('/cards/advanced_search');
