@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-8">
+        <h1 class="text-left">
+            Plan du site
+        </h1>
+    </div>
+</div>
+
+<ul>
+    <li><a href="/">Accueil</a></li>
+    <li>Cartes</li>
+    <ul>
+        <li><a href="/cards/advanced_search">Recherche avancée</a></li>
+        <li><a href="/cards">Liste générale</a></li>
+        <li><a href="/cards/random">Une carte au hasard</a></li>
+    </ul>
+    <li><a href="/sets">Éditions</a></li>
+    <li><a href="/decks">Decks</a></li>
+    {{#if decoded}}
+        <li>Paramétrages</li>
+        <ul>
+            <li><a href="/settings/appearance">Mes paramètres</a></li>
+            <li><a href="/settings/extensions">Mise à jour des données</a></li>
+        </ul>
+        <li>Mon compte</li>
+        <ul>
+            <li><a href="/user/info">Mes données</a></li>
+            <li><a href="/user/cards">Ma collection</a></li>
+            <li><a href="/user/decks">Mes decks</a></li>
+            <li><a href="/user/logout">Déconnexion</a></li>
+        </ul>
+    {{else}}
+        <li><a href="/user/signin">Connexion</a></li>
+    {{/if}}
+    <li>Aide</li>
+    <ul>
+        <li><a href="/help/plan">Plan du site</a></li>
+        <li><a href="/help/">Utilisation du site</a></li>
+    </ul>
+</ul>
