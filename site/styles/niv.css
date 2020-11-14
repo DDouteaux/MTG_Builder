@@ -103,3 +103,39 @@ a:active {
     margin: 0px;
     padding: 0px;
 }
+
+/* Pour coller le footer en bas de la page */
+.flex-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Style des éléments du footer */
+footer {
+    margin-top: 60px;
+    padding-top: 10px;
+    font-size: 8pt;
+}
+
+footer h5 {
+    font-size: 10pt;
+}
+
+footer a {
+    color: white !important;
+    font-weight: bold;
+}
+
+footer a:hover {
+    color: rgb(11, 122, 187) !important;
+}
+
+.legal-mention {
+    font-size: 8pt;
+}
+
+.site-explained {
+    font-size: 8pt;
+}
