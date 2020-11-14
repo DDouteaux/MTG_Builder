@@ -68,6 +68,13 @@
                         {{{replaceSymbols this.oracle_text ../symbols}}}
                     {{/if}}
                 </td>
+                {{#if ../decoded}}
+                    <td style="text-align: center;">
+                        <i class="fas fa-plus-circle"></i>
+                        <i class="far fa-square"></i>
+                        <!--<i class="far fa-check-square"></i>-->
+                    </td>
+                {{/if}}
             {{/if}}
         </tr>
     {{/each}}

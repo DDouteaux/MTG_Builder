@@ -139,3 +139,51 @@ footer a:hover {
 .site-explained {
     font-size: 8pt;
 }
+
+/* Styles principaux */
+.main-content {
+    font-size: 11pt;
+}
+
+h1 {
+    font-size: 20pt
+}
+
+/* Style pour les contenus de decks */
+.deck-card-after {
+    padding-left: 3px;
+    font-weight: 900;
+}
+
+.deck-card-after:hover {
+    color: rgb(187, 11, 11);
+}
+
+.deck-card>.col-md-auto {
+    padding: 2px;
+}
+
+.deck-card>.col {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.deck-card>.col>.col-8 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.deck-card>.col>.col-3 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.deck-part-count-container {
+    padding-right: 10px;
+}
+
+.deck-chevron {
+    padding-left: 0px;
+}

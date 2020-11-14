@@ -20,7 +20,10 @@
                     { "targets": 10, "width": "15%", "orderData": [10] },
                     { "targets": 11, "width": "15%", "orderData": [11] }
                 {{else}}
-                    { "targets": 8, "width": "60%", "orderable": false }
+                    { "targets": 8, "width": "60%", "orderable": false },
+                    {{#if decoded}}
+                        { "targets": 9, "width": "15px", "orderable": false }
+                    {{/if}}
                 {{/if}}
             ],
             "fixedHeader": true,

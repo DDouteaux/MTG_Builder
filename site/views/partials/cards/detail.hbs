@@ -1,6 +1,28 @@
 <script>
+    function addHoverClasses() {
+        $("#nav-set-icon").addClass('hover');
+        $("#nav-set-detail").addClass('hover');
+    }
+
+    function removeHoverClasses() {
+        $("#nav-set-icon").removeClass('hover');
+        $("#nav-set-detail").removeClass('hover');
+    }
+
     $(document).ready(function() {
         $('#returnToSet').tooltip();
+            
+        $('#nav-set-icon').hover(function(){
+            addHoverClasses();
+        }, function(){
+            removeHoverClasses();
+        });
+
+        $('#nav-set-detail').hover(function(){
+            addHoverClasses();
+        }, function(){
+            removeHoverClasses();
+        });
 
         cardId = "{{card.collector_number}}";
         toAdd = "";
@@ -58,8 +80,21 @@
     }
 
     .nav-cards:hover {
-        background-color: #212529;
-        color: white;
+        filter: invert(0.9);
+    }
+
+    .nav-cards:hover {
+        transition: all 0ms ease;
+    }
+
+    #nav-set-detail.hover {
+        filter: invert(0.9);
+        transition: all 0ms ease;
+    }
+
+    #nav-set-icon.hover {
+        filter: invert(0.9);
+        transition: all 0ms ease;
     }
 </style>
 
@@ -70,16 +105,16 @@
         </h1>
     </div>
     <div class="col-4">
-        <div class="btn-group float-right" role="group">
+        <div class="btn-group float-right" id="nav-buttons" role="group">
             <button id="previous" type="button" class="btn btn-default nav-cards">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <button type="button" class="btn btn-default return-to-set nav-cards">
+            <button type="button" id="nav-set-detail" class="btn btn-default return-to-set nav-cards">
                 <div>
                     {{card.set_name}} <br> #{{card.collector_number}} <b>·</b> {{formatRarity card.rarity}} <b>·</b> {{card.released_at}}
                 </div>
             </button>
-            <button type="button" class="btn btn-default return-to-set nav-cards">
+            <button type="button" id="nav-set-icon" class="btn btn-default return-to-set">
                 <img id="setLogo" src="/images/sets/{{{getSetLogo card.set sets}}}" class="img-responsive center-block" style="width: 25px">
             </button>
             <button id="next" type="button" class="btn btn-default nav-cards">
