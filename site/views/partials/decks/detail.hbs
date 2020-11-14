@@ -9,7 +9,37 @@
         }
     {{/if}}
 
-    $(document).ready(() => {
+    var timer;
+    function onInputCountChange() {
+        clearTimeout(timer);
+        timer = setTimeout(sendNewCountToBack.bind(this), 2000);
+    }
+
+    function sendNewCountToBack() {
+        console.log('change');
+    }
+
+    function countChange(div, modifier) {
+        inputDiv = $(div).parent().parent().find('input');
+        value = parseInt(inputDiv.val());
+        if (isNaN(value)) {
+            newValue = 1;
+        } else {
+            newValue = value + modifier
+            if (newValue < 0) {
+                newValue = 0;
+            }
+        }
+        inputDiv.val(newValue);
+        onInputCountChange();
+    }
+
+    function showHideContent(div) {
+        $(div).parent().find('.deck-part').toggle()
+    }
+
+
+    $(document).ready(() => {     
         formats = JSON.parse(JSON.stringify({{{stringifyIt formats }}}))
         selectedFormat = "{{deck.format}}"
         Object.entries(formats).forEach(key => {
@@ -33,6 +63,8 @@
         $('.deck-part').each(function (index) {
             if ($(this).html().trim() == "") {
                 $(this).parent().attr('style', 'display: none')
+            } else {
+                $(this).parent().find('.deck-part-count')[0].innerText = $(this).find('.input-count').toArray().reduce((acc, div) => {return acc+parseInt(div.value)}, 0);
             }
         })
 
@@ -76,90 +108,90 @@
 <hr/>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6" style="font-size: 11pt">
+        <div class="col-4" style="font-size: 11pt">
             <div class="deck-part-with-title">
-                <b>Compagnon</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Compagnon"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "COMPANION" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Commandant</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Commandant"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "COMMANDER" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Planeswalker</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Planeswalkers"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Planeswalker" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Créatures</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Créatures"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Creature" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Éphémères</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Éphémères"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Instant" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Rituels</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Rituels"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Sorcery" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Enchantements</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Enchantements"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Enchantment" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Artefacts</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Artefacts"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Artifact" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Terrains</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Terrains"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Land" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
                     {{/each}}
                 </div>
-                <br/>
+                <div class="mt-3"></div>
             </div>
             <div class="deck-part-with-title">
-                <b>Side</b>
+                {{> decks/detail/deck_part_line deckPartTitle="Side"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "SIDEBOARD" deck_parts)}}
                         {{> decks/detail/deck_line card=this symbols=../symbols}}
@@ -167,13 +199,16 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-8">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="deckDetail-tab" data-toggle="tab" href="#deckDetail" role="tab" aria-controls="deckDetail" aria-selected="false">Informations</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="addCard-tab" data-toggle="tab" href="#addCard" role="tab" aria-controls="addCard" aria-selected="true">Ajouter des cartes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="stat-tab" data-toggle="tab" href="#stat" role="tab" aria-controls="stat" aria-selected="true">Statistiques</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -215,7 +250,7 @@
                         <label for="source" class="col-sm-3">Source</label>
                         <div class="col-sm-9">
                             <input style="display: none" class="form-control edit-toggle" id="source" name="source" placeholder="Source" value="{{deck.source}}">
-                            <div class="edit-toggle show-edit w-100">&nbsp;{{deck.source}}</div>
+                            <div class="edit-toggle show-edit w-100">{{deck.source}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -251,6 +286,10 @@
                             {{ deck.public }}
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane fade show" id="stat" role="tabpanel" aria-labelledby="stat-tab">
+                    <div class="mt-3"></div>
+                    Statistiques du deck
                 </div>
             </div>
         </div>

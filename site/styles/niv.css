@@ -77,7 +77,29 @@ a:active {
     height: 36px;
 }
 
+/* Page de détails d'un deck */
+/*
 .countCardDeck:before {
     content: "x";
     display: "inline"
+}
+*/
+
+.deck-part-count-container {
+    text-align: right;
+}
+
+.deck-part-line {
+    border-bottom: 1px solid;
+}
+
+.card-tooltip.show {
+    opacity: 1;
+}
+
+.card-tooltip>.tooltip-inner {
+    max-width: 100% !important;
+    background-color: white;
+    margin: 0px;
+    padding: 0px;
 }

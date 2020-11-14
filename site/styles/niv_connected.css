@@ -13,15 +13,59 @@
 }
 
 /* Deck card type */
-.deck-card:hover:after {
-    font-family: "Font Awesome 5 Free";
-    content: "\f00d";
+.deck-card-after {
     padding-left: 3px;
     font-weight: 900;
-    float: right;
 }
 
-.deck-card:hover {
-    border-bottom: 1px solid #212529;
+.deck-card-after:hover {
     color: rgb(187, 11, 11);
+}
+
+.update-count-in-decklist {
+    font-size: 6pt;
+    text-align: bottom;
+}
+
+#update-deck-card-count {
+    font-size: 8px;
+    width: auto;
+}
+
+#update-deck-card-count>div>span {
+    font-size: 8px;
+    padding-left: 2px;
+    padding-right: 2px;
+    height: 17px;
+}
+
+#update-deck-card-count>input {
+    font-size: 12px;
+    padding-left: 2px;
+    padding-right: 2px;
+    flex: auto 0 0;
+    width: 20px;
+    height: 17px;
+    text-align: center;
+}
+
+.deck-card>.col-md-auto {
+    padding: 2px;
+}
+
+.deck-card>.col {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.deck-card>.col>.col-8 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.deck-card>.col>.col-3 {
+    padding-left: 10px;
+    padding-right: 10px;
 }

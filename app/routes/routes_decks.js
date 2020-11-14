@@ -23,7 +23,9 @@ module.exports = function(app, baseDir) {
     app.get('/decks/:id', (req, res) => {
         logger.route("GET /decks/:id");
         deck_get.getDeckById(req.params.id, (err, deck) => {
-            if (deck.userId === req.decoded.username) {
+            if ((typeof err === 'undefined' || err == null) 
+                && typeof req.decoded != 'undefined' && req.decoded != null 
+                && deck.userId === req.decoded.username) {
                 deck_get.getCardsFromDeck(req.params.id, req.decoded.username, (err, deckCards) => {
                     if (typeof err === 'undefined' || err == null) {
                         cardIds = deckCards.map(dc => dc.cardId);
@@ -40,6 +42,26 @@ module.exports = function(app, baseDir) {
                             } else {
                                 res.redirect('/?error=' + err);
                             }
+                        });
+                    } else {
+                        res.redirect('/?error=' + err);
+                    }
+                });
+            } else if (err != null) {
+                res.redirect('/?error=' + err);
+            } else if (!deck.public) {
+                res.redirect('/?error=La page demandée n\'existe pas.');
+            } else {
+                cardIds = deckCards.map(dc => dc.cardId);
+                cards.getCards(cardIds, (err, cards) => {
+                    if (typeof err === 'undefined' || err == null) {
+                        cards.forEach(card => {
+                            dc = deckCards.filter(dc => dc.cardId === card.id)[0];
+                            card.count = dc.count;
+                            card.deckPart = dc.deckPart;
+                        });
+                        symbols.getAll(symbols => {
+                            res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req, deck_parts: deck_parts, symbols: symbols });
                         });
                     } else {
                         res.redirect('/?error=' + err);

@@ -1,5 +1,31 @@
-                        <div class="deck-card row">
-                            <div class="countCardDeck col-1">{{card.count}}</div>
-                            <div class="nameCardDeck col-6">{{{cardNameInDeck card.name}}}</div>
-                            <div class="manaCardDeck col-4">{{{replaceSymbols card.mana_cost symbols}}}</div>
-                        </div>
+<div class="deck-card row">
+    <div class="input-group col-md-auto" id="update-deck-card-count">
+        <div onclick="countChange(this, 1)" class="input-group-prepend plus">
+            <span class="input-group-text"><i class="fas fa-plus"></i></span>
+        </div>
+        <input oninput="finalCountChange()" type="text" class="w-auto form-control input-count" id="count-{{card.id}}" name="count-{{card.id}}" value="{{card.count}}"/>
+        <div onclick="countChange(this, -1)" class="input-group-append minus">
+            <span class="input-group-text"><i class="fas fa-minus"></i></span>
+        </div>
+    </div>
+    <div class="row col">
+        {{#if card.card_faces}}
+            {{#if (and card.card_faces card.card_faces.0.side)}}
+                <a href="/cards/{{card.id}}" class="card-tooltip col-8" 
+                    data-toggle="tooltip" data-placement="right"
+                    title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_front.jpg"><img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_back.jpg">'>{{{cardNameInDeck card.card_faces.0.name}}}</a>
+            {{else}}
+                <a href="/cards/{{card.id}}" class="card-tooltip col-8" 
+                    data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>{{{cardNameInDeck card.name}}}</a>
+            {{/if}}
+            <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.card_faces.0.mana_cost symbols}}}</a>
+        {{else}}
+            <a href="/cards/{{card.id}}" class="card-tooltip col-8" 
+                data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>{{{cardNameInDeck card.name}}}</a>
+            <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.mana_cost symbols}}}</a>
+        {{/if}}
+        <div class="deck-card-after col-1">
+            <i class="fas fa-trash"></i>
+        </div>
+    </div>
+</div>
