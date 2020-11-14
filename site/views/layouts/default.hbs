@@ -68,115 +68,124 @@
 
     <body>
         <div class="flex-wrapper">
-        <nav class="navbar navbar-header navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">
-                <img src="/images/niv.jpg" width="30" height="30" alt="">  Niv-Mizzet
-            </a>
+            <div class="nav-content">
+                <nav class="navbar navbar-header navbar-expand-lg navbar-dark bg-dark">
+                    <a class="navbar-brand" href="/">
+                        <img src="/images/niv.jpg" width="30" height="30" alt="">  Niv-Mizzet
+                    </a>
 
-            <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cartes</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/cards/">Toute la liste</a>
-                            <a class="dropdown-item" href="/cards/advanced_search">Recherche avancée</a>
-                            <a class="dropdown-item" href="/cards/random">Au hasard</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/sets">Éditions</a>
-                    </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/decks">Decks</a>
-                </li>
-                {{#if decoded}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Paramétrages</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/settings/appearance">Apparence</a>
-                            <a class="dropdown-item" href="/settings/extensions">Mises à jour</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mon compte</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/user/cards">Ma collection</a>
-                            <a class="dropdown-item" href="/user/decks">Mes decks</a>
-                            <a class="dropdown-item" href="/user/info">Mes informations</a>
-                            <a class="dropdown-item" href="/user/logout">Déconnexion</a>
-                        </div>
-                    </li>
-                {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user/signin">Connexion</a>
-                    </li>
-                {{/if}}
-                </ul>
-                <form class="form-inline my-2 my-lg-0" id="navbarSearch" method="get" formaction="/cards/search">
-                    <div class="input-group">
-                        <input class="form-control" name="searchString" type="search" placeholder="Rechercher..." aria-label="Rechercher...">
-                        <div class="input-group-append">
-                            <button class="btn my-2 my-sm-0 btn-secondary" for="navbarSearch" type="submit" method="get" formaction="/cards/search">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </nav>
-        <div class="col-sm-12 my-3">
-            <div class="alert alert-danger collapse" role="alert" id="displayError">
-                <span id="contentError"></span>
-            </div>
-            <div class="alert alert-info collapse" role="alert" id="displayInfo">
-                <span id="contentInfo"></span>
-            </div>
-            {{{body}}}
-        </div>
-
-        <footer class="bg-dark text-white">
-            <div class="container-fluid text-center text-md-left">
-                <div class="row">
-                    <div class="col-md-3 mt-md-0 mt-3">
-                        <h5 class="text-uppercase">Niv-Mizzet Deckbuilding</h5>
-                        <div class="site-explained">
-                            Site de deckbuilding et de gestion de collection Magic The Gathering<sup>TM</sup>.
-                            <br>
-                            Pour toute question, bug ou demande de fonctionnalité, vous pouvez nous envoyer <a href="mailto:damien.douteaux@gmail.com?subject=[Niv-Mizzet] Mail utilisateur">un mail</a>.
-                        </div>
-                    </div>
-                    <hr class="clearfix w-100 d-md-none pb-3">
-                    <div class="col-md-2 mb-md-0 mb-3">
-                        <h5 class="text-uppercase">Développé grâce à</h5>
-                        <ul class="list-unstyled">
-                            <li>
-                                <a href="https://scryfall.com">Scryfall</a>
+                    <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cartes</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/cards/">Toute la liste</a>
+                                    <a class="dropdown-item" href="/cards/advanced_search">Recherche avancée</a>
+                                    <a class="dropdown-item" href="/cards/random">Au hasard</a>
+                                </div>
                             </li>
-                            <li>
-                                <a href="https://getbootstrap.com/">Bootstrap</a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/sets">Éditions</a>
                             </li>
-                            <li>
-                                <a href="https://nodejs.org/en/">Node JS</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/decks">Decks</a>
+                        </li>
+                        {{#if decoded}}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Paramétrages</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/settings/appearance">Apparence</a>
+                                    <a class="dropdown-item" href="/settings/extensions">Mises à jour</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mon compte</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/user/cards">Ma collection</a>
+                                    <a class="dropdown-item" href="/user/decks">Mes decks</a>
+                                    <a class="dropdown-item" href="/user/info">Mes informations</a>
+                                    <a class="dropdown-item" href="/user/logout">Déconnexion</a>
+                                </div>
+                            </li>
+                        {{else}}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/user/signin">Connexion</a>
+                            </li>
+                        {{/if}}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aide</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/help/plan">Plan du site</a>
+                                    <a class="dropdown-item" href="/help/user">Utilisation du site</a>
+                                </div>
                             </li>
                         </ul>
+                        <form class="form-inline my-2 my-lg-0" id="navbarSearch" method="get" formaction="/cards/search">
+                            <div class="input-group">
+                                <input class="form-control" name="searchString" type="search" placeholder="Rechercher..." aria-label="Rechercher...">
+                                <div class="input-group-append">
+                                    <button class="btn my-2 my-sm-0 btn-secondary" for="navbarSearch" type="submit" method="get" formaction="/cards/search">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-md-7 mb-md-0 mb-3">
-                        <h5 class="text-uppercase">Mentions légales</h5>
-                        <div class="legal-mention">
-                            Portions of Niv-Mizzet are unofficial Fan Content permitted under the Wizards of the Coast Fan Content Policy. The literal and graphical information presented on this site about Magic: The Gathering<sup>TM</sup>, including card images, the mana symbols, and Oracle text, is copyright Wizards of the Coast, LLC, a subsidiary of Hasbro, Inc. Niv-Mizzet is not produced by, endorsed by, supported by, or affiliated with Wizards of the Coast.
-                            <br>
-                            Card prices and promotional offers represent daily estimates and/or market values provided by our affiliates. Absolutely no guarantee is made for any price information. See stores for final prices and details.
+                </nav>
+
+                <div class="col-sm-12 my-3 main-content">
+                    <div class="alert alert-danger collapse" role="alert" id="displayError">
+                        <span id="contentError"></span>
+                    </div>
+                    <div class="alert alert-info collapse" role="alert" id="displayInfo">
+                        <span id="contentInfo"></span>
+                    </div>
+                    {{{body}}}
+                </div>
+            </div>
+            <footer class="bg-dark text-white">
+                <div class="container-fluid text-center text-md-left">
+                    <div class="row">
+                        <div class="col-md-3 mt-md-0 mt-3">
+                            <h5 class="text-uppercase">Niv-Mizzet Deckbuilding</h5>
+                            <div class="site-explained">
+                                Site de deckbuilding et de gestion de collection Magic The Gathering<sup>TM</sup>.
+                                <br>
+                                Pour toute question, bug ou demande de fonctionnalité, vous pouvez nous envoyer <a href="mailto:damien.douteaux@gmail.com?subject=[Niv-Mizzet] Mail utilisateur">un mail</a>.
+                            </div>
+                        </div>
+                        <hr class="clearfix w-100 d-md-none pb-3">
+                        <div class="col-md-2 mb-md-0 mb-3">
+                            <h5 class="text-uppercase">Développé grâce à</h5>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <a href="https://scryfall.com">Scryfall</a>
+                                </li>
+                                <li>
+                                    <a href="https://getbootstrap.com/">Bootstrap</a>
+                                </li>
+                                <li>
+                                    <a href="https://nodejs.org/en/">Node JS</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-7 mb-md-0 mb-3">
+                            <h5 class="text-uppercase">Mentions légales</h5>
+                            <div class="legal-mention">
+                                Portions of Niv-Mizzet are unofficial Fan Content permitted under the Wizards of the Coast Fan Content Policy. The literal and graphical information presented on this site about Magic: The Gathering<sup>TM</sup>, including card images, the mana symbols, and Oracle text, is copyright Wizards of the Coast, LLC, a subsidiary of Hasbro, Inc. Niv-Mizzet is not produced by, endorsed by, supported by, or affiliated with Wizards of the Coast.
+                                <br>
+                                Card prices and promotional offers represent daily estimates and/or market values provided by our affiliates. Absolutely no guarantee is made for any price information. See stores for final prices and details.
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-copyright text-center py-3">
-                Pour tout autre contenu © 2020 <a href="/">Niv-Mizzet.com</a> - Site réalisé sous <a href="https://opensource.org/licenses/mit-license.php">licence MIT</a>.
-            </div>
-        </footer>
+                <div class="footer-copyright text-center py-3">
+                    Pour tout autre contenu © 2020 <a href="/">Niv-Mizzet.com</a> - Site réalisé sous <a href="https://opensource.org/licenses/mit-license.php">licence MIT</a>.
+                </div>
+            </footer>
         </div>
     </body>
 </html>
