@@ -201,7 +201,7 @@ app.engine('hbs', handlebars({
 
         displayDate: (datetime) => {
             date = new Date(datetime);
-            return date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear();
+            return date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear();
         },
 
         getDeckParts: (cards, part) => {
