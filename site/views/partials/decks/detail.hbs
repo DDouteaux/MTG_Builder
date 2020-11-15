@@ -1,11 +1,17 @@
 <script>
     {{#if user.decoded}}
-        function editToDisplay(event) {
-            deck_parts = JSON.parse("{{stringifyIt deck_parts}}");
-            console.log(deck_parts);
+        function editToDisplay(event, field) {
             toHide = $(event.target);
             toShow = $(toHide.parent().find('.show-edit').filter(div => $(div) != toHide)[0]);
-            toShow.html(toHide.val());
+            if (typeof field !== "undefined" && field != null) {
+                if (field === 'state') {
+                    toShow.html(StatesEnum[toHide.val()]);
+                } else if (field === 'format') {
+                    toShow.html(FormatsEnum[toHide.val()].display);
+                } else if (field === 'public') {
+                    toShow.html(toHide.val() === "true" ? "Oui" : "Non");
+                }
+            }
             toShow.toggle();
             toHide.toggle();
         }
@@ -110,6 +116,10 @@
             }
         });
 
+        $('#deck-format-display').html(FormatsEnum[$('#deck-format-display').html()].display);
+        $('#deck-public-display').html($('#deck-public-display').html() === "true" ? "Oui" : "Non");
+        $('#deck-state-display').html(StatesEnum[$('#deck-state-display').html()]);
+
         selectedState = "{{deck.state}}"
         Object.entries(StatesEnum).forEach(key => {
             if (key[0] === selectedState) {
@@ -139,6 +149,42 @@
                 if (event.which == 13 || event.keyCode == 13) {
                     editToDisplay(event);
                 }
+            })
+
+            $('.edit-toggle').on('change', function(event) {
+                field_to_update = $(event.currentTarget).attr('id');
+                value_to_update = $(event.currentTarget).val();
+                ajax_body = {};
+                ajax_body[field_to_update] = value_to_update;
+                ajax_body["deckId"] = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+
+                $.ajax({
+                    url: '/decks/updateFields',
+                    type: 'POST',
+                    data: ajax_body,
+                    success: function(response) {
+                        $('#displayInfo').hide();
+                        $('#deleteDismiss').click();
+                        $("#contentInfo").html(response.message);
+                        $('#displayInfo').fadeIn();
+                        setTimeout(function() {
+                            $("#displayInfo").fadeOut();
+                        }, 3000);
+                    },
+                    error: function(err) {
+                        if (err.status == 401) {
+                            window.location.replace('/?error=' + err.responseJSON.error);
+                        } else {
+                            $('#displayError').hide();
+                            $('#deleteDismiss').click();
+                            $("#displayError").html(err.responseJSON.error);
+                            $('#displayError').fadeIn();
+                            setTimeout(function() {
+                                $("#displayError").fadeOut();
+                            }, 3000);
+                        }
+                    }
+                });
             })
         {{/if}}
     });
@@ -191,53 +237,48 @@
                     <div class="form-group row">
                         <label for="title" class="col-sm-3">Titre</label>
                         <div class="col-sm-9">
-                            <input class="edit-toggle form-control" style="display: none" id="title" name="title" placeholder="Titre" value="{{deck.title}}">
+                            <input id="title" class="edit-toggle form-control" style="display: none" name="title" placeholder="Titre" value="{{deck.title}}">
                             <div class="edit-toggle show-edit w-100">{{deck.title}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="format" class="col-sm-3">Format</label>
                         <div class="col-sm-9">
-                            <select id="format" name="format" onchange="editToDisplay(event);" style="display: none" class="form-control edit-toggle">
-                                {{#if deck.format}}
-                                    <option value="">Format</option>
-                                {{else}}
-                                    <option selected value="">Format</option>
-                                {{/if}}
+                            <select id="format" name="format" onchange="editToDisplay(event, 'format');" style="display: none" class="form-control edit-toggle">
                             </select>
-                            <div class="edit-toggle show-edit w-100">{{deck.format}}</div>
+                            <div class="edit-toggle show-edit w-100" id="deck-format-display">{{deck.format}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="state" class="col-sm-3">État</label>
                         <div class="col-sm-9">
-                            <select id="state" name="state" onchange="editToDisplay(event);" style="display: none" class="form-control edit-toggle">
+                            <select id="state" name="state" onchange="editToDisplay(event, 'state');" style="display: none" class="form-control edit-toggle">
                             </select>
-                            <div class="edit-toggle show-edit w-100">{{deck.state}}</div>
+                            <div class="edit-toggle show-edit w-100" id="deck-state-display">{{deck.state}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="source" class="col-sm-3">Source</label>
                         <div class="col-sm-9">
-                            <input style="display: none" class="form-control edit-toggle" id="source" name="source" placeholder="Source" value="{{deck.source}}">
+                            <input id="source" style="display: none" class="form-control edit-toggle" name="source" placeholder="Source" value="{{deck.source}}">
                             <div class="edit-toggle show-edit w-100">{{deck.source}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="description" class="col-sm-3">Description</label>
                         <div class="col-sm-9">
-                            <textarea style="display: none" class="form-control edit-toggle" id="description" name="description" rows="3">{{ deck.description }}</textarea>
+                            <textarea id="description" style="display: none" class="form-control edit-toggle" name="description" rows="3">{{ deck.description }}</textarea>
                             <div class="edit-toggle show-edit w-100">{{deck.description}}</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="public" class="col-sm-3">Public</label>
                         <div class="col-sm-9">
-                            <select id="public" name="public" onchange="editToDisplay(event);" style="display: none" class="form-control edit-toggle">
+                            <select id="public" name="public" onchange="editToDisplay(event, 'public');" style="display: none" class="form-control edit-toggle">
                                 <option value="true" {{#if deck.public}}selected{{/if}}>Oui</option>
                                 <option value="false" {{#unless deck.public}}selected{{/unless}}>Non</option>
                             </select>
-                            <div class="edit-toggle show-edit w-100">{{deck.public}}</div>
+                            <div class="edit-toggle show-edit w-100" id="deck-public-display">{{deck.public}}</div>
                         </div>
                     </div>
                     <div class="form-group row">

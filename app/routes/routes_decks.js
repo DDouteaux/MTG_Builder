@@ -207,4 +207,27 @@ module.exports = function(app, baseDir) {
             }
         });
     })
+
+    app.post('/decks/updateFields', (req, res) => {
+        logger.route("POST /decks/updateFields");
+        if (typeof req.decoded === 'undefined' || req.decoded == null) {
+            res.status(401).send({error: 'Vous devez être connecté pour réaliser cette action.'});
+            return;
+        }
+        if (typeof req.body === 'undefined' || req.body == null) {
+            res.status(400).send({error: 'Aucun paramètre fourni.'});
+            return;
+        }
+
+        deckId = req.body.deckId;
+        delete req.body.deckId;
+
+        deck_modify.updateFields(deckId, Object.keys(req.body)[0], Object.values(req.body)[0], req.decoded.username, (err, data) => {
+            if (typeof err === 'undefined' || err == null) {
+                res.status(200).send({message: data});
+            } else {
+                res.status(400).send({error: err});
+            }
+        });
+    })
 }

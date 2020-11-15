@@ -1,4 +1,5 @@
 const createDeck = require('./deck_create');
+const updateField = require('./deck_update');
 const getDecksOfUser = require('./deck_get').getDecksOfUserPlugin;
 const getDeckById = require('./deck_get').getDeckByIdPlugin;
 const getPublicDecks = require('./deck_get').getPublicDecksPlugin;
@@ -24,6 +25,7 @@ deckSchema.plugin(getDecksOfUser);
 deckSchema.plugin(getDeckById);
 deckSchema.plugin(getPublicDecks);
 deckSchema.plugin(deleteDeck);
+deckSchema.plugin(updateField);
 
 var Deck = mongoose.model("Deck", deckSchema);
 

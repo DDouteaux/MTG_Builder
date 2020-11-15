@@ -22,9 +22,13 @@
             "orderCellsTop": true,
             "order": [[ 0, "asc" ]],
             "autoWidth": false,
-            "initComplete": function() { 
+            "initComplete": function() {
                 $('.deck-format').each((index, cellContent) => {
                     cellContent.innerText = FormatsEnum[cellContent.innerText].display;
+                })
+
+                $('.deck-state').each((index, cellContent) => {
+                    cellContent.innerText = StatesEnum[cellContent.innerText];
                 })
 
                 $("#decks").show();
@@ -80,8 +84,8 @@
             {{#each decks}}
                 <tr id={{this.deckId}}>
                     <th><a href='/decks/{{this.deckId}}'>{{this.title}}</a></th>
-                    <td class='clickable-row' data-href='/decks/{{this.deckId}}' class="deck-format">{{this.format}}</td>
-                    <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.state}}</td>
+                    <td class='clickable-row deck-format' data-href='/decks/{{this.deckId}}' class="deck-format">{{this.format}}</td>
+                    <td class='clickable-row deck-state' data-href='/decks/{{this.deckId}}'>{{this.state}}</td>
                     {{#if ../public}}
                         <td>{{this.userId}}</td>
                     {{/if}}
