@@ -3,6 +3,31 @@ var logger = require.main.require('./app/loader/logger');
 async function updateField(deckId, field, value, userId, callback) {
     logger.debug("Méthode models/decks/deck_update/updateField");
 
+    err = []
+
+    if (typeof userId === "undefined" || userId == null || userId === "") {
+        err.push("Pas d'utilisateur connecté.");
+    }
+    if (typeof deckId === "undefined" || deckId == null || deckId === "") {
+        err.push("Pas de deck fourni.");
+    }
+    if (typeof field === "undefined" || field == null || field === "") {
+        err.push("Pas de champ fourni.");
+    }
+    if (typeof value === "undefined" || value == null) {
+        err.push("Pas de valeur fournie.");
+    }
+
+    if (err.length > 0) {
+        callback(err.join('<br/>'));
+        return;
+    }
+
+    if (field === 'title' && value.trim() === "") {
+        callback("Le titre ne peut pas être vide");
+        return;
+    }
+
     results = await this.find({ deckId: deckId }, { __v: 0, _id: 0 }).exec().catch(err => {
         logger.error("models/decks/deck_update/updateField : Erreur de lecture sur la base");
         callback("Le deck n'a pas été trouvé");

@@ -116,26 +116,7 @@ function deleteDeck(deckId, userId, callback) {
 function updateFields(deckId, field, value, userId, callback) {
     logger.debug("Méthode models/controllers/decks/modify/updateFields");
 
-    err = []
-
-    if (typeof userId === "undefined" || userId == null || userId === "") {
-        err.push("Pas d'utilisateur connecté.");
-    }
-    if (typeof deckId === "undefined" || deckId == null || deckId === "") {
-        err.push("Pas de deck fourni.");
-    }
-    if (typeof field === "undefined" || field == null || field === "") {
-        err.push("Pas de champ fourni.");
-    }
-    if (typeof value === "undefined" || value == null || value === "") {
-        err.push("Pas de valeur fourni.");
-    }
-
-    if (err.length > 0) {
-        callback(err);
-    } else {
-        Deck.updateField(deckId, field, value, userId, callback);
-    }
+    Deck.updateField(deckId, field, value, userId, callback);
 }
 
 module.exports = { addCardToDeck: addCardToDeck,

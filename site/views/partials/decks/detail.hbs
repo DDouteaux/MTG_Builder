@@ -261,14 +261,24 @@
                         <label for="source" class="col-sm-3">Source</label>
                         <div class="col-sm-9">
                             <input id="source" style="display: none" class="form-control edit-toggle" name="source" placeholder="Source" value="{{deck.source}}">
-                            <div class="edit-toggle show-edit w-100">{{deck.source}}</div>
+                            <div class="edit-toggle show-edit w-100">
+                                {{deck.source}}
+                                {{#unless deck.source}}
+                                    &nbsp;
+                                {{/unless}}
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="description" class="col-sm-3">Description</label>
                         <div class="col-sm-9">
                             <textarea id="description" style="display: none" class="form-control edit-toggle" name="description" rows="3">{{ deck.description }}</textarea>
-                            <div class="edit-toggle show-edit w-100">{{deck.description}}</div>
+                            <div class="edit-toggle show-edit w-100">
+                                {{deck.description}}
+                                {{#unless deck.description}}
+                                    &nbsp;
+                                {{/unless}}
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
