@@ -25,10 +25,12 @@
             "initComplete": function() {
                 $('.deck-format').each((index, cellContent) => {
                     cellContent.innerText = FormatsEnum[cellContent.innerText].display;
+                    this.api().cell($(cellContent)).data(cellContent.innerText);
                 })
 
                 $('.deck-state').each((index, cellContent) => {
                     cellContent.innerText = StatesEnum[cellContent.innerText];
+                    this.api().cell($(cellContent)).data(cellContent.innerText);
                 })
 
                 $("#decks").show();
