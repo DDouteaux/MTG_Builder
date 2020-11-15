@@ -33,14 +33,18 @@
                 $('#closeRemoveCard').click();
             },
             error: function(err) {
-                $('#displayError').hide();
-                $('#deleteDismiss').click();
-                $("#displayError").html(err.responseJSON.message);
-                $('#displayError').fadeIn();
-                setTimeout(function() {
-                    $("#displayError").fadeOut();
-                }, 3000);
-                $('#closeRemoveCard').click();
+                if (err.status == 401) {
+                    window.location.replace('/?error=' + err.responseJSON.error);
+                } else {
+                    $('#displayError').hide();
+                    $('#deleteDismiss').click();
+                    $("#displayError").html(err.responseJSON.error);
+                    $('#displayError').fadeIn();
+                    setTimeout(function() {
+                        $("#displayError").fadeOut();
+                    }, 3000);
+                    $('#closeRemoveCard').click();
+                }
             }
         });
     }

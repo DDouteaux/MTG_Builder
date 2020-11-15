@@ -131,10 +131,12 @@ module.exports = function(app, baseDir) {
     app.post('/decks/removeCard', (req, res) => {
         logger.route("POST /decks/removeCard");
         if (typeof req.decoded === 'undefined' || req.decoded == null) {
-            res.redirect('/?error=Vous devez être connecté pour réaliser cette action.');
+            res.status(401).send({error: 'Vous devez être connecté pour réaliser cette action.'});
+            return;
         }
         if (typeof req.body === 'undefined' || req.body == null) {
-            res.redirect('/?error=Aucun paramètre fourni.');
+            res.status(400).send({error: 'Aucun paramètre fourni.'});
+            return;
         }
 
         deck_modify.removeCardFromDeck(req.body.deckId, req.body.cardId, req.body.deckPart, req.decoded.username, (err, data) => {
@@ -149,10 +151,12 @@ module.exports = function(app, baseDir) {
     app.post('/decks/updateCardCount', (req, res) => {
         logger.route("POST /decks/updateCardCount");
         if (typeof req.decoded === 'undefined' || req.decoded == null) {
-            res.redirect('/?error=Vous devez être connecté pour réaliser cette action.');
+            res.status(401).send({error: 'Vous devez être connecté pour réaliser cette action.'});
+            return;
         }
         if (typeof req.body === 'undefined' || req.body == null) {
-            res.redirect('/?error=Aucun paramètre fourni.');
+            res.status(400).send({error: 'Aucun paramètre fourni.'});
+            return;
         }
 
         deck_modify.modifyCardCount(req.body.deckId, req.body.cardId, req.body.deckPart, req.body.count, req.decoded.username, (err, data) => {
