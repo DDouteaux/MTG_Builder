@@ -31,13 +31,16 @@ module.exports = function(app, baseDir) {
                         cardIds = deckCards.map(dc => dc.cardId);
                         cards.getCards(cardIds, (err, cards) => {
                             if (typeof err === 'undefined' || err == null) {
-                                cards.forEach(card => {
-                                    dc = deckCards.filter(dc => dc.cardId === card.id)[0];
-                                    card.count = dc.count;
-                                    card.deckPart = dc.deckPart;
+                                finalCards = []
+                                deckCards.forEach(deckCard => {
+                                    finalCards.push({
+                                        count: deckCard.count,
+                                        deckPart: deckCard.deckPart,
+                                        ...cards.filter(card => card.id === deckCard.cardId)[0]
+                                    })
                                 });
                                 symbols.getAll(symbols => {
-                                    res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req, deck_parts: deck_parts, symbols: symbols });
+                                    res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: finalCards, user: req, deck_parts: deck_parts, symbols: symbols });
                                 });
                             } else {
                                 res.redirect('/?error=' + err);
@@ -96,6 +99,10 @@ module.exports = function(app, baseDir) {
     })
 
     app.post('/decks/addCard', (req, res) => {
+        logger.route("POST /user/addCard");
+        if (typeof req.decoded === 'undefined' || req.decoded == null) {
+            res.redirect('/?error=Vous devez être connecté pour réaliser cette action.');
+        }
         decks = [];
         if (typeof req.body != 'undefined' || req.body != null 
             && typeof req.body.decks != 'undefined' && req.body.decks != null && req.body.decks != '') {
