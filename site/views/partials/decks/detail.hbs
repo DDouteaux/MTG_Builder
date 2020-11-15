@@ -1,24 +1,4 @@
 <script>
-    {{#if user.decoded}}
-        function editToDisplay(event, field) {
-            toHide = $(event.target);
-            toShow = $(toHide.parent().find('.show-edit').filter(div => $(div) != toHide)[0]);
-            if (typeof field !== "undefined" && field != null) {
-                if (field === 'state') {
-                    toShow.html(StatesEnum[toHide.val()]);
-                } else if (field === 'format') {
-                    toShow.html(FormatsEnum[toHide.val()].display);
-                } else if (field === 'public') {
-                    toShow.html(toHide.val() === "true" ? "Oui" : "Non");
-                }
-            } else {
-                toShow.html(toHide.val());
-            }
-            toShow.toggle();
-            toHide.toggle();
-        }
-    {{/if}}
-
     var countChangeTimers = {};
     function onInputCountChange(cardId, count, deckPart) {
         clearTimeout(countChangeTimers[cardId]);
@@ -147,18 +127,16 @@
                 }
             })
 
-            $('textarea.edit-toggle, input.edit-toggle').on('keydown', function(event) {
-                if (event.which == 13 || event.keyCode == 13) {
-                    editToDisplay(event);
-                }
-            })
-
             $('.edit-toggle').on('change', function(event) {
                 field_to_update = $(event.currentTarget).attr('id');
                 value_to_update = $(event.currentTarget).val();
                 ajax_body = {};
                 ajax_body[field_to_update] = value_to_update;
                 ajax_body["deckId"] = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+
+                toHide = $(event.target);
+                field = toHide.attr('id')
+                toShow = $(toHide.parent().find('.show-edit').filter(div => $(div) != toHide)[0]);
 
                 $.ajax({
                     url: '/decks/updateFields',
@@ -172,6 +150,23 @@
                         setTimeout(function() {
                             $("#displayInfo").fadeOut();
                         }, 3000);
+                        if (typeof field !== "undefined" && field != null) {
+                            if (field === 'state') {
+                                toShow.html(StatesEnum[toHide.val()]);
+                            } else if (field === 'format') {
+                                toShow.html(FormatsEnum[toHide.val()].display);
+                            } else if (field === 'public') {
+                                toShow.html(toHide.val() === "true" ? "Oui" : "Non");
+                            }
+                        } else {
+                            if (toHide.val().trim() === "") {
+                                toShow.html("&nbsp");
+                            } else {
+                                toShow.html(toHide.val());
+                            }
+                        }
+                        toShow.toggle();
+                        toHide.toggle();
                     },
                     error: function(err) {
                         if (err.status == 401) {
@@ -185,6 +180,9 @@
                                 $("#displayError").fadeOut();
                             }, 3000);
                         }
+                        toHide.val(toShow.html());
+                        toShow.toggle();
+                        toHide.toggle();
                     }
                 });
             })
@@ -246,7 +244,7 @@
                     <div class="form-group row">
                         <label for="format" class="col-sm-3">Format</label>
                         <div class="col-sm-9">
-                            <select id="format" name="format" onchange="editToDisplay(event, 'format');" style="display: none" class="form-control edit-toggle">
+                            <select id="format" name="format" style="display: none" class="form-control edit-toggle">
                             </select>
                             <div class="edit-toggle show-edit w-100" id="deck-format-display">{{deck.format}}</div>
                         </div>
@@ -254,7 +252,7 @@
                     <div class="form-group row">
                         <label for="state" class="col-sm-3">État</label>
                         <div class="col-sm-9">
-                            <select id="state" name="state" onchange="editToDisplay(event, 'state');" style="display: none" class="form-control edit-toggle">
+                            <select id="state" name="state" style="display: none" class="form-control edit-toggle">
                             </select>
                             <div class="edit-toggle show-edit w-100" id="deck-state-display">{{deck.state}}</div>
                         </div>
@@ -286,7 +284,7 @@
                     <div class="form-group row">
                         <label for="public" class="col-sm-3">Public</label>
                         <div class="col-sm-9">
-                            <select id="public" name="public" onchange="editToDisplay(event, 'public');" style="display: none" class="form-control edit-toggle">
+                            <select id="public" name="public" style="display: none" class="form-control edit-toggle">
                                 <option value="true" {{#if deck.public}}selected{{/if}}>Oui</option>
                                 <option value="false" {{#unless deck.public}}selected{{/unless}}>Non</option>
                             </select>
