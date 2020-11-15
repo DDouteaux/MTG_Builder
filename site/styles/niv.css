@@ -78,13 +78,6 @@ a:active {
 }
 
 /* Page de détails d'un deck */
-/*
-.countCardDeck:before {
-    content: "x";
-    display: "inline"
-}
-*/
-
 .deck-part-count-container {
     text-align: right;
 }
@@ -95,11 +88,12 @@ a:active {
 
 .card-tooltip.show {
     opacity: 1;
+    background-color: none;
 }
 
 .card-tooltip>.tooltip-inner {
     max-width: 100% !important;
-    background-color: white;
+    background-color: none;
     margin: 0px;
     padding: 0px;
 }
@@ -186,4 +180,12 @@ h1 {
 
 .deck-chevron {
     padding-left: 0px;
+}
+
+.user-action-links {
+    color: rgb(11, 122, 187);
+}
+
+.btn-primary {
+    background-color: rgb(11, 122, 187);
 }

@@ -35,7 +35,7 @@
 
         <!-- Theme perso -->
         <link rel="stylesheet" href="/styles/niv.css">
-        {{#if user.decoded}}
+        {{#if (or decoded user.decoded)}}
             <link rel="stylesheet" href="/styles/niv_connected.css">
         {{/if}}
     </head>

@@ -1,3 +1,4 @@
+<!-- Définir une méthode getIds si cette modale est utilisée pour fournir la liste des ids à enregistrer. -->
 <script>
     $(document).ready(() => {
         $('#decks').select2({
@@ -40,7 +41,7 @@
                 decks: $('#decks').val(),
                 deckPart: $('#deckParts').val(),
                 count: $('#count').val(),
-                cardId: "{{card.id}}"
+                cardId: getIds()
             },
             success: function(response) {
                 $('#displayInfo').hide();

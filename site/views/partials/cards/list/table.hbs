@@ -65,6 +65,13 @@
             }
         });
     });
+
+    function toggleCardIsSelected(div) {
+        inputDiv = $(div);
+        inputDiv.find('.deck-selector-icon').toggle();
+        var cell = $('#cards').DataTable().cell(event.path[2]);
+        cell.data(inputDiv.parent().html());
+    }
 </script>
 
 {{#if cards}}

@@ -13,7 +13,26 @@ module.exports = function(app, baseDir) {
         logger.route("GET /cards/");
         symbols.getAll(symbols => {
             cards.getAllCards(cards => {
-                res.render('partials/cards/list', { title: "Explorer toutes les cartes", cards: cards, symbols: symbols, isCollection: false });
+                if (typeof req.decoded != undefined && req.decoded != null) {
+                    deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
+                        res.render('partials/cards/list', {
+                            title: "Explorer toutes les cartes",
+                            cards: cards,
+                            symbols: symbols,
+                            isCollection: false,
+                            decks: decks,
+                            formats: formats,
+                            deckParts: deckParts 
+                        });
+                    });
+                } else {
+                    res.render('partials/cards/list', {
+                        title: "Explorer toutes les cartes",
+                        cards: cards,
+                        symbols: symbols,
+                        isCollection: false
+                    });
+                }
             });
         });
     });
@@ -22,7 +41,26 @@ module.exports = function(app, baseDir) {
         logger.route("GET /cards/search");
         symbols.getAll(symbols => {
             cards.search(req.query, cards => {
-                res.render('partials/cards/list', { title: "Résultats de la recherche", cards: cards, symbols: symbols, isCollection: false });
+                if (typeof req.decoded != undefined && req.decoded != null) {
+                    deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
+                        res.render('partials/cards/list', {
+                            title: "Résultats de la recherche",
+                            cards: cards,
+                            symbols: symbols,
+                            isCollection: false,
+                            decks: decks,
+                            formats: formats,
+                            deckParts: deckParts
+                        });
+                    });
+                } else {
+                    res.render('partials/cards/list', {
+                        title: "Résultats de la recherche",
+                        cards: cards,
+                        symbols: symbols,
+                        isCollection: false
+                    });
+                }
             });
         });
     })
@@ -44,7 +82,26 @@ module.exports = function(app, baseDir) {
                 });
             } else {
                 cards.advanced_search(req.query, cards => {
-                    res.render('partials/cards/list', { title: "Résultats de la recherche", cards: cards, symbols: symbols, isCollection: false });
+                    if (typeof req.decoded != undefined && req.decoded != null) {
+                        deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
+                            res.render('partials/cards/list', {
+                                title: "Résultats de la recherche",
+                                cards: cards,
+                                symbols: symbols,
+                                isCollection: false,
+                                decks: decks,
+                                formats: formats,
+                                deckParts: deckParts
+                            });
+                        });
+                    } else {
+                        res.render('partials/cards/list', {
+                            title: "Résultats de la recherche",
+                            cards: cards,
+                            symbols: symbols,
+                            isCollection: false
+                        });
+                    }
                 });
             }
         });

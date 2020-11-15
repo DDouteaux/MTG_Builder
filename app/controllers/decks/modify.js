@@ -2,12 +2,18 @@ var logger = require.main.require('./app/loader/logger');
 var DeckCard = require.main.require('./app/models/joints/deck_card');
 var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 
-function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) {
+function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback) {
     logger.debug("Méthode models/controllers/decks/modify/addCardToDeck");
 
     err = []
 
-    if (typeof cardId === "undefined" || cardId == null || cardId === "") {
+    if (typeof cardIds === "undefined" || cardIds == null) {
+        err.push("Pas de carte fournie");
+    }
+    if (typeof cardIds === "string") {
+        cardIds = [cardIds];
+    }
+    if (cardIds.length == 0) {
         err.push("Pas de carte fournie");
     }
     if (typeof userId === "undefined" || userId == null || userId === "") {
@@ -26,7 +32,7 @@ function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) {
     if (err.length > 0) {
         callback(err);
     } else {
-        DeckCard.addCardToDeck(deckId, cardId, count, deckPart, userId, callback)
+        DeckCard.addCardToDeck(deckId, cardIds, count, deckPart, userId, callback)
     }
 }
 

@@ -1,0 +1,21 @@
+<script>
+    function getIds() {
+        return [].concat.apply([], $('#cards').DataTable().data())
+            .filter(x => x.indexOf('add-this-to-deck') > 0)
+            .map(div => {
+                div_match = div.match(/(<i class="(.*)fa-check-square(.*)<\/i>)/);
+                id_match = div.match(/add-this-to-deck-([^"]+)"/);
+                if (typeof div_match != "undefined" && div_match != null && typeof id_match != 'undefined' && id_match != null) {
+                    display_match = div_match[1].match(/"display\s*:\s*([^";]+)/);
+                    if (typeof display_match != "undefined" && display_match != null) {
+                        return display_match[1];
+                    } else {
+                        return id_match[1];
+                    }
+                } else {
+                    return "";
+                }
+            })
+            .filter(elem => elem != "none")
+    }
+</script>

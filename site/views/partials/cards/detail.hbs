@@ -9,6 +9,10 @@
         $("#nav-set-detail").removeClass('hover');
     }
 
+    function getIds() {
+        return "{{card.id}}";
+    }
+
     $(document).ready(function() {
         $('#returnToSet').tooltip();
             
@@ -218,12 +222,10 @@
                     </div>
                 </div>
                 <div class="mt-3"></div>
-                {{> cards/detail/deck}}
+                {{> modals/add_to_deck/deck}}
             {{/if}}
         </div>
     </div>
 </div>
-
-{{> cards/detail/deck_modal}}
 
 <!-- Cleansing meditation -->

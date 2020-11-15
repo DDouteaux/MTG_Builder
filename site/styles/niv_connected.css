@@ -39,3 +39,11 @@
     height: 17px;
     text-align: center;
 }
+
+.deck-selector-icon {
+    cursor: pointer;
+}
+
+.add-to-deck {
+    cursor: pointer;
+}

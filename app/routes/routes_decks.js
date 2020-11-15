@@ -101,8 +101,11 @@ module.exports = function(app, baseDir) {
             && typeof req.body.decks != 'undefined' && req.body.decks != null && req.body.decks != '') {
             if (typeof req.body.decks === "string") {
                 decks.push(req.body.decks);
-            } else {
+            } else if (typeof req.body.decks !== 'undefined' && req.body.decks != null) {
                 decks = req.body.decks
+            } else {
+                res.status(400).send({message: "Vous n'avez sélectionné aucun deck."});
+                return;
             }
         }
         if (decks.length > 0) {

@@ -1,9 +1,16 @@
+{{> modals/add_to_deck/deck_modal_ids_from_list}}
+
 <div class="row">
     <div class="col-8">
         <h1 class="text-left">
             <img id="setLogo" src="/images/sets/{{set.icon}}" style="vertical-align: baseline; height: 20px"> {{ set.name }}
         </h1>
     </div>
+    {{#if decoded}}
+        <div class="col-4">
+            {{> modals/add_to_deck/deck}}
+        </div>
+    {{/if}}
 </div>
 <hr>
 {{> cards/list/table cards=cards symbols=symbols}}

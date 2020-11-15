@@ -1,6 +1,9 @@
 var sets_get = require.main.require('./app/controllers/sets/get');
 var symbols = require.main.require('./app/controllers/symbols/get');
 var logger = require.main.require('./app/loader/logger');
+var formats = require.main.require('./app/models/enums/formats');
+var deckParts = require.main.require('./app/models/enums/deck_parts');
+var deck_get = require.main.require('./app/controllers/decks/get')
 
 module.exports = function(app, baseDir) {
     app.get('/sets', (req, res) => {
@@ -14,7 +17,24 @@ module.exports = function(app, baseDir) {
         logger.route("GET /sets/" + req.params.code);
         sets_get.getAllData(req.params.code, (set, cards) => {
             symbols.getAll(symbols => {
-                res.render('partials/sets/detail', { set: set, cards: cards, symbols: symbols });
+                if (typeof req.decoded != undefined && req.decoded != null) {
+                    deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
+                        res.render('partials/sets/detail', {
+                            set: set,
+                            cards: cards,
+                            symbols: symbols,
+                            decks: decks,
+                            formats: formats,
+                            deckParts: deckParts
+                        });
+                    });
+                } else {
+                    res.render('partials/sets/detail', {
+                        set: set,
+                        cards: cards,
+                        symbols: symbols
+                    });
+                }
             })
         })
     })

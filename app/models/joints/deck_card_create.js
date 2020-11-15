@@ -2,7 +2,7 @@ var logger = require.main.require('./app/loader/logger');
 var Deck = require.main.require('./app/models/decks/deck');
 var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 
-async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) {
+async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback) {
     logger.debug("Méthode models/decks/deck_cards/addCardToDeck");
 
     results = await Deck.find({ deckId: deckId }, { __v: 0, _id: 0 }).exec().catch(err => {
@@ -30,35 +30,42 @@ async function addCardToDeck(deckId, cardId, count, deckPart, userId, callback) 
             deckPart = DeckPartsEnum.MAIN;
         }
 
-        console.log("cardId : " + cardId);
-        console.log("deckId : " + deckId);
-        console.log("deckPart : " + deckPart)
-        this.findOneAndUpdate({
-            cardId: cardId,
-            deckId: deckId,
-            deckPart: deckPart
-        },
-        {
-            cardId: cardId,
-            count: count,
-            deckPart: deckPart
-        },
-        {
-            upsert: true
-        },
-        (err, doc) => {
-            if(err) {
-                logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur de lecture sur la base");
-                if (err.codeName === 'DuplicateKey') {
-                    callback("Cette carte est déjà ajoutée au deck.", []);
-                    return;
-                }
-                callback("Erreur à l'ajout des cartes.", []);
-                return;
-            } else {
-                callback(err, "La carte a été ajouté au deck " + results[0].title + ".");
-            }
+        let insertions = cardIds.map((cardId) => {
+            return new Promise((resolve) => {
+                this.updateMany({
+                    cardId: cardId,
+                    deckId: deckId,
+                    deckPart: deckPart
+                },
+                {
+                    cardId: cardId,
+                    count: count,
+                    deckPart: deckPart
+                },
+                {
+                    upsert: true
+                },
+                (err, doc) => {
+                    if(err) {
+                        logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur de lecture sur la base");
+                        if (err.codeName === 'DuplicateKey') {
+                            resolve("Cette carte est déjà ajoutée au deck.", []);
+                        }
+                    } else {
+                        resolve(err, doc);
+                    }
+                });
+            });
         });
+
+        Promise.all(insertions).then((err, doc) => {
+            err = err.filter(t => t != null);
+            if (err.length == 0) {
+                callback(null, doc);
+            } else {
+                callback(err.join('<br>'), doc);
+            }
+        })
     }
 }
 
