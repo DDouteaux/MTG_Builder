@@ -193,3 +193,20 @@ h1 {
 td {
     word-break: break-word;
 }
+
+.alert {
+    z-index: 9999;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+}
+
+.alert-info {
+    color: white;
+    background-color: rgb(15, 111, 189);
+}
+
+.alert-danger {
+    color: white;
+    background-color: rgb(187, 11, 11);
+}
