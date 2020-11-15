@@ -66,10 +66,10 @@
         });
     });
 
-    function toggleCardIsSelected(div) {
+    function toggleCardIsSelected(div, event) {
         inputDiv = $(div);
         inputDiv.find('.deck-selector-icon').toggle();
-        var cell = $('#cards').DataTable().cell(event.path[2]);
+        var cell = $('#cards').DataTable().cell($(div));
         cell.data(inputDiv.html());
     }
 </script>
