@@ -33,7 +33,6 @@
 
     function postAddToDeck(event) {
         event.preventDefault()
-        $('#closeAddCard').click();
         $.ajax({
             url: '/decks/addCard',
             type: 'POST',
@@ -51,6 +50,7 @@
                 setTimeout(function() {
                     $("#displayInfo").fadeOut();
                 }, 3000);
+                $('#closeAddCard').click();
             },
             error: function(err) {
                 console.log(err.responseJSON.message);
@@ -61,6 +61,7 @@
                 setTimeout(function() {
                     $("#displayError").fadeOut();
                 }, 3000);
+                $('#closeAddCard').click();
             }
         });
     }
