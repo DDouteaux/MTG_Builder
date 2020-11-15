@@ -4,7 +4,7 @@
             <div onclick="countChange(this, 1)" class="input-group-prepend plus">
                 <span class="input-group-text"><i class="fas fa-plus"></i></span>
             </div>
-            <input oninput="finalCountChange()" type="text" class="w-auto form-control input-count" id="count-{{card.id}}" name="count-{{card.id}}" value="{{card.count}}"/>
+            <input oninput="finalCountChange(this)" data-deck-part="{{deckPart}}" type="text" class="w-auto form-control input-count" id="count-{{card.id}}" name="count-{{card.id}}" value="{{card.count}}"/>
             <div onclick="countChange(this, -1)" class="input-group-append minus">
                 <span class="input-group-text"><i class="fas fa-minus"></i></span>
             </div>

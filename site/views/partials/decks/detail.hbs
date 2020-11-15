@@ -9,29 +9,70 @@
         }
     {{/if}}
 
-    var timer;
-    function onInputCountChange() {
-        clearTimeout(timer);
-        timer = setTimeout(sendNewCountToBack.bind(this), 2000);
+    var countChangeTimers = {};
+    function onInputCountChange(cardId, count, deckPart) {
+        clearTimeout(countChangeTimers[cardId]);
+        countChangeTimers[cardId] = setTimeout(function() {
+            sendNewCountToBack(cardId, count, deckPart);
+        }, 1000)
     }
 
-    function sendNewCountToBack() {
-        console.log('change');
+    function sendNewCountToBack(cardId, count, deckPart) {
+        $.ajax({
+            url: '/decks/updateCardCount',
+            type: 'POST',
+            data: {
+                deckId: window.location.href.substring(window.location.href.lastIndexOf('/') + 1),
+                cardId: cardId,
+                count: count,
+                deckPart: deckPart
+            },
+            success: function(response) {
+                $('#displayInfo').hide();
+                $('#deleteDismiss').click();
+                $("#contentInfo").html(response.message);
+                $('#displayInfo').fadeIn();
+                setTimeout(function() {
+                    $("#displayInfo").fadeOut();
+                }, 3000);
+                $('#' + $('#card-id-to-remove').val() + '-removable').remove();
+                finalizeDeckParts();
+                $('#closeRemoveCard').click();
+            },
+            error: function(err) {
+                $('#displayError').hide();
+                $('#deleteDismiss').click();
+                $("#displayError").html(err.responseJSON.message);
+                $('#displayError').fadeIn();
+                setTimeout(function() {
+                    $("#displayError").fadeOut();
+                }, 3000);
+                $('#closeRemoveCard').click();
+            }
+        });
+    }
+
+    function finalCountChange(div) {
+        countChange(div, 0);
     }
 
     function countChange(div, modifier) {
         inputDiv = $(div).parent().parent().find('input');
         value = parseInt(inputDiv.val());
-        if (isNaN(value)) {
-            newValue = 1;
-        } else {
-            newValue = value + modifier
-            if (newValue < 0) {
-                newValue = 0;
+        // Si modifier = 0, on est en train d'éditer la valeur à la main, et il est alors
+        // possible que le contenu de l'input soit vide. Dans ce cas, ne pas mettre à jour.
+        if (modifier != 0 || inputDiv.val() != "") {
+            if (isNaN(value)) {
+                newValue = 1;
+            } else {
+                newValue = value + modifier
+                if (newValue < 0) {
+                    newValue = 0;
+                }
             }
+            inputDiv.val(newValue);
+            onInputCountChange(inputDiv.attr('id').substring(6), newValue, inputDiv.data('deck-part'));
         }
-        inputDiv.val(newValue);
-        onInputCountChange();
     }
 
     function showHideContent(div) {
