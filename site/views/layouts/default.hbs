@@ -228,28 +228,36 @@
         });
     })
 
+    function displayInfoOk(message) {
+        $('#displayInfo').hide();
+        $('#deleteDismiss').click();
+        $("#contentInfo").html(message);
+        $('#displayInfo').fadeIn();
+        setTimeout(function() {
+            $("#displayInfo").fadeOut();
+        }, 3000);
+    }
+
+    function displayError(message) {
+        $('#displayError').hide();
+        $('#deleteDismiss').click();
+        $("#displayError").html(message);
+        $('#displayError').fadeIn();
+        setTimeout(function() {
+            $("#displayError").fadeOut();
+        }, 3000);
+    }
+
     function handleHTTPResponses(readyState, status, response) {
         if (readyState == XMLHttpRequest.DONE && status == 200) {
-            $('#displayInfo').hide();
-            $('#deleteDismiss').click();
-            $("#contentInfo").html(response.message);
-            $('#displayInfo').fadeIn();
-            setTimeout(function() {
-                $("#displayInfo").fadeOut();
-            }, 2000);
+            displayInfoOk(response.message);
         } else if (readyState == XMLHttpRequest.DONE) {
             if (status == 400) {
                 message = response
             } else {
                 message = "Erreur serveur. Veuillez contacter votre administrateur."
             }
-            $('#displayError').hide();
-            $('#deleteDismiss').click();
-            $("#contentError").html(message);
-            $('#displayError').fadeIn();
-            setTimeout(function() {
-                $("#displayError").fadeOut();
-            }, 2000);
+            displayError(message);
         }
     }
 

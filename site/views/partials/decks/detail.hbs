@@ -18,13 +18,7 @@
                 deckPart: deckPart
             },
             success: function(response) {
-                $('#displayInfo').hide();
-                $('#deleteDismiss').click();
-                $("#contentInfo").html(response.message);
-                $('#displayInfo').fadeIn();
-                setTimeout(function() {
-                    $("#displayInfo").fadeOut();
-                }, 3000);
+                displayInfoOk(response.message)
                 $('#' + $('#card-id-to-remove').val() + '-removable').remove();
                 finalizeDeckParts();
                 $('#closeRemoveCard').click();
@@ -33,13 +27,7 @@
                 if (err.status == 401) {
                     window.location.replace('/?error=' + err.responseJSON.error);
                 } else {
-                    $('#displayError').hide();
-                    $('#deleteDismiss').click();
-                    $("#displayError").html(err.responseJSON.error);
-                    $('#displayError').fadeIn();
-                    setTimeout(function() {
-                        $("#displayError").fadeOut();
-                    }, 3000);
+                    displayError(err.responseJSON.error);
                     $('#closeRemoveCard').click();
                 }
             }
@@ -143,13 +131,7 @@
                     type: 'POST',
                     data: ajax_body,
                     success: function(response) {
-                        $('#displayInfo').hide();
-                        $('#deleteDismiss').click();
-                        $("#contentInfo").html(response.message);
-                        $('#displayInfo').fadeIn();
-                        setTimeout(function() {
-                            $("#displayInfo").fadeOut();
-                        }, 3000);
+                        displayInfoOk(response.message);
                         if (typeof field !== "undefined" && field != null) {
                             if (field === 'state') {
                                 toShow.html(StatesEnum[toHide.val()]);
@@ -172,13 +154,7 @@
                         if (err.status == 401) {
                             window.location.replace('/?error=' + err.responseJSON.error);
                         } else {
-                            $('#displayError').hide();
-                            $('#deleteDismiss').click();
-                            $("#displayError").html(err.responseJSON.error);
-                            $('#displayError').fadeIn();
-                            setTimeout(function() {
-                                $("#displayError").fadeOut();
-                            }, 3000);
+                            displayError(err.responseJSON.error);
                         }
                         toHide.val(toShow.html());
                         toShow.toggle();

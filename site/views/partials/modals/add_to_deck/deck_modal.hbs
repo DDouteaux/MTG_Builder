@@ -63,24 +63,11 @@
                 cardId: getIds()
             },
             success: function(response) {
-                $('#displayInfo').hide();
-                $('#deleteDismiss').click();
-                $("#contentInfo").html(response.message);
-                $('#displayInfo').fadeIn();
-                setTimeout(function() {
-                    $("#displayInfo").fadeOut();
-                }, 3000);
+                displayInfoOk(response.message);
                 $('#closeAddCard').click();
             },
             error: function(err) {
-                console.log(err.responseJSON.message);
-                $('#displayError').hide();
-                $('#deleteDismiss').click();
-                $("#displayError").html(err.responseJSON.message);
-                $('#displayError').fadeIn();
-                setTimeout(function() {
-                    $("#displayError").fadeOut();
-                }, 3000);
+                displayError(err.responseJSON.message);
                 $('#closeAddCard').click();
             }
         });
