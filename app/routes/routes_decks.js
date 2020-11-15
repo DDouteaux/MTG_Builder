@@ -3,6 +3,7 @@ var deck_modify = require.main.require('./app/controllers/decks/modify');
 var deck_create = require.main.require('./app/controllers/decks/create');
 var deck_get = require.main.require('./app/controllers/decks/get')
 var display_deck_parts_enum = require.main.require('./app/models/enums/display_deck_parts')
+var get_all_users = require.main.require('./app/controllers/users/getAll')
 var logger = require.main.require('./app/loader/logger');
 var symbols = require.main.require('./app/controllers/symbols/get');
 
@@ -11,9 +12,19 @@ module.exports = function(app, baseDir) {
         logger.route("GET /decks");
         deck_get.getPublicDecks((err, decks) => {
             if (typeof err === 'undefined' || err == null) {
-                res.render('partials/decks/list', {
-                    public: true,
-                    decks: decks
+                get_all_users((err, users) => {
+                    if (typeof err === 'undefined' || err == null) {
+                        res.render('partials/decks/list', {
+                            public: true,
+                            decks: decks,
+                            users: users
+                        });
+                    } else {
+                        res.render('partials/decks/list', {
+                            public: true,
+                            decks: []
+                        });
+                    }
                 });
             } else {
                 res.render('partials/decks/list', {

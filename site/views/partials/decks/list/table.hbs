@@ -4,17 +4,17 @@
             "columnDefs": [
                 {{#if public}}
                     { "targets": 0, "width": "20%", "orderData": [0] },
-                    { "targets": 1, "width": "15%", "orderData": [1] },
-                    { "targets": 2, "width": "15%", "orderData": [2] },
-                    { "targets": 3, "width": "15%", "orderData": [3] },
-                    { "targets": 4, "width": "15%", "orderData": [4] },
-                    { "targets": 5, "width": "20%", "orderData": [5] }
+                    { "targets": 1, "width": "10%", "orderData": [1] },
+                    { "targets": 2, "width": "10%", "orderData": [2] },
+                    { "targets": 3, "width": "10%", "orderData": [3] },
+                    { "targets": 4, "width": "10%", "orderData": [4] },
+                    { "targets": 5, "width": "20%", "orderData": [5], "orderable": false }
                 {{else}}
                     { "targets": 0, "width": "20%", "orderData": [0] },
-                    { "targets": 1, "width": "20%", "orderData": [1] },
-                    { "targets": 2, "width": "20%", "orderData": [2] },
-                    { "targets": 3, "width": "20%", "orderData": [3] },
-                    { "targets": 4, "width": "15%", "orderData": [4], "orderable": false },
+                    { "targets": 1, "width": "10%", "orderData": [1] },
+                    { "targets": 2, "width": "10%", "orderData": [2] },
+                    { "targets": 3, "width": "10%", "orderData": [3] },
+                    { "targets": 4, "width": "25%", "orderData": [4], "orderable": false },
                     { "targets": 5, "width": "5%", "orderable": false }
                 {{/if}}
             ],
@@ -80,7 +80,9 @@
             {{/if}}
             <th>Mise à jour</th>
             <th>Source</th>
-            <th>Actions</th>
+            {{#unless public}}
+                <th>Actions</th>
+            {{/unless}}
         </thead>
         <tbody>
             {{#each decks}}
@@ -89,11 +91,13 @@
                     <td class='clickable-row deck-format' data-href='/decks/{{this.deckId}}' class="deck-format">{{this.format}}</td>
                     <td class='clickable-row deck-state' data-href='/decks/{{this.deckId}}'>{{this.state}}</td>
                     {{#if ../public}}
-                        <td>{{this.userId}}</td>
+                        <td>{{getLabelOfUser this.userId ../users}}</td>
                     {{/if}}
                     <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{{displayDate this.lastUpdateDate}}}</td>
                     <td data-href='/decks/{{this.deckId}}'>{{this.source}}</td>
-                    <td style="text-align: center;"><div onclick="initDeleteModalContent(this)" data-deck-title="{{this.title}}" data-deck-id="{{this.deckId}}" class="delete-deck" data-toggle="modal" data-target="#deleteDeckModal"><i class="fas fa-trash"></i></div></td>
+                    {{#unless ../public}}
+                        <td style="text-align: center;"><div onclick="initDeleteModalContent(this)" data-deck-title="{{this.title}}" data-deck-id="{{this.deckId}}" class="delete-deck" data-toggle="modal" data-target="#deleteDeckModal"><i class="fas fa-trash"></i></div></td>
+                    {{/unless}}
                 </tr>
             {{/each}}
         </tbody>

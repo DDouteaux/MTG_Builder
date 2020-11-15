@@ -189,3 +189,7 @@ h1 {
 .btn-primary {
     background-color: rgb(11, 122, 187);
 }
+
+td {
+    word-break: break-word;
+}

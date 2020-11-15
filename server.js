@@ -234,6 +234,15 @@ app.engine('hbs', handlebars({
                     return cardName;
                 }
             }
+        },
+
+        getLabelOfUser: (userId, users) => {
+            if (typeof userId === "undefined" || userId == null 
+                || typeof users === "undefined" || users == null) {
+                    return userId;
+            } else {
+                return users.filter(user => user.userId === userId)[0].pseudo;
+            }
         }
     }
 }));
