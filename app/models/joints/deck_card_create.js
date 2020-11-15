@@ -23,8 +23,6 @@ async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback)
     } else {
         if (typeof count === 'undefined' || count == null) {
             count = 1;
-        } else if (count > 4) {
-            count = 4
         }
         if (Object.keys(DeckPartsEnum).indexOf(deckPart) === -1) {
             deckPart = DeckPartsEnum.MAIN;
@@ -32,7 +30,7 @@ async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback)
 
         let insertions = cardIds.map((cardId) => {
             return new Promise((resolve) => {
-                this.updateMany({
+                this.findOneAndUpdate({
                     cardId: cardId,
                     deckId: deckId,
                     deckPart: deckPart
@@ -47,7 +45,7 @@ async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback)
                 },
                 (err, doc) => {
                     if(err) {
-                        logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur de lecture sur la base");
+                        logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur d'écriture sur la base");
                         if (err.codeName === 'DuplicateKey') {
                             resolve("Cette carte est déjà ajoutée au deck.", []);
                         }
