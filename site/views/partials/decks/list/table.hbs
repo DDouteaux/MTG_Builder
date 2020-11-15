@@ -90,7 +90,7 @@
                         <td>{{this.userId}}</td>
                     {{/if}}
                     <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{{displayDate this.lastUpdateDate}}}</td>
-                    <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.source}}</td>
+                    <td data-href='/decks/{{this.deckId}}'>{{this.source}}</td>
                     <td style="text-align: center;"><div onclick="initDeleteModalContent(this)" data-deck-title="{{this.title}}" data-deck-id="{{this.deckId}}" class="delete-deck" data-toggle="modal" data-target="#deleteDeckModal"><i class="fas fa-trash"></i></div></td>
                 </tr>
             {{/each}}
