@@ -45,8 +45,30 @@ async function removeCardFromDeck(deckId, cardId, deckPart, userId, callback) {
     }
 };
 
+async function removeAllCardsOfDeck(deckId, callback) {
+    logger.debug("Méthode models/joints/deck_card_remove/removeAllCardsOfDeck");
+
+    this.deleteMany({
+        deckId: deckId
+    },
+    (err, doc) => {
+        if(err) {
+            logger.error("models/joints/deck_card_remove/removeAllCardsOfDeck : Erreur d'écriture sur la base");
+            callback("Erreur d'écriture sur la base");
+        } else {
+            callback(err, "Les cartes du decks ont bien été retirées.");
+        }
+        console.log(doc)
+    });
+};
+
 function removeCardFromDeckPlugin(schema, options) {
     schema.statics.removeCardFromDeck = removeCardFromDeck;
 }
+
+function removeAllCardsOfDeckPlugin(schema, options) {
+    schema.statics.removeAllCardsOfDeck = removeAllCardsOfDeck;
+}
   
-module.exports = { removeCardFromDeckPlugin: removeCardFromDeckPlugin };
+module.exports = { removeCardFromDeckPlugin: removeCardFromDeckPlugin,
+                   removeAllCardsOfDeckPlugin: removeAllCardsOfDeckPlugin };

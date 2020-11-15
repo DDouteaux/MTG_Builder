@@ -1,5 +1,6 @@
 var logger = require.main.require('./app/loader/logger');
 var DeckCard = require.main.require('./app/models/joints/deck_card');
+var Deck = require.main.require('./app/models/decks/deck');
 var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 
 function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback) {
@@ -7,14 +8,16 @@ function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback) {
 
     err = []
 
+    console.log(cardIds)
     if (typeof cardIds === "undefined" || cardIds == null) {
         err.push("Pas de carte fournie");
-    }
-    if (typeof cardIds === "string") {
-        cardIds = [cardIds];
-    }
-    if (cardIds.length == 0) {
-        err.push("Pas de carte fournie");
+    } else {
+        if (typeof cardIds === "string") {
+            cardIds = [cardIds];
+        }
+        if (cardIds.length == 0) {
+            err.push("Pas de carte fournie");
+        }
     }
     if (typeof userId === "undefined" || userId == null || userId === "") {
         err.push("Pas d'utilisateur connecté");
@@ -89,6 +92,28 @@ function modifyCardCount(deckId, cardId, deckPart, count, userId, callback) {
     }
 }
 
+function deleteDeck(deckId, userId, callback) {
+    logger.debug("Méthode models/controllers/decks/modify/deleteDeck");
+
+    err = []
+
+    if (typeof userId === "undefined" || userId == null || userId === "") {
+        err.push("Pas d'utilisateur connecté.");
+    }
+    if (typeof deckId === "undefined" || deckId == null || deckId === "") {
+        err.push("Pas de deck fourni.");
+    }
+
+    if (err.length > 0) {
+        callback(err);
+    } else {
+        Deck.deleteDeck(deckId, userId, (err, data) => {
+            DeckCard.removeAllCardsOfDeck(deckId, callback)
+        });
+    }
+}
+
 module.exports = { addCardToDeck: addCardToDeck,
                    removeCardFromDeck: removeCardFromDeck,
-                   modifyCardCount: modifyCardCount };
+                   modifyCardCount: modifyCardCount,
+                   deleteDeck: deleteDeck };

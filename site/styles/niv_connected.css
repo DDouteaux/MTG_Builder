@@ -50,3 +50,8 @@
 .add-to-deck {
     cursor: pointer;
 }
+
+.delete-deck:hover {
+    color: rgb(187, 11, 11);
+    cursor: pointer;
+}

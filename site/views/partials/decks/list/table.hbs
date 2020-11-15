@@ -14,7 +14,8 @@
                     { "targets": 1, "width": "20%", "orderData": [1] },
                     { "targets": 2, "width": "20%", "orderData": [2] },
                     { "targets": 3, "width": "20%", "orderData": [3] },
-                    { "targets": 4, "width": "20%", "orderData": [4] },
+                    { "targets": 4, "width": "15%", "orderData": [4], "orderable": false },
+                    { "targets": 5, "width": "5%", "orderable": false }
                 {{/if}}
             ],
             "fixedHeader": true,
@@ -64,7 +65,7 @@
 
 <div class="table-responsive-sm table-hover container-fluid">
     <table id="decks" class="table" style="display: none;">
-        <thead>
+        <thead class="thead-dark">
             <th>Titre</th>
             <th>Format</th>
             <th>État</th>
@@ -73,6 +74,7 @@
             {{/if}}
             <th>Mise à jour</th>
             <th>Source</th>
+            <th>Actions</th>
         </thead>
         <tbody>
             {{#each decks}}
@@ -85,8 +87,11 @@
                     {{/if}}
                     <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{{displayDate this.lastUpdateDate}}}</td>
                     <td class='clickable-row' data-href='/decks/{{this.deckId}}'>{{this.source}}</td>
+                    <td style="text-align: center;"><div onclick="initDeleteModalContent(this)" data-deck-title="{{this.title}}" data-deck-id="{{this.deckId}}" class="delete-deck" data-toggle="modal" data-target="#deleteDeckModal"><i class="fas fa-trash"></i></div></td>
                 </tr>
             {{/each}}
         </tbody>
     </table>
 </div>
+
+{{> modals/delete_deck/delete_deck_modal}}

@@ -1,5 +1,6 @@
 const getCardsFromDeck = require('./deck_card_get').getCardsFromDeckPlugin
 const removeCardFromDeck = require('./deck_card_remove').removeCardFromDeckPlugin
+const removeAllCardsOfDeck = require('./deck_card_remove').removeAllCardsOfDeckPlugin
 const modifyCardCountPlugin = require('./deck_card_update').modifyCardCountPlugin
 const addCardToDeck = require('./deck_card_create').addCardToDeckPlugin
 var mongoose = require('mongoose');
@@ -17,6 +18,7 @@ CardForDeckSchema.plugin(addCardToDeck);
 CardForDeckSchema.plugin(getCardsFromDeck);
 CardForDeckSchema.plugin(removeCardFromDeck);
 CardForDeckSchema.plugin(modifyCardCountPlugin);
+CardForDeckSchema.plugin(removeAllCardsOfDeck);
 
 var CardForDeck = mongoose.model("CardForDeck", CardForDeckSchema);
 

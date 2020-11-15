@@ -1,0 +1,63 @@
+<script>
+    function initDeleteModalContent(div) {
+        $('#deck-name-for-delete').html($(div).data('deck-title'));
+        $('#deck-id-to-remove').val($(div).data('deck-id'));
+    }
+
+    function postRemoveFromDeck() {
+        event.preventDefault()
+        $.ajax({
+            url: '/decks/delete',
+            type: 'POST',
+            data: {
+                deckId: $('#deck-id-to-remove').val()
+            },
+            success: function(response) {
+                $('#displayInfo').hide();
+                $('#deleteDismiss').click();
+                $("#contentInfo").html(response.message);
+                $('#displayInfo').fadeIn();
+                setTimeout(function() {
+                    $("#displayInfo").fadeOut();
+                }, 3000);
+                $('#' + $('#deck-id-to-remove').val()).remove()
+                $('#closeDeleteDeckModal').click();
+            },
+            error: function(err) {
+                if (err.status == 401) {
+                    window.location.replace('/?error=' + err.responseJSON.error);
+                } else {
+                    $('#displayError').hide();
+                    $('#deleteDismiss').click();
+                    $("#displayError").html(err.responseJSON.error);
+                    $('#displayError').fadeIn();
+                    setTimeout(function() {
+                        $("#displayError").fadeOut();
+                    }, 3000);
+                    $('#closeDeleteDeckModal').click();
+                }
+            }
+        });
+    }
+</script>
+
+<div class="modal fade" id="deleteDeckModal" tabindex="-1" role="dialog" aria-labelledby="deleteDeckModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteDeckModalTitle">Supprimer le deck</h5>
+                <button id="closeDeleteDeckModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Voulez-vraiment supprimer votre deck "<div id="deck-name-for-delete" style="display: inline"></div>"
+                <input style="display: none" id="deck-id-to-remove">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="deleteDeckModalDismiss" data-dismiss="modal">Annuler</button>
+                <button onclick="postRemoveFromDeck()" type="submit" id="deleteDeckModalValidate" class="btn btn-danger">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
