@@ -5,6 +5,29 @@ var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 async function modifyCardCount(deckId, cardId, deckPart, count, userId, callback) {
     logger.debug("Méthode models/joints/deck_card_update/modifyCardCount");
 
+    err = []
+
+    if (typeof cardId === "undefined" || cardId == null || cardId == "") {
+        err.push("Pas de carte fournie.");
+    }
+    if (typeof userId === "undefined" || userId == null || userId === "") {
+        err.push("Pas d'utilisateur connecté.");
+    }
+    if (typeof deckId === "undefined" || deckId == null || deckId === "") {
+        err.push("Pas de deck fourni.");
+    }
+    if (typeof deckPart === "undefined" || deckPart == null || deckPart === "") {
+        err.push("Pas de partie du deck fournie.");
+    }
+    if (typeof count === "undefined" || count == null || parseInt(count) === "NaN" || count < 0) {
+        err.push("Le nombre d'exemplaires pour cette carte n'est pas valide.");
+    }
+
+    if (err.length > 0) {
+        callback(err.joint('<br/>'));
+        return;
+    }
+
     results = await Deck.find({ deckId: deckId }, { __v: 0, _id: 0 }).exec().catch(err => {
         logger.error("models/joints/deck_card_update/modifyCardCount : Erreur de lecture sur la base");
         callback("Le deck n'a pas été trouvé");

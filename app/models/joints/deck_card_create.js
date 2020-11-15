@@ -5,6 +5,36 @@ var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback) {
     logger.debug("Méthode models/decks/deck_cards/addCardToDeck");
 
+    err = []
+
+    if (typeof cardIds === "undefined" || cardIds == null) {
+        err.push("Pas de carte fournie");
+    } else {
+        if (typeof cardIds === "string") {
+            cardIds = [cardIds];
+        }
+        if (cardIds.length == 0) {
+            err.push("Pas de carte fournie");
+        }
+    }
+    if (typeof userId === "undefined" || userId == null || userId === "") {
+        err.push("Pas d'utilisateur connecté");
+    }
+    if (typeof deckId === "undefined" || deckId == null || deckId === "") {
+        err.push("Pas de deck fourni");
+    }
+    if (typeof deckPart === "undefined" || deckPart == null || deckPart === "") {
+        deckPart = DeckPartsEnum.MAIN;
+    }
+    if (typeof count === "undefined" || count == null || count == 0) {
+        count = 1;
+    }
+
+    if (err.length > 0) {
+        callback(err.join('<br/>'));
+        return;
+    }
+
     results = await Deck.find({ deckId: deckId }, { __v: 0, _id: 0 }).exec().catch(err => {
         logger.error("models/joints/deck_cards_create/addCardToDeck : Erreur de lecture sur la base");
         callback("Le deck n'a pas été trouvé");
