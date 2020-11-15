@@ -38,6 +38,20 @@
         $(div).parent().find('.deck-part').toggle()
     }
 
+    function finalizeDeckParts() {
+        $('.deck-part').each(function (index) {
+            if ($(this).html().trim() == "") {
+                $(this).parent().attr('style', 'display: none')
+            } else {
+                {{#if decoded}}
+                    $(this).parent().find('.deck-part-count')[0].innerText = $(this).find('.input-count').toArray().reduce((acc, div) => {return acc+parseInt(div.value)}, 0);
+                {{else}}
+                    $(this).parent().find('.deck-part-count')[0].innerText = $(this).find('.input-count').toArray().reduce((acc, div) => {return acc+parseInt(div.innerText)}, 0);
+                {{/if}}
+            }
+            $('#total-count').html($('.deck-part-count').toArray().reduce((acc, div) => {return acc+parseInt(div.innerText)}, 0));
+        })
+    }
 
     $(document).ready(() => {     
         formats = JSON.parse(JSON.stringify({{{stringifyIt formats }}}))
@@ -60,17 +74,7 @@
             }
         });
 
-        $('.deck-part').each(function (index) {
-            if ($(this).html().trim() == "") {
-                $(this).parent().attr('style', 'display: none')
-            } else {
-                {{#if decoded}}
-                    $(this).parent().find('.deck-part-count')[0].innerText = $(this).find('.input-count').toArray().reduce((acc, div) => {return acc+parseInt(div.value)}, 0);
-                {{else}}
-                    $(this).parent().find('.deck-part-count')[0].innerText = $(this).find('.input-count').toArray().reduce((acc, div) => {return acc+parseInt(div.innerText)}, 0);
-                {{/if}}
-            }
-        })
+        finalizeDeckParts();
 
         {{#if user.decoded}}
             $('.show-edit').on('click', function(event) {
@@ -100,7 +104,7 @@
 <div class="row">
     <div class="col-8">
         <h1 class="text-left">
-            Deck : {{ deck.title }}
+            Deck : {{ deck.title }} (<div id="total-count" style="display: inline"></div> cartes)
         </h1>
     </div>
     <div class="col-4">
@@ -110,6 +114,7 @@
     </div>
 </div>
 <hr/>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-4" style="font-size: 11pt">
@@ -117,7 +122,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Compagnon"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "COMPANION" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="COMPANION" deckPartName="Compagnon" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -126,7 +131,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Commandant"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "COMMANDER" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="COMMANDER" deckPartName="Commandant" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -135,7 +140,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Planeswalkers"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Planeswalker" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -144,7 +149,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Créatures"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Creature" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -153,7 +158,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Éphémères"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Instant" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -162,7 +167,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Rituels"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Sorcery" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -171,7 +176,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Enchantements"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Enchantment" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -180,7 +185,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Artefacts"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Artifact" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -189,7 +194,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Terrains"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "Land" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
                 <div class="mt-3"></div>
@@ -198,7 +203,7 @@
                 {{> decks/detail/deck_part_line deckPartTitle="Side"}}
                 <div class="deck-part">
                     {{#each (getDeckParts cards "SIDEBOARD" deck_parts)}}
-                        {{> decks/detail/deck_line card=this symbols=../symbols decoded=../decoded}}
+                        {{> decks/detail/deck_line deckPart="SIDEBOARD" deckPartName="Side" deck=../deck card=this symbols=../symbols decoded=../decoded}}
                     {{/each}}
                 </div>
             </div>
@@ -299,3 +304,7 @@
         </div>
     </div>
 </div>
+
+{{#if decoded}}
+    {{> modals/remove_from_deck/remove_from_deck_modal}}
+{{/if}}
