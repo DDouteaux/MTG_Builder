@@ -1,5 +1,4 @@
 var updates = require.main.require('./app/controllers/settings/updates');
-var EsResult = require.main.require('./app/models/es_results');
 var sets = require.main.require('./app/controllers/sets/get');
 var logger = require.main.require('./app/loader/logger');
 

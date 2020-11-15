@@ -2,8 +2,6 @@ var cards = require.main.require('./app/controllers/cards/get');
 var cards_collection = require.main.require('./app/controllers/cards/update_collection');
 var cardsHelp = require.main.require('./app/controllers/cards/aggregations');
 var deck_get = require.main.require('./app/controllers/decks/get')
-var formats = require.main.require('./app/models/enums/formats');
-var deckParts = require.main.require('./app/models/enums/deck_parts');
 var sets = require.main.require('./app/controllers/sets/get');
 var symbols = require.main.require('./app/controllers/symbols/get');
 var logger = require.main.require('./app/loader/logger');
@@ -20,9 +18,7 @@ module.exports = function(app, baseDir) {
                             cards: cards,
                             symbols: symbols,
                             isCollection: false,
-                            decks: decks,
-                            formats: formats,
-                            deckParts: deckParts 
+                            decks: decks
                         });
                     });
                 } else {
@@ -48,9 +44,7 @@ module.exports = function(app, baseDir) {
                             cards: cards,
                             symbols: symbols,
                             isCollection: false,
-                            decks: decks,
-                            formats: formats,
-                            deckParts: deckParts
+                            decks: decks
                         });
                     });
                 } else {
@@ -74,7 +68,14 @@ module.exports = function(app, baseDir) {
                         cardsHelp.getAllSubTypes(subTypes => {
                             cardsHelp.getAllKeywords(keywords => {
                                 cardsHelp.getAllEffects(effects => {
-                                    res.render('partials/cards/advanced_search', { symbols: symbols, sets: sets, types: types, subTypes: subTypes, keywords: keywords, effects: effects });
+                                    res.render('partials/cards/advanced_search', {
+                                        symbols: symbols,
+                                        sets: sets,
+                                        types: types,
+                                        subTypes: subTypes,
+                                        keywords: keywords,
+                                        effects: effects
+                                    });
                                 })
                             });
                         });
@@ -89,9 +90,7 @@ module.exports = function(app, baseDir) {
                                 cards: cards,
                                 symbols: symbols,
                                 isCollection: false,
-                                decks: decks,
-                                formats: formats,
-                                deckParts: deckParts
+                                decks: decks
                             });
                         });
                     } else {
@@ -118,14 +117,29 @@ module.exports = function(app, baseDir) {
                             userId = req.decoded['username']
                             cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
                                 if (typeof colectionCounts != 'undefined' && colectionCounts.length > 0) {
-                                    res.render('partials/cards/detail', { card: card, symbols: symbols, count: collectionCounts[0], sets: sets, decks: decks, formats: formats, deckParts: deckParts });
+                                    res.render('partials/cards/detail', {
+                                        card: card,
+                                        symbols: symbols,
+                                        count: collectionCounts[0],
+                                        sets: sets,
+                                        decks: decks
+                                    });
                                 } else {
-                                    res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets, decks: decks, formats: formats, deckParts: deckParts });
+                                    res.render('partials/cards/detail', {
+                                        card: card,
+                                        symbols: symbols,
+                                        sets: sets,
+                                        decks: decks
+                                    });
                                 }
                             });
                         });
                     } else {
-                        res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets });
+                        res.render('partials/cards/detail', {
+                            card: card,
+                            symbols: symbols,
+                            sets: sets
+                        });
                     }
                 });
             });
@@ -150,14 +164,29 @@ module.exports = function(app, baseDir) {
                                 userId = req.decoded['username']
                                 cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
                                     if (collectionCounts.length > 0) {
-                                        res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets, count: JSON.parse(JSON.stringify(collectionCounts[0])), decks: decks, formats: formats, deckParts: deckParts });
+                                        res.render('partials/cards/detail', {
+                                            card: card,
+                                            symbols: symbols,
+                                            sets: sets,
+                                            count: JSON.parse(JSON.stringify(collectionCounts[0])),
+                                            decks: decks
+                                        });
                                     } else {
-                                        res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets, decks: decks, formats: formats, deckParts: deckParts });
+                                        res.render('partials/cards/detail', {
+                                            card: card,
+                                            symbols: symbols,
+                                            sets: sets,
+                                            decks: decks
+                                        });
                                     }
                                 });
                             });
                         } else {
-                            res.render('partials/cards/detail', { card: card, symbols: symbols, sets: sets });
+                            res.render('partials/cards/detail', {
+                                card: card,
+                                symbols: symbols,
+                                sets: sets
+                            });
                         }
                     } else {
                         res.redirect('/cards/advanced_search');

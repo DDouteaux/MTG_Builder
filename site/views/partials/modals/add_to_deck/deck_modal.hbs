@@ -1,6 +1,26 @@
 <!-- Définir une méthode getIds si cette modale est utilisée pour fournir la liste des ids à enregistrer. -->
 <script>
     $(document).ready(() => {
+        Object.entries(FormatsEnum).forEach(key => {
+            toAdd = false;
+            newOptGroup = '<optgroup label="' + key[1].display + '">';
+            {{#each decks}}
+                if ("{{this.format}}" === key[0]) {
+                    newOptGroup += '<option value="{{this.deckId}}">{{this.title}}</option>';
+                    toAdd = true;
+                }
+            {{/each}}
+            newOptGroup += '</optgroup>';
+
+            if (toAdd) {
+                $('#decks').append(newOptGroup);
+            }
+        });
+
+        Object.entries(DeckPartsEnum).forEach(key => {
+            $('#deckParts').append('<option value="' + key[0] + '">' + key[1] + '</option>');
+        });
+
         $('#decks').select2({
             placeholder: "Decks",
             templateResult: formatState,
@@ -86,15 +106,6 @@
                                 <label for="decks" class="col-sm-3 col-form-label">Decks</label>
                                 <div class="col-sm-9">
                                     <select id="decks" name="decks" class="form-control js-example-basic-multiple" multiple="multiple">
-                                        {{#each formats}}
-                                            <optgroup label="{{this}}">
-                                                {{#each ../decks}}
-                                                    {{#if (formatEquals this.format ../this ../../formats)}}
-                                                        <option value="{{this.deckId}}">{{this.title}}</option>
-                                                    {{/if}}
-                                                {{/each}}
-                                        </optgroup>
-                                        {{/each}}
                                     </select>
                                 </div>
                             </div>
@@ -102,9 +113,6 @@
                                 <label for="deckParts" class="col-sm-3 col-form-label">Partie du deck</label>
                                 <div class="col-sm-9">
                                     <select id="deckParts" name="deckParts" class="form-control js-example-basic-single">
-                                        {{#each deckParts}}
-                                            <option value="{{@key}}">{{this}}</option>
-                                        {{/each}}
                                     </select>
                                 </div>
                             </div>

@@ -23,7 +23,7 @@
             "autoWidth": false,
             "initComplete": function() { 
                 $('.deck-format').each((index, cellContent) => {
-                    cellContent.innerText = formats[cellContent.innerText];
+                    cellContent.innerText = FormatsEnum[cellContent.innerText].display;
                 })
 
                 $("#decks").show();

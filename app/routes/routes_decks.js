@@ -2,9 +2,7 @@ var cards = require.main.require('./app/controllers/cards/get');
 var deck_modify = require.main.require('./app/controllers/decks/modify');
 var deck_create = require.main.require('./app/controllers/decks/create');
 var deck_get = require.main.require('./app/controllers/decks/get')
-var formats = require.main.require('./app/models/enums/formats');
-var deck_parts = require.main.require('./app/models/enums/deck_parts');
-var states = require.main.require('./app/models/enums/states');
+var display_deck_parts_enum = require.main.require('./app/models/enums/display_deck_parts')
 var logger = require.main.require('./app/loader/logger');
 var symbols = require.main.require('./app/controllers/symbols/get');
 
@@ -13,9 +11,15 @@ module.exports = function(app, baseDir) {
         logger.route("GET /decks");
         deck_get.getPublicDecks((err, decks) => {
             if (typeof err === 'undefined' || err == null) {
-                res.render('partials/decks/list', { public: true, formats: formats, states: states, decks: decks });
+                res.render('partials/decks/list', {
+                    public: true,
+                    decks: decks
+                });
             } else {
-                res.render('partials/decks/list', { public: true, formats: formats, states: states, decks: [] });
+                res.render('partials/decks/list', {
+                    public: true,
+                    decks: []
+                });
             }
         });
     })
@@ -40,7 +44,13 @@ module.exports = function(app, baseDir) {
                                     })
                                 });
                                 symbols.getAll(symbols => {
-                                    res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: finalCards, user: req, deck_parts: deck_parts, symbols: symbols });
+                                    res.render('partials/decks/detail', {
+                                        deck: deck,
+                                        cards: finalCards,
+                                        user: req,
+                                        symbols: symbols,
+                                        display_deck_parts_enum: display_deck_parts_enum
+                                    });
                                 });
                             } else {
                                 res.redirect('/?error=' + err);
@@ -65,7 +75,13 @@ module.exports = function(app, baseDir) {
                                 card.deckPart = dc.deckPart;
                             });
                             symbols.getAll(symbols => {
-                                res.render('partials/decks/detail', { formats: formats, states: states, deck: deck, cards: cards, user: req, deck_parts: deck_parts, symbols: symbols });
+                                res.render('partials/decks/detail', {
+                                    deck: deck,
+                                    cards: cards,
+                                    user: req,
+                                    symbols: symbols,
+                                    display_deck_parts_enum: display_deck_parts_enum
+                                });
                             });
                         } else {
                             res.redirect('/?error=' + err);
@@ -81,9 +97,13 @@ module.exports = function(app, baseDir) {
         if (typeof req.decoded !== 'undefined' && req.decoded != null) {
             deck_get.getDecksOfUser(req.decoded.username, false, (err, decks) => {
                 if (typeof err === 'undefined' || err == null) {
-                    res.render('partials/users/deck_list', { formats: formats, states: states, decks: decks });
+                    res.render('partials/users/deck_list', {
+                        decks: decks
+                    });
                 } else {
-                    res.render('partials/users/deck_list', { formats: formats, states: states, decks: [] });
+                    res.render('partials/users/deck_list', {
+                        decks: []
+                    });
                 }
             });
         }

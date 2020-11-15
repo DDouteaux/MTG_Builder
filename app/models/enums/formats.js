@@ -1,3 +1,4 @@
+// Cet énumération est également définie côté front
 const FormatsEnum = Object.freeze({
     MODERN:   "Moderne",
     STANDARD: "Standard",

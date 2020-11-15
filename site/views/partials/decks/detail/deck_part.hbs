@@ -1,0 +1,9 @@
+<div class="deck-part-with-title">
+    {{> decks/detail/deck_part_line deckPartTitle=deckPartTitle}}
+    <div class="deck-part">
+        {{#each (getDeckParts cards typeLineFilter)}}
+            {{> decks/detail/deck_line card=this deckPart=../keyInDeckParts deckPartName=../valueInDeckParts deck=../deck symbols=../symbols decoded=../decoded}}
+        {{/each}}
+    </div>
+    <div class="mt-3"></div>
+</div>

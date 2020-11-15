@@ -204,7 +204,7 @@ app.engine('hbs', handlebars({
             return date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear();
         },
 
-        getDeckParts: (cards, part, deckParts) => {
+        getDeckParts: (cards, part) => {
             if (['SIDEBOARD', 'COMPANION', 'COMMANDER'].indexOf(part) > -1) {
                 return cards.filter(card => card.deckPart === part);
             } else {
@@ -227,12 +227,13 @@ app.engine('hbs', handlebars({
         },
 
         cardNameInDeck: (cardName) => {
-            if (cardName.match(/(.*) \/\//) != null) {
-                return cardName.match(/(.*) \/\//)[1];
-            } else {
-                return cardName;
+            if (typeof cardName != 'undefined' && cardName != null) {
+                if (cardName.match(/(.*) \/\//) != null) {
+                    return cardName.match(/(.*) \/\//)[1];
+                } else {
+                    return cardName;
+                }
             }
-            
         }
     }
 }));

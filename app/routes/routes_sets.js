@@ -1,8 +1,6 @@
 var sets_get = require.main.require('./app/controllers/sets/get');
 var symbols = require.main.require('./app/controllers/symbols/get');
 var logger = require.main.require('./app/loader/logger');
-var formats = require.main.require('./app/models/enums/formats');
-var deckParts = require.main.require('./app/models/enums/deck_parts');
 var deck_get = require.main.require('./app/controllers/decks/get')
 
 module.exports = function(app, baseDir) {
@@ -23,9 +21,7 @@ module.exports = function(app, baseDir) {
                             set: set,
                             cards: cards,
                             symbols: symbols,
-                            decks: decks,
-                            formats: formats,
-                            deckParts: deckParts
+                            decks: decks
                         });
                     });
                 } else {

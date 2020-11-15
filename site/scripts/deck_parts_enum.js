@@ -1,9 +1,6 @@
-// Cet énumération est également définie côté front
 const DeckPartsEnum = Object.freeze({
     MAIN:      "Liste principale",
-    SIDEBOARD: "Réserve",
+    SIDEBOARD: "Sideboard",
     COMPANION: "Compagnon",
     COMMANDER: "Commandants"
 });
-
-module.exports = DeckPartsEnum;

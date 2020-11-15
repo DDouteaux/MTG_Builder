@@ -1,8 +1,7 @@
 <script>
     $(document).ready(() => {
-        formats = JSON.parse(JSON.stringify({{{stringifyIt formats }}}))
-        Object.entries(formats).forEach(key => {
-            $('#format').append('<option value="' + key[0] + '">' + key[1] + '</option>')
+        Object.entries(FormatsEnum).forEach(key => {
+            $('#format').append('<option value="' + key[0] + '">' + key[1].display + '</option>')
         });
     });
 </script>

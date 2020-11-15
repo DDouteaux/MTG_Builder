@@ -1,6 +1,8 @@
 <script>
     {{#if user.decoded}}
         function editToDisplay(event) {
+            deck_parts = JSON.parse("{{stringifyIt deck_parts}}");
+            console.log(deck_parts);
             toHide = $(event.target);
             toShow = $(toHide.parent().find('.show-edit').filter(div => $(div) != toHide)[0]);
             toShow.html(toHide.val());
@@ -98,20 +100,18 @@
         })
     }
 
-    $(document).ready(() => {     
-        formats = JSON.parse(JSON.stringify({{{stringifyIt formats }}}))
+    $(document).ready(() => {
         selectedFormat = "{{deck.format}}"
-        Object.entries(formats).forEach(key => {
+        Object.entries(FormatsEnum).forEach(key => {
             if (key[0] === selectedFormat) {
-                $('#format').append('<option selected value="' + key[0] + '">' + key[1] + '</option>')
+                $('#format').append('<option selected value="' + key[0] + '">' + key[1].display + '</option>')
             } else {
-                $('#format').append('<option value="' + key[0] + '">' + key[1] + '</option>')
+                $('#format').append('<option value="' + key[0] + '">' + key[1].display + '</option>')
             }
         });
 
-        states = JSON.parse(JSON.stringify({{{stringifyIt states }}}))
         selectedState = "{{deck.state}}"
-        Object.entries(states).forEach(key => {
+        Object.entries(StatesEnum).forEach(key => {
             if (key[0] === selectedState) {
                 $('#state').append('<option selected value="' + key[0] + '">' + key[1] + '</option>')
             } else {
@@ -132,8 +132,6 @@
                     tmpStr = toShow.val();
                     toShow.val('');
                     toShow.val(tmpStr);
-                } else if (toShow.is("select")) {
-                    dropDown(toShow);
                 }
             })
 
@@ -163,95 +161,13 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-4" style="font-size: 11pt">
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Compagnon"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "COMPANION" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="COMPANION" deckPartName="Compagnon" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Commandant"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "COMMANDER" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="COMMANDER" deckPartName="Commandant" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Planeswalkers"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Planeswalker" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Créatures"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Creature" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Éphémères"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Instant" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Rituels"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Sorcery" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Enchantements"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Enchantment" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Artefacts"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Artifact" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Terrains"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "Land" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="MAIN" deckPartName="Liste principale" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-                <div class="mt-3"></div>
-            </div>
-            <div class="deck-part-with-title">
-                {{> decks/detail/deck_part_line deckPartTitle="Side"}}
-                <div class="deck-part">
-                    {{#each (getDeckParts cards "SIDEBOARD" deck_parts)}}
-                        {{> decks/detail/deck_line deckPart="SIDEBOARD" deckPartName="Side" deck=../deck card=this symbols=../symbols decoded=../decoded}}
-                    {{/each}}
-                </div>
-            </div>
+            {{#each display_deck_parts_enum}}
+                {{>
+                    decks/detail/deck_part deckPartTitle=this.deckPartTitle typeLineFilter=this.typeLineFilter
+                                        keyInDeckParts=this.keyInDeckParts valueInDeckParts=this.valueInDeckParts
+                                        cards=../cards deck=../deck symbols=../symbols decoded=../decoded
+                }}
+            {{/each}}
         </div>
         <div class="col-8">
             <ul class="nav nav-tabs" role="tablist">
@@ -315,6 +231,16 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="public" class="col-sm-3">Public</label>
+                        <div class="col-sm-9">
+                            <select id="public" name="public" onchange="editToDisplay(event);" style="display: none" class="form-control edit-toggle">
+                                <option value="true" {{#if deck.public}}selected{{/if}}>Oui</option>
+                                <option value="false" {{#unless deck.public}}selected{{/unless}}>Non</option>
+                            </select>
+                            <div class="edit-toggle show-edit w-100">{{deck.public}}</div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="createdAt" class="col-sm-3">Créé le</label>
                         <div class="col-sm-9">
                             <div>
@@ -332,12 +258,6 @@
                         <label for="derivedFrom" class="col-sm-3">Dérivé de</label>
                         <div class="col-sm-9">
                             {{ deck.derivedFrom }}
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="public" class="col-sm-3">Public</label>
-                        <div class="col-sm-9">
-                            {{ deck.public }}
                         </div>
                     </div>
                 </div>
