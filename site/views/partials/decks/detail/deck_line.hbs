@@ -1,4 +1,4 @@
-<div class="deck-card row">
+<div class="deck-card row" id="{{card.id}}-removable">
     {{#if decoded}}
         <div class="input-group col-md-auto" id="update-deck-card-count">
             <div onclick="countChange(this, 1)" class="input-group-prepend plus">
@@ -31,7 +31,19 @@
             <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.mana_cost symbols}}}</a>
         {{/if}}
         {{#if decoded}}
-            <div class="deck-card-after col-1">
+            {{#if (and card.card_faces card.card_faces.0.side)}}
+                <div onclick="updateRemoveFromDeckModalContent(this)" class="remove-card-from-deck deck-card-after col-1" 
+                    data-toggle="modal" data-target="#removeFromDeckModal"
+                    data-card-name="{{card.card_faces.0.name}}" data-card-id="{{card.id}}"
+                    data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
+                    data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
+            {{else}}
+                <div onclick="updateRemoveFromDeckModalContent(this)" class="remove-card-from-deck deck-card-after col-1"
+                data-toggle="modal" data-target="#removeFromDeckModal"
+                data-card-name="{{{cardNameInDeck card.name}}}" data-card-id="{{card.id}}"
+                data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
+                data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
+            {{/if}}
                 <i class="fas fa-trash"></i>
             </div>
         {{/if}}

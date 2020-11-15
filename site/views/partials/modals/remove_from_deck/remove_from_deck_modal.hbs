@@ -1,0 +1,70 @@
+<!-- Si cette modale est utilisée, définir data-card-name data-card-id data-deck-name data-deck-id -->
+<script>
+    // Mise à jour du contenu de la modale avant de l'afficher
+    function updateRemoveFromDeckModalContent(div) {
+        $('#deck-part-name-from-which-to-remove').html($(div).data('deck-part-name'));
+        $('#deck-name-from-which-to-remove').html($(div).data('deck-name'));
+        $('#card-name-to-remove').html($(div).data('card-name'));
+        $('#deck-from-which-to-remove').val($(div).data('deck-id'));
+        $('#deck-part-from-which-to-remove').val($(div).data('deck-part'));
+        $('#card-id-to-remove').val($(div).data('card-id'));
+    }
+
+    function postRemoveFromDeck() {
+        event.preventDefault()
+        $.ajax({
+            url: '/decks/removeCard',
+            type: 'POST',
+            data: {
+                deckId: $('#deck-from-which-to-remove').val(),
+                cardId: $('#card-id-to-remove').val(),
+                deckPart: $('#deck-part-from-which-to-remove').val()
+            },
+            success: function(response) {
+                $('#displayInfo').hide();
+                $('#deleteDismiss').click();
+                $("#contentInfo").html(response.message);
+                $('#displayInfo').fadeIn();
+                setTimeout(function() {
+                    $("#displayInfo").fadeOut();
+                }, 3000);
+                $('#' + $('#card-id-to-remove').val() + '-removable').remove();
+                finalizeDeckParts();
+                $('#closeRemoveCard').click();
+            },
+            error: function(err) {
+                $('#displayError').hide();
+                $('#deleteDismiss').click();
+                $("#displayError").html(err.responseJSON.message);
+                $('#displayError').fadeIn();
+                setTimeout(function() {
+                    $("#displayError").fadeOut();
+                }, 3000);
+                $('#closeRemoveCard').click();
+            }
+        });
+    }
+</script>
+
+<div class="modal fade" id="removeFromDeckModal" tabindex="-1" role="dialog" aria-labelledby="removeFromDeckModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToDecksModal">Retirer une carte du deck</h5>
+                <button id="closeRemoveCard" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Voulez-vous retirer <div id="card-name-to-remove" style="display: inline"></div> du deck <div id="deck-name-from-which-to-remove" style="display: inline"></div> (<div id="deck-part-name-from-which-to-remove" style="display: inline"></div>)?
+                <input style="display: none" id="card-id-to-remove">
+                <input style="display: none" id="deck-from-which-to-remove">
+                <input style="display: none" id="deck-part-from-which-to-remove">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="removeFromDecksDismiss" data-dismiss="modal">Annuler</button>
+                <button onclick="postRemoveFromDeck()" type="submit" id="removeFromDeckValidate" class="btn btn-danger">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>

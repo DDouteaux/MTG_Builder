@@ -120,4 +120,22 @@ module.exports = function(app, baseDir) {
             res.status(400).send({message: "Pas de decks fourni"});
         }
     })
+
+    app.post('/decks/removeCard', (req, res) => {
+        logger.route("POST /decks/removeCard");
+        if (typeof req.decoded === 'undefined' || req.decoded == null) {
+            res.redirect('/?error=Vous devez être connecté pour réaliser cette action.');
+        }
+        if (typeof req.body === 'undefined' || req.body == null) {
+            res.redirect('/?error=Aucun paramètre fourni.');
+        }
+
+        deck_modify.removeCardFromDeck(req.body.deckId, req.body.cardId, req.body.deckPart, req.decoded.username, (err, data) => {
+            if (typeof err === 'undefined' || err == null) {
+                res.status(200).send({message: data});
+            } else {
+                res.status(400).send({error: err});
+            }
+        });
+    })
 }
