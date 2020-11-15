@@ -19,10 +19,14 @@
             {{#if (and card.card_faces card.card_faces.0.side)}}
                 <a href="/cards/{{card.id}}" class="card-tooltip {{#if decoded}}col-8{{else}}col-9{{/if}}" 
                     data-toggle="tooltip" data-placement="right"
-                    title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_front.jpg"><img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_back.jpg">'>{{{cardNameInDeck card.card_faces.0.name}}}</a>
+                    title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_front.jpg"><img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_back.jpg">'>
+                        {{{cardNameInDeck card.card_faces.0.name}}}
+                </a>
             {{else}}
                 <a href="/cards/{{card.id}}" class="card-tooltip {{#if decoded}}col-8{{else}}col-9{{/if}}" 
-                    data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>{{{cardNameInDeck card.name}}}</a>
+                    data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>
+                    {{{cardNameInDeck card.name}}}
+                </a>
             {{/if}}
             <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.card_faces.0.mana_cost symbols}}}</a>
         {{else}}
