@@ -11,6 +11,8 @@
                 } else if (field === 'public') {
                     toShow.html(toHide.val() === "true" ? "Oui" : "Non");
                 }
+            } else {
+                toShow.html(toHide.val());
             }
             toShow.toggle();
             toHide.toggle();
