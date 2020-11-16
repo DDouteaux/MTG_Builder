@@ -30,72 +30,136 @@
         });
     });
 
-    var doNotShowDivs = [];
+    const allCards = $('.deck-card').toArray().map(div => div.id);
     var filters = [];
+    var hiddenCards = []
 
-    function filterCardsOnHover(data) {
+    function updateFilters(data, event, purpose) {
+        // Récupérer la liste des identifiants à afficher
         try {
-            ids = data.map(entry => entry.id);
+            ids = data.map(entry => entry.id + "-removable");
         } catch(exception) {
-            ids = data.ids
-        }
-        
-        idsFromMatch = new RegExp('^(' + ids.join('|') + ')-removable$');
-        $('.deck-card').filter(function() {
-            return !this.id.match(idsFromMatch)
-        }).hide();
-    }
-
-    function displayAllDeckCards() {
-        $('.deck-card').filter(function() {
-            return !doNotShowDivs.includes(this.id);
-        }).show();
-    }
-
-    function selectColumn(data, event) {
-        try {
-            ids = data.map(entry => entry.id);
-        } catch(exception) {
-            ids = data.ids
+            ids = data.ids.map(entry => entry + "-removable");
         }
 
-        idsToShow = new RegExp('^(' + ids.join('|') + ')-removable$');
-        idsToNotShow = []
+        // Les cartes misent en avant par ce filtre
+        idsToShow = new RegExp('^(' + ids.join('|') + ')$');
 
-        doNotShowUntilDeselect = $('.deck-card').filter(function() {
+        // Les cartes cachées par ce filtre
+        hiddenByFilter = $('.deck-card').filter(function() {
             return !this.id.match(idsToShow)
-        }).map(function() {
-            if ($(event.target).attr('class').includes('graph-bar-selected')) {
-                doNotShowDivs.splice(doNotShowDivs.indexOf(this.id), 1);
+        })
+
+        // Les identifiants associés au filtre choisi
+        filterClassId = $(event.target).closest('.card-body').attr('id');
+        filterId = $(event.target).attr('id');
+
+        // Si event != null on vient de sélectionner une colonne, sinon on survole
+        if (purpose === "select") {
+            closestHasFilter = $($(event.target).closest('.card').find('.has-filter')[0]);
+            filtersKeys = Object.keys(filters);
+
+            if (!filtersKeys.includes(filterClassId)) {
+                // Premier filtre sur ce graphe
+                filters[filterClassId] = {};
+            }
+
+            filterOfClassId = filters[filterClassId];
+
+            if (!Object.keys(filterOfClassId).includes(filterId)) {
+                // On sélectionne la colonne
+                filterOfClassId[filterId] = {
+                    hiddenCards: hiddenByFilter,
+                    selectedCards: ids
+                }
+                $('#' + filterId).addClass('graph-bar-selected');
+                closestHasFilter.show();
+                $('#has-filter-global').show();
             } else {
-                doNotShowDivs.push(this.id);
-            }
-        });
+                // On déselectionne la colonne
+                delete filterOfClassId[filterId];
+                if (Object.keys(filterOfClassId).length == 0) {
+                    delete filters[filterClassId];
+                    closestHasFilter.hide();
 
-        closestHasFilter = $(event.target).closest('.card').find('.has-filter')[0];
-
-        if ($(event.target).attr('class').includes('graph-bar-selected')) {
-            $(event.target).removeClass('graph-bar-selected')
-            displayAllDeckCards();
-            filters.splice(filters.indexOf(closestHasFilter.id, 1));
-            if (filters.indexOf(closestHasFilter.id) < 0) {
-                $(closestHasFilter).hide();
-            }
-            if (filters.length == 0) {
-                $('#has-filter-global').hide();
+                    filtersKeys = Object.keys(filters);
+                    if (filtersKeys.length == 0 || 
+                       (filtersKeys.length == 1 && filtersKeys[0] === 'hover')) {
+                        $('#has-filter-global').hide();
+                    }
+                }
+                $('#' + filterId).removeClass('graph-bar-selected');
             }
         } else {
-            $(event.target).addClass('graph-bar-selected');
-            doNotShowUntilDeselect.hide();
-            filters.push(closestHasFilter.id)
-            $(closestHasFilter).show();
-            $('#has-filter-global').show();
+            if (Object.keys(filters).includes('hover')) {
+                delete filters['hover'];
+            } else {
+                filters['hover'] = {
+                    hiddenCards: hiddenByFilter,
+                    selectedCards: ids,
+                    filterId: filterId,
+                    filterClassId: filterClassId
+                }
+            }
         }
+        updateAllDisplay();
+        return;
+    }
+
+    function updateAllDisplay() {
+        selectedCards = allCards
+        if (typeof filters['hover'] != 'undefined') {
+            hoverClassFilterId = filters['hover'].filterClassId
+            hoverFilterId = filters['hover'].filterId
+            hoverIsUsable = true;
+        } else {
+            hoverIsUsable = false;
+        }
+
+
+        for (let filterClassId in filters) {
+            if (filterClassId === 'hover') {
+                continue
+            }
+            selectedByFilter = []
+            for(let filterId in filters[filterClassId]) {
+                selectedByFilter = selectedByFilter.concat(filters[filterClassId][filterId].selectedCards);
+            }
+
+            if (hoverIsUsable && filterClassId === hoverClassFilterId) {
+                if (Object.keys(filters[filterClassId]).includes(hoverFilterId)) {
+                    selectedByFilter = selectedByFilter.filter(card => filters['hover'].selectedCards.includes(card));
+                } else {
+                    selectedByFilter = selectedByFilter.concat(filters['hover'].selectedCards);
+                }
+                hoverIsUsable = false;
+            }
+
+            selectedCards = selectedCards.filter(card => selectedByFilter.includes(card));
+        }
+
+        if (hoverIsUsable) {
+            selectedCards = selectedCards.filter(card => filters['hover'].selectedCards.includes(card));
+        }
+
+        $('.deck-card').map(function() {
+            if (selectedCards.includes(this.id)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
     }
 </script>
 
 <script>
     function initDiscreteHistogram(data, sortByValue, sortByKey, margin, width, height, divId, displayKey, valueKey) {
+        count = 0;
+        data.map(function(d) {
+            d.colId = count;
+            count += 1;
+        })
+
         width = width - margin.left - margin.right,
         height = height - margin.top - margin.bottom;
 
@@ -158,9 +222,10 @@
                 .attr("height", function(d) { return d[valueKey]*height/yMax; })
                 .attr("class", "graph-types-bar")
                 .attr("class", "graph-bar")
-                .on("mouseenter", function(d) { filterCardsOnHover(d) })
-                .on("mouseleave", function(d) { displayAllDeckCards(d) })
-                .on("click", function(d) { selectColumn(d, event) })
+                .attr("id", function(d) { return divId + d.colId})
+                .on("mouseenter", function(d) { updateFilters(d, event, "hover") })
+                .on("mouseleave", function(d) { updateFilters(d, event, "hover") })
+                .on("click", function(d) { updateFilters(d, event, "select") })
     }
 </script>
 
