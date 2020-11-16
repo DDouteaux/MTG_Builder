@@ -272,6 +272,34 @@ app.engine('hbs', handlebars({
                 }
             });
             return cmcHist;
+        },
+
+        getHistogramCardTypes: (cards) => {
+            cardTypesHist = [];
+            cards.forEach(card => {
+                if (card.card_faces) {
+                    face = card.card_faces[0]
+                } else {
+                    face = card;
+                }
+
+                if (cardTypes.isPlaneswalker(card, face)) {
+                    cardTypesHist.push({cardType: 'Planeswalker', count: card.count, id: card.id});
+                } else if (cardTypes.isCreature(card, face)) {
+                    cardTypesHist.push({cardType: 'Créature', count: card.count, id: card.id});
+                } else if (cardTypes.isInstant(card, face)) {
+                    cardTypesHist.push({cardType: 'Éphémère', count: card.count, id: card.id});
+                } else if (cardTypes.isSorcery(card, face)) {
+                    cardTypesHist.push({cardType: 'Rituel', count: card.count, id: card.id});
+                } else if (cardTypes.isEnchantment(card, face)) {
+                    cardTypesHist.push({cardType: 'Enchantement', count: card.count, id: card.id});
+                } else if (cardTypes.isArtifact(card, face)) {
+                    cardTypesHist.push({cardType: 'Artefact', count: card.count, id: card.id});
+                } else if (cardTypes.isLand(card, face)) {
+                    cardTypesHist.push({cardType: 'Terrain', count: card.count, id: card.id});
+                }
+            });
+            return cardTypesHist;
         }
     }
 }));

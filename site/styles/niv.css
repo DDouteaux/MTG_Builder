@@ -211,10 +211,18 @@ td {
     background-color: rgb(187, 11, 11);
 }
 
-.graph-cmc-bar {
+.graph-bar {
     fill: rgb(15, 111, 189);
 }
 
-.graph-cmc-bar:hover {
+.graph-bar:hover {
     fill: rgb(0, 0, 82);
+}
+
+.graph-bar-selected {
+    fill: rgb(187, 11, 11);
+}
+
+.graph-bar-selected:hover {
+    fill: rgb(128, 0, 0);
 }

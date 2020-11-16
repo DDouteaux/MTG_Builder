@@ -1,81 +1,25 @@
-<div>
-    <div class="stat-vignette-title">Courbe de mana</div>
-    <div id="svg1"></div>
+<div class="card-deck">
+    <div class="card" style="width: 300px">
+        <div class="card-header">Courbe de mana</div>
+        <div class="card-body" id="svgCmc"></div>
+    </div>
+
+    <div class="card" style="width: 300px">
+        <div class="card-header">Types de cartes</div>
+        <div class="card-body" id="svgTypes"></div>
+    </div>
 </div>
 
 <script>
-    var data = JSON.parse('{{{stringifyIt (getHistogramFromCards cards)}}}')
-
-    // Dimensions et marges du graphe
-    var margin = {top: 10, right: 30, bottom: 30, left: 40},
-                    width = 260 - margin.left - margin.right,
-                    height = 200 - margin.top - margin.bottom;
-
-    // Création de l'objet SVG
-    var svg = d3.select("#svg1")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // Échelle de l'axe X puis mise en place de ce dernier
-    xMin = d3.min([0, d3.min(data.map(d => d.cmc))]);
-    xMax = d3.max(data.map(d => d.cmc)) + 1;
-    var x = d3.scaleLinear()
-                .domain([xMin, xMax])
-                .range([0, width]);
-
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-
-    // Configuration de l'histogramme (méthode pour récupérer les valeurs, domaine et nombre de ticks)
-    var histogram = d3.histogram()
-                        .value(function(d) { return d.cmc; })
-                        .domain(x.domain())
-                        .thresholds(x.ticks(xMax - xMin));
-    
-    // Application de la méthode
-    var bins = histogram(data);
-
-    // Préparation de l'axe y
-    var y = d3.scaleLinear()
-                .range([height, 0]);
-    
-    const cmc_reducer = (acc, current) => current.count + acc;
-    bins.forEach(bin => {
-        bin.value = bin.reduce(cmc_reducer, 0)
-    })
-    console.log(bins)
-    var yMax = d3.max(bins, function(d) { return d.value; })
-    y.domain([0, yMax]);
-
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
-    bins.forEach(bin => {
-        if (bin.x0 == bin.x1) {
-            bin.x1 = bin.x0 + 1;
-        }
-    })
-
-    // Dessin des rectangles de valeurs de l'histogramme
-    svg.selectAll("rect")
-        .data(bins)
-        .enter()
-        .append("rect")
-            .attr("x", function(d) { return 1 + x(d.x0);})
-            .attr("y", height + 1)
-            .attr("transform", function(d) { return "translate(0 ,-" + (1+ d.value*height/yMax) + ")"; })
-            .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-            .attr("height", function(d) { return d.value*height/yMax; })
-            .attr("class", "graph-cmc-bar")
-            .on("mouseenter", function(d) { filterCardsOnHover(d) })
-            .on("mouseleave", function(d) { displayAllDeckCards(d) })
+    var doNotShowDivs = [];
 
     function filterCardsOnHover(data) {
-        ids = data.map(entry => entry.id);
+        try {
+            ids = data.map(entry => entry.id);
+        } catch(exception) {
+            ids = data.ids
+        }
+        
         idsFromMatch = new RegExp('^(' + ids.join('|') + ')-removable$');
         $('.deck-card').filter(function() {
             return !this.id.match(idsFromMatch)
@@ -83,6 +27,191 @@
     }
 
     function displayAllDeckCards() {
-        $('.deck-card').show();
+        $('.deck-card').filter(function() {
+            return !doNotShowDivs.includes(this.id);
+        }).show();
     }
+
+    function selectColumn(data, event) {
+        try {
+            ids = data.map(entry => entry.id);
+        } catch(exception) {
+            ids = data.ids
+        }
+
+        idsToShow = new RegExp('^(' + ids.join('|') + ')-removable$');
+        idsToNotShow = []
+
+        doNotShowUntilDeselect = $('.deck-card').filter(function() {
+            return !this.id.match(idsToShow)
+        }).map(function() {
+            if ($(event.target).attr('class').includes('graph-bar-selected')) {
+                doNotShowDivs.splice(doNotShowDivs.indexOf(this.id), 1);
+            } else {
+                doNotShowDivs.push(this.id);
+            }
+        });
+
+        if ($(event.target).attr('class').includes('graph-bar-selected')) {
+            $(event.target).removeClass('graph-bar-selected')
+            displayAllDeckCards();
+        } else {
+            $(event.target).addClass('graph-bar-selected');
+            doNotShowUntilDeselect.hide();
+        }
+    }
+</script>
+
+<script>
+    function initCmcGraph () {
+        // Histogramme des coûts de mana
+        var data = JSON.parse('{{{stringifyIt (getHistogramFromCards cards)}}}')
+
+        // Dimensions et marges du graphe
+        var margin = {top: 10, right: 10, bottom: 20, left: 20},
+                        width = 260 - margin.left - margin.right,
+                        height = 200 - margin.top - margin.bottom;
+
+        // Création de l'objet SVG
+        var svg = d3.select("#svgCmc")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Échelle de l'axe X puis mise en place de ce dernier
+        xMin = d3.min([0, d3.min(data.map(d => d.cmc))]);
+        xMax = d3.max([d3.max(data.map(d => d.cmc)) + 1, 9]);
+        var x = d3.scaleLinear()
+                    .domain([xMin, xMax])
+                    .range([0, width]);
+
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        // Configuration de l'histogramme (méthode pour récupérer les valeurs, domaine et nombre de ticks)
+        var histogram = d3.histogram()
+                            .value(function(d) { return d.cmc; })
+                            .domain(x.domain())
+                            .thresholds(x.ticks(xMax - xMin));
+        
+        // Application de la méthode
+        var bins = histogram(data);
+
+        // Préparation de l'axe y
+        var y = d3.scaleLinear()
+                    .range([height, 0]);
+        
+        const cmc_reducer = (acc, current) => current.count + acc;
+        bins.forEach(bin => {
+            bin.value = bin.reduce(cmc_reducer, 0)
+        })
+        
+        var yMax = d3.max(bins, function(d) { return d.value; })
+        y.domain([0, yMax]);
+
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        bins.forEach(bin => {
+            if (bin.x0 == bin.x1) {
+                bin.x1 = bin.x0 + 1;
+            }
+        })
+
+        // Dessin des rectangles de valeurs de l'histogramme
+        svg.selectAll("rect")
+            .data(bins)
+            .enter()
+            .append("rect")
+                .attr("x", function(d) { return 1 + x(d.x0);})
+                .attr("y", height + 1)
+                .attr("transform", function(d) { return "translate(0 ,-" + (1+ d.value*height/yMax) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+                .attr("height", function(d) { return d.value*height/yMax; })
+                .attr("class", "graph-cmc-bar")
+                .attr("class", "graph-bar")
+                .on("mouseenter", function(d) { filterCardsOnHover(d) })
+                .on("mouseleave", function(d) { displayAllDeckCards(d) })
+                .on("click", function(d) { selectColumn(d, event) })
+    }
+
+    initCmcGraph();
+</script>
+
+<script>
+    function initCardTypesGraphe () {
+        // Histogramme des types de cartes
+        var dataTypes = JSON.parse('{{{stringifyIt (getHistogramCardTypes cards)}}}')
+        dataTypes = dataTypes.reduce((acc, value) => {
+            to_update = acc.filter(a => a.cardType === value.cardType);
+            if (to_update.length > 0) {
+                to_update[0].count += value.count;
+                to_update[0].ids.push(value.id);
+            } else {
+                acc.push({ cardType: value.cardType, count: value.count, ids: [value.id] });
+            }
+            return acc;
+        }, [])
+
+        // Dimensions et marges du graphe
+        var margin = {top: 10, right: 10, bottom: 70, left: 20},
+                        width = 260 - margin.left - margin.right,
+                        height = 250 - margin.top - margin.bottom;
+
+        // Création de l'objet SVG
+        var svg = d3.select("#svgTypes")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g");
+
+        // Échelle de l'axe X puis mise en place de ce dernier
+        xMin = 0;
+        xMax = width;
+        xValues = dataTypes.map(d => d.cardType)
+        var x = d3.scaleBand()
+                    .domain(xValues)
+                    .rangeRound([xMin, xMax])
+
+        svg.append("g")
+            .attr("transform", `translate(${margin.left},${height + margin.top})`)
+            .call(d3.axisBottom(x))
+                .selectAll("text")
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.8em")
+                    .attr("dy", ".15em")
+                    .attr("transform", "rotate(-65)");
+
+        // Préparation de l'axe y
+        yMax = d3.max(dataTypes, d => d.count)
+
+        y = d3.scaleLinear()
+                .domain([0, yMax])
+                .range([height, 0])
+        
+        svg.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`)
+            .call(d3.axisLeft(y));
+
+        // Dessin des rectangles de valeurs de l'histogramme
+        svg.selectAll("rect")
+            .data(dataTypes)
+            .enter()
+            .append("rect")
+                .attr("x", function(d) { return 1 + margin.left + x(d.cardType);})
+                .attr("y", 1)
+                .attr("transform", function(d) { return `translate(0, ${height + margin.top -d.count*height/yMax - 1})` })
+                .attr("width", function(d) { return x.bandwidth() - 1; })
+                .attr("height", function(d) { return d.count*height/yMax; })
+                .attr("class", "graph-types-bar")
+                .attr("class", "graph-bar")
+                .on("mouseenter", function(d) { filterCardsOnHover(d) })
+                .on("mouseleave", function(d) { displayAllDeckCards(d) })
+                .on("click", function(d) { selectColumn(d, event) })
+    }
+
+    initCardTypesGraphe();
 </script>
