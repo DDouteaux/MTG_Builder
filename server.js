@@ -12,6 +12,9 @@ const compression = require('compression')
 const handlebars = require('express-handlebars');
 const checkToken = require('./app/controllers/users/check');
 
+// Usefull methods for Handlebars helpers
+const cardTypes = require('./app/loader/cardTypes');
+
 // Init logs
 logger.initLogs()
 
@@ -216,19 +219,19 @@ app.engine('hbs', handlebars({
                     }
 
                     if (part == 'Planeswalker') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Planeswalker') >= 0;
+                        return cardTypes.isPlaneswalkerMainDeck(card, face);
                     } else if (part == 'Creature') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Creature') >= 0 && face.type_line.indexOf('Land') < 0
+                        return cardTypes.isCreatureMainDeck(card, face);
                     } else if (part == 'Instant') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Instant') >= 0 && face.type_line.indexOf('Creature') < 0
+                        return cardTypes.isInstantMainDeck(card, face);
                     } else if (part == 'Sorcery') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Sorcery') >= 0 && face.type_line.indexOf('Creature') < 0
+                        return cardTypes.isSorceryMainDeck(card, face);
                     } else if (part == 'Enchantment') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Enchantment') >= 0 && face.type_line.indexOf('Creature') < 0
+                        return cardTypes.isEnchantmentMainDeck(card, face);
                     } else if (part == 'Artifact') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Artifact') >= 0 && face.type_line.indexOf('Creature') < 0
+                        return cardTypes.isArtifactMainDeck(card, face);
                     } else if (part == 'Land') {
-                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Land') >= 0 && face.type_line.indexOf('Creature') < 0 && face.type_line.indexOf('Instant') < 0 && face.type_line.indexOf('Sorcery') < 0
+                        return cardTypes.isLandMainDeck(card, face);
                     }
                 });
             }
