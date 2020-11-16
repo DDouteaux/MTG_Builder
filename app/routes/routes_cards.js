@@ -111,36 +111,41 @@ module.exports = function(app, baseDir) {
         symbols.getAll(symbols => {
             cards.randomCard(card => {
                 sets.getSets(sets => {
-                    if (typeof req.decoded != undefined && req.decoded != null) {
-                        deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
-                            cardsIds = [ card.id ]
-                            userId = req.decoded['username']
-                            cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
-                                if (typeof colectionCounts != 'undefined' && colectionCounts.length > 0) {
-                                    res.render('partials/cards/detail', {
-                                        card: card,
-                                        symbols: symbols,
-                                        count: collectionCounts[0],
-                                        sets: sets,
-                                        decks: decks
-                                    });
-                                } else {
-                                    res.render('partials/cards/detail', {
-                                        card: card,
-                                        symbols: symbols,
-                                        sets: sets,
-                                        decks: decks
-                                    });
-                                }
+                    cards.getAllVersionFromName(card.name, otherPrints => {
+                        if (typeof req.decoded != undefined && req.decoded != null) {
+                            deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
+                                cardsIds = [ card.id ]
+                                userId = req.decoded['username']
+                                cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
+                                    if (typeof colectionCounts != 'undefined' && colectionCounts.length > 0) {
+                                        res.render('partials/cards/detail', {
+                                            card: card,
+                                            symbols: symbols,
+                                            count: collectionCounts[0],
+                                            sets: sets,
+                                            decks: decks,
+                                            otherPrints: otherPrints
+                                        });
+                                    } else {
+                                        res.render('partials/cards/detail', {
+                                            card: card,
+                                            symbols: symbols,
+                                            sets: sets,
+                                            decks: decks,
+                                            otherPrints: otherPrints
+                                        });
+                                    }
+                                });
                             });
-                        });
-                    } else {
-                        res.render('partials/cards/detail', {
-                            card: card,
-                            symbols: symbols,
-                            sets: sets
-                        });
-                    }
+                        } else {
+                            res.render('partials/cards/detail', {
+                                card: card,
+                                symbols: symbols,
+                                sets: sets,
+                                otherPrints: otherPrints
+                            });
+                        }
+                    })
                 });
             });
         });
@@ -157,37 +162,41 @@ module.exports = function(app, baseDir) {
                         } else {
                             card.setIcon = card.set.substring(card.set.lastIndexOf('/') + 1)
                         }
-
-                        if (typeof req.decoded != undefined && req.decoded != null) {
-                                deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
-                                cardsIds = [ card.id ]
-                                userId = req.decoded['username']
-                                cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
-                                    if (collectionCounts.length > 0) {
-                                        res.render('partials/cards/detail', {
-                                            card: card,
-                                            symbols: symbols,
-                                            sets: sets,
-                                            count: JSON.parse(JSON.stringify(collectionCounts[0])),
-                                            decks: decks
-                                        });
-                                    } else {
-                                        res.render('partials/cards/detail', {
-                                            card: card,
-                                            symbols: symbols,
-                                            sets: sets,
-                                            decks: decks
-                                        });
-                                    }
+                        cards.getAllVersionFromName(card.name, otherPrints => {
+                            if (typeof req.decoded != undefined && req.decoded != null) {
+                                    deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
+                                    cardsIds = [ card.id ]
+                                    userId = req.decoded['username']
+                                    cards_collection.getCollectionCountsFromIds(cardsIds, userId, collectionCounts => {
+                                        if (collectionCounts.length > 0) {
+                                            res.render('partials/cards/detail', {
+                                                card: card,
+                                                symbols: symbols,
+                                                sets: sets,
+                                                count: JSON.parse(JSON.stringify(collectionCounts[0])),
+                                                decks: decks,
+                                                otherPrints: otherPrints
+                                            });
+                                        } else {
+                                            res.render('partials/cards/detail', {
+                                                card: card,
+                                                symbols: symbols,
+                                                sets: sets,
+                                                decks: decks,
+                                                otherPrints: otherPrints
+                                            });
+                                        }
+                                    });
                                 });
-                            });
-                        } else {
-                            res.render('partials/cards/detail', {
-                                card: card,
-                                symbols: symbols,
-                                sets: sets
-                            });
-                        }
+                            } else {
+                                res.render('partials/cards/detail', {
+                                    card: card,
+                                    symbols: symbols,
+                                    sets: sets,
+                                    otherPrints: otherPrints
+                                });
+                            }
+                        });
                     } else {
                         res.redirect('/cards/advanced_search');
                     }

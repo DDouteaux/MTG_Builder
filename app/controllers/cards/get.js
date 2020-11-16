@@ -95,9 +95,51 @@ function search(params, callback) {
                                               .must(esb.termQuery('promo', false))
                                               .must(esb.termQuery('variation', false)))
                                     .size(10000);
+
     es.client.search({  
         index: 'cards',
         body: globalSearchQuery.toJSON()
+    }, (err, res, status) => {
+        cards = []
+        names = []
+        if (res.hits && res.hits.hits) {
+            res.hits.hits.forEach(hit => {
+                card = new Card(hit._source);
+                card._id = hit._id
+                cards.push(card);
+            });
+
+            cards.map(card => {
+                if (!names.includes(card.name)) {
+                    names.push(card.name);
+                }
+            })
+
+            filtered_cards = cards.filter(card => {
+                return !card.frame_effects.includes("showcase") && !card.frame_effects.includes("extendedart");
+            })
+
+            if (filtered_cards.length != names.length) {
+                names.forEach(name => {
+                    filtered_cards.push(cards.filter(card => card.name === name)[0]);
+                })
+            }
+            callback(filtered_cards);
+        }
+
+    });
+}
+
+function getAllVersionFromName(cardName, callback) {
+    logger.debug("Méthode models/controllers/cards/get/getAllVersionFromName");
+    const getAllVersionsSearchQuery = esb.requestBodySearch()
+                                    .query(esb.termQuery('name.keyword', cardName))
+                                    .size(10000);
+
+    console.log(JSON.stringify(getAllVersionsSearchQuery.toJSON()));
+    es.client.search({  
+        index: 'cards',
+        body: getAllVersionsSearchQuery.toJSON()
     }, (err, res, status) => {
         cards = []
         if (res.hits && res.hits.hits) {
@@ -106,8 +148,9 @@ function search(params, callback) {
                 card._id = hit._id
                 cards.push(card);
             });
+
+            callback(cards);
         }
-        callback(cards);
     });
 }
 
@@ -296,4 +339,5 @@ module.exports = { getCard: getCard,
                    getAllCards: getAllCards,
                    search: search,
                    randomCard: randomCard,
-                   advanced_search: advanced_search };
+                   advanced_search: advanced_search,
+                   getAllVersionFromName: getAllVersionFromName };

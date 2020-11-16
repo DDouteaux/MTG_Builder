@@ -1,7 +1,15 @@
 {{#if card.reprint}}
-    Réimpression
+    Réimpression 
 {{else}}
     Première édition
 {{/if}}
+<div style="display: inline; padding-left: 5px">
+    {{#each otherPrints}}
+        <a style="padding-right:5px" href="/cards/{{this._id}}"
+            class="card-tooltip" data-toggle="tooltip" data-placement="auto" title='<img id="cardImage" style="width:200px" src="/images/cards/{{this.set}}/{{this._id}}.jpg">'>
+            <img src="/images/sets/{{{getSetLogo this.set ../sets}}}" class="img-responsive center-block" style="height: 16px">
+        </a>
+    {{/each}}
+</div>
 <br>
 Popularité EDHREC : {{card.edhrec_rank}}
