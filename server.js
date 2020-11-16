@@ -251,6 +251,24 @@ app.engine('hbs', handlebars({
             } else {
                 return users.filter(user => user.userId === userId)[0].pseudo;
             }
+        },
+
+        getHistogramFromCards: (cards) => {
+            cmcHist = [];
+            cards.forEach(card => {
+                if (card.card_faces) {
+                    face = card.card_faces[0]
+                } else {
+                    face = card;
+                }
+
+                if (face.type_line.indexOf('Land') == -1 || face.type_line.indexOf('Creature') > -1) {
+                    card_cmc = face.cmc;
+                    card_count = card.count;
+                    cmcHist.push({cmc: card_cmc, count: card_count, id: card.id})
+                }
+            });
+            return cmcHist;
         }
     }
 }));

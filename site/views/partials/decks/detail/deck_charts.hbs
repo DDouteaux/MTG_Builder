@@ -1,0 +1,74 @@
+<div>
+    <div class="stat-vignette-title">Courbe de mana</div>
+    <div id="svg1"></div>
+</div>
+
+<script>
+    var data = JSON.parse('{{{stringifyIt (getHistogramFromCards cards)}}}')
+
+    // Dimensions et marges du graphe
+    var margin = {top: 10, right: 30, bottom: 30, left: 40},
+                    width = 260 - margin.left - margin.right,
+                    height = 200 - margin.top - margin.bottom;
+
+    // Création de l'objet SVG
+    var svg = d3.select("#svg1")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Échelle de l'axe X puis mise en place de ce dernier
+    xMin = d3.min([0, d3.min(data.map(d => d.cmc))]);
+    xMax = d3.max(data.map(d => d.cmc)) + 1;
+    var x = d3.scaleLinear()
+                .domain([xMin, xMax])
+                .range([0, width]);
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    // Configuration de l'histogramme (méthode pour récupérer les valeurs, domaine et nombre de ticks)
+    var histogram = d3.histogram()
+                        .value(function(d) { return d.cmc; })
+                        .domain(x.domain())
+                        .thresholds(x.ticks(xMax - xMin));
+    
+    // Application de la méthode
+    var bins = histogram(data);
+
+    // Préparation de l'axe y
+    var y = d3.scaleLinear()
+                .range([height, 0]);
+    
+    const cmc_reducer = (acc, current) => current.count + acc;
+    bins.forEach(bin => {
+        bin.value = bin.reduce(cmc_reducer, 0)
+    })
+    console.log(bins)
+    var yMax = d3.max(bins, function(d) { return d.value; })
+    y.domain([0, yMax]);
+
+    svg.append("g")
+        .call(d3.axisLeft(y));
+
+    bins.forEach(bin => {
+        if (bin.x0 == bin.x1) {
+            bin.x1 = bin.x0 + 1;
+        }
+    })
+
+    // Dessin des rectangles de valeurs de l'histogramme
+    svg.selectAll("rect")
+        .data(bins)
+        .enter()
+        .append("rect")
+            .attr("x", function(d) { return 1 + x(d.x0);})
+            .attr("y", height + 1)
+            .attr("transform", function(d) { return "translate(0 ,-" + (1+ d.value*height/yMax) + ")"; })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+            .attr("height", function(d) { return d.value*height/yMax; })
+            .style("fill", "#69b3a2")
+</script>
