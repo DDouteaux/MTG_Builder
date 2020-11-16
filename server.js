@@ -208,21 +208,29 @@ app.engine('hbs', handlebars({
             if (['SIDEBOARD', 'COMPANION', 'COMMANDER'].indexOf(part) > -1) {
                 return cards.filter(card => card.deckPart === part);
             } else {
-                if (part == 'Planeswalker') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Planeswalker') >= 0);
-                } else if (part == 'Creature') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Creature') >= 0 && card.type_line.indexOf('Land') < 0);
-                } else if (part == 'Instant') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Instant') >= 0 && card.type_line.indexOf('Creature') < 0);
-                } else if (part == 'Sorcery') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Sorcery') >= 0 && card.type_line.indexOf('Creature') < 0);
-                } else if (part == 'Enchantment') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Enchantment') >= 0 && card.type_line.indexOf('Creature') < 0);
-                } else if (part == 'Artifact') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Artifact') >= 0 && card.type_line.indexOf('Creature') < 0);
-                } else if (part == 'Land') {
-                    return cards.filter(card => card.deckPart === 'MAIN' && card.type_line.indexOf('Land') >= 0 && card.type_line.indexOf('Creature') < 0 && card.type_line.indexOf('Instant') < 0 && card.type_line.indexOf('Sorcery') < 0);
-                }
+                return cards.filter(card => {
+                    if (card.card_faces && card.card_faces[0].side) {
+                        face = card.card_faces[0];
+                    } else {
+                        face = card;
+                    }
+
+                    if (part == 'Planeswalker') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Planeswalker') >= 0;
+                    } else if (part == 'Creature') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Creature') >= 0 && face.type_line.indexOf('Land') < 0
+                    } else if (part == 'Instant') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Instant') >= 0 && face.type_line.indexOf('Creature') < 0
+                    } else if (part == 'Sorcery') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Sorcery') >= 0 && face.type_line.indexOf('Creature') < 0
+                    } else if (part == 'Enchantment') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Enchantment') >= 0 && face.type_line.indexOf('Creature') < 0
+                    } else if (part == 'Artifact') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Artifact') >= 0 && face.type_line.indexOf('Creature') < 0
+                    } else if (part == 'Land') {
+                        return card.deckPart === 'MAIN' && face.type_line.indexOf('Land') >= 0 && face.type_line.indexOf('Creature') < 0 && face.type_line.indexOf('Instant') < 0 && face.type_line.indexOf('Sorcery') < 0
+                    }
+                });
             }
         },
 
