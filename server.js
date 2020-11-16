@@ -300,6 +300,37 @@ app.engine('hbs', handlebars({
                 }
             });
             return cardTypesHist;
+        },
+
+        getHistogramCardSubTypes: (cards) => {
+            cardSubTypesHist = [];
+            cards.forEach(card => {
+                if (card.card_faces) {
+                    face = card.card_faces[0]
+                } else {
+                    face = card;
+                }
+
+                if (!face.type_line.includes("Land")) {
+                    subTypes = face.type_line.split('—')[1];
+                    if (subTypes != null) {
+                        subTypes.trim().split(' ').map(subType => {
+                            subTypeToUpdate = cardSubTypesHist.filter(c => c.cardSubType === subType);
+                            if (subTypeToUpdate.length > 0) {
+                                subTypeToUpdate[0].count += card.count;
+                                subTypeToUpdate[0].ids.push(card.id)
+                            } else {
+                                cardSubTypesHist.push({
+                                    cardSubType: subType,
+                                    count: card.count,
+                                    ids: [card.id]
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+            return cardSubTypesHist;
         }
     }
 }));

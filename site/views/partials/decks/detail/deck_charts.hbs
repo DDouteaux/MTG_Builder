@@ -7,8 +7,8 @@
             </div>
             <div class="mt-3"></div>
             <div class="card" style="max-width: 300px">
-                <div class="card-header">Troisième graphe<div class="show-hide-card" data-show-id='svgTrois'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div id="filter-trois" class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
-                <div class="card-body" id="svgTrois"></div>
+                <div class="card-header">Sous-types des cartes<div class="show-hide-card" data-show-id='svgSubTypes'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div id="filter-trois" class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-body" id="svgSubTypes"></div>
             </div>
         </div>
 
@@ -95,106 +95,24 @@
 </script>
 
 <script>
-    function initCmcGraph () {
-        // Histogramme des coûts de mana
-        var data = JSON.parse('{{{stringifyIt (getHistogramFromCards cards)}}}')
+    function initDiscreteHistogram(data, sortByValue, sortByKey, margin, width, height, divId, displayKey, valueKey) {
+        width = width - margin.left - margin.right,
+        height = height - margin.top - margin.bottom;
 
-        // Dimensions et marges du graphe
-        var margin = {top: 10, right: 10, bottom: 20, left: 20},
-                        width = 260 - margin.left - margin.right,
-                        height = 200 - margin.top - margin.bottom;
+        if (sortByValue) {
+            data.sort(function(a, b) {
+                return b[valueKey] - a[valueKey];
+            });
+        }
 
-        // Création de l'objet SVG
-        var svg = d3.select("#svgCmc")
-                        .append("svg")
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom)
-                        .append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        // Échelle de l'axe X puis mise en place de ce dernier
-        xMin = d3.min([0, d3.min(data.map(d => d.cmc))]);
-        xMax = d3.max([d3.max(data.map(d => d.cmc)) + 1, 9]);
-        var x = d3.scaleLinear()
-                    .domain([xMin, xMax])
-                    .range([0, width]);
-
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        // Configuration de l'histogramme (méthode pour récupérer les valeurs, domaine et nombre de ticks)
-        var histogram = d3.histogram()
-                            .value(function(d) { return d.cmc; })
-                            .domain(x.domain())
-                            .thresholds(x.ticks(xMax - xMin));
-        
-        // Application de la méthode
-        var bins = histogram(data);
-
-        // Préparation de l'axe y
-        var y = d3.scaleLinear()
-                    .range([height, 0]);
-        
-        const cmc_reducer = (acc, current) => current.count + acc;
-        bins.forEach(bin => {
-            bin.value = bin.reduce(cmc_reducer, 0)
-        })
-        
-        var yMax = d3.max(bins, function(d) { return d.value; })
-        y.domain([0, yMax]);
-
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        bins.forEach(bin => {
-            if (bin.x0 == bin.x1) {
-                bin.x1 = bin.x0 + 1;
-            }
-        })
-
-        // Dessin des rectangles de valeurs de l'histogramme
-        svg.selectAll("rect")
-            .data(bins)
-            .enter()
-            .append("rect")
-                .attr("x", function(d) { return 1 + x(d.x0);})
-                .attr("y", height + 1)
-                .attr("transform", function(d) { return "translate(0 ,-" + (1+ d.value*height/yMax) + ")"; })
-                .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-                .attr("height", function(d) { return d.value*height/yMax; })
-                .attr("class", "graph-cmc-bar")
-                .attr("class", "graph-bar")
-                .on("mouseenter", function(d) { filterCardsOnHover(d) })
-                .on("mouseleave", function(d) { displayAllDeckCards(d) })
-                .on("click", function(d) { selectColumn(d, event) })
-    }
-
-    initCmcGraph();
-</script>
-
-<script>
-    function initCardTypesGraphe () {
-        // Histogramme des types de cartes
-        var dataTypes = JSON.parse('{{{stringifyIt (getHistogramCardTypes cards)}}}')
-        dataTypes = dataTypes.reduce((acc, value) => {
-            to_update = acc.filter(a => a.cardType === value.cardType);
-            if (to_update.length > 0) {
-                to_update[0].count += value.count;
-                to_update[0].ids.push(value.id);
-            } else {
-                acc.push({ cardType: value.cardType, count: value.count, ids: [value.id] });
-            }
-            return acc;
-        }, [])
-
-        // Dimensions et marges du graphe
-        var margin = {top: 10, right: 10, bottom: 70, left: 20},
-                        width = 260 - margin.left - margin.right,
-                        height = 250 - margin.top - margin.bottom;
+        if (sortByKey) {
+            data.sort(function(a, b) {
+                return a[displayKey] - b[displayKey];
+            });
+        }
 
         // Création de l'objet SVG
-        var svg = d3.select("#svgTypes")
+        var svg = d3.select("#" + divId)
                     .append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
@@ -203,7 +121,7 @@
         // Échelle de l'axe X puis mise en place de ce dernier
         xMin = 0;
         xMax = width;
-        xValues = dataTypes.map(d => d.cardType)
+        xValues = data.map(d => d[displayKey])
         var x = d3.scaleBand()
                     .domain(xValues)
                     .rangeRound([xMin, xMax])
@@ -218,7 +136,7 @@
                     .attr("transform", "rotate(-65)");
 
         // Préparation de l'axe y
-        yMax = d3.max(dataTypes, d => d.count)
+        yMax = d3.max(data, d => d[valueKey])
 
         y = d3.scaleLinear()
                 .domain([0, yMax])
@@ -230,20 +148,55 @@
 
         // Dessin des rectangles de valeurs de l'histogramme
         svg.selectAll("rect")
-            .data(dataTypes)
+            .data(data)
             .enter()
             .append("rect")
-                .attr("x", function(d) { return 1 + margin.left + x(d.cardType);})
+                .attr("x", function(d) { return 1 + margin.left + x(d[displayKey]);})
                 .attr("y", 1)
-                .attr("transform", function(d) { return `translate(0, ${height + margin.top -d.count*height/yMax - 1})` })
+                .attr("transform", function(d) { return `translate(0, ${height + margin.top -d[valueKey]*height/yMax - 1})` })
                 .attr("width", function(d) { return x.bandwidth() - 1; })
-                .attr("height", function(d) { return d.count*height/yMax; })
+                .attr("height", function(d) { return d[valueKey]*height/yMax; })
                 .attr("class", "graph-types-bar")
                 .attr("class", "graph-bar")
                 .on("mouseenter", function(d) { filterCardsOnHover(d) })
                 .on("mouseleave", function(d) { displayAllDeckCards(d) })
                 .on("click", function(d) { selectColumn(d, event) })
     }
+</script>
 
-    initCardTypesGraphe();
+<script>
+    var dataTypes = JSON.parse('{{{stringifyIt (getHistogramCardTypes cards)}}}')
+    dataTypes = dataTypes.reduce((acc, value) => {
+        to_update = acc.filter(a => a.cardType === value.cardType);
+        if (to_update.length > 0) {
+            to_update[0].count += value.count;
+            to_update[0].ids.push(value.id);
+        } else {
+            acc.push({ cardType: value.cardType, count: value.count, ids: [value.id] });
+        }
+        return acc;
+    }, [])
+
+    initDiscreteHistogram(dataTypes, true, false, {top: 10, right: 10, bottom: 70, left: 20},
+                            260, 250, "svgTypes", "cardType", "count");
+
+    initDiscreteHistogram(JSON.parse('{{{stringifyIt (getHistogramCardSubTypes cards)}}}'),
+                            true, false, {top: 10, right: 10, bottom: 70, left: 20},
+                            260, 250, "svgSubTypes", "cardSubType", "count");
+
+    var dataCmc = JSON.parse('{{{stringifyIt (getHistogramFromCards cards)}}}')
+    dataCmc = dataCmc.reduce((acc, value) => {
+        to_update = acc.filter(a => a.cmc === value.cmc);
+        if (to_update.length > 0) {
+            to_update[0].count += value.count;
+            to_update[0].ids.push(value.id);
+        } else {
+            acc.push({ cmc: value.cmc, count: value.count, ids: [value.id] });
+        }
+        return acc;
+    }, [])
+    initDiscreteHistogram(dataCmc, false, true, {top: 10, right: 10, bottom: 20, left: 20},
+                            260, 250, "svgCmc", "cmc", "count");
+
+
 </script>
