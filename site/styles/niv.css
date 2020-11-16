@@ -210,3 +210,11 @@ td {
     color: white;
     background-color: rgb(187, 11, 11);
 }
+
+.graph-cmc-bar {
+    fill: rgb(15, 111, 189);
+}
+
+.graph-cmc-bar:hover {
+    fill: rgb(0, 0, 82);
+}

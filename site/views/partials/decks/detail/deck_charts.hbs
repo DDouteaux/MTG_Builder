@@ -70,5 +70,19 @@
             .attr("transform", function(d) { return "translate(0 ,-" + (1+ d.value*height/yMax) + ")"; })
             .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
             .attr("height", function(d) { return d.value*height/yMax; })
-            .style("fill", "#69b3a2")
+            .attr("class", "graph-cmc-bar")
+            .on("mouseenter", function(d) { filterCardsOnHover(d) })
+            .on("mouseleave", function(d) { displayAllDeckCards(d) })
+
+    function filterCardsOnHover(data) {
+        ids = data.map(entry => entry.id);
+        idsFromMatch = new RegExp('^(' + ids.join('|') + ')-removable$');
+        $('.deck-card').filter(function() {
+            return !this.id.match(idsFromMatch)
+        }).hide();
+    }
+
+    function displayAllDeckCards() {
+        $('.deck-card').show();
+    }
 </script>
