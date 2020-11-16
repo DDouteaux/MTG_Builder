@@ -2,19 +2,19 @@
     <div class="row">
         <div class="col-6">
             <div class="card" style="max-width: 300px">
-                <div class="card-header">Courbe de mana<div class="show-hide-card" data-show-id='svgCmc'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-header">Courbe de mana<div class="show-hide-card" data-show-id='svgCmc'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div id="filter-cmc" class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
                 <div class="card-body" id="svgCmc"></div>
             </div>
             <div class="mt-3"></div>
             <div class="card" style="max-width: 300px">
-                <div class="card-header">Troisième graphe<div class="show-hide-card" data-show-id='svgTrois'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-header">Troisième graphe<div class="show-hide-card" data-show-id='svgTrois'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div id="filter-trois" class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
                 <div class="card-body" id="svgTrois"></div>
             </div>
         </div>
 
         <div class="col-6">
             <div class="card" style="max-width: 300px">
-                <div class="card-header">Types de cartes<div class="show-hide-card" data-show-id='svgTypes'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-header">Types de cartes<div class="show-hide-card" data-show-id='svgTypes'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div id="filter-types" class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
                 <div class="card-body" id="svgTypes"></div>
             </div>
         </div>
@@ -77,16 +77,19 @@
         if ($(event.target).attr('class').includes('graph-bar-selected')) {
             $(event.target).removeClass('graph-bar-selected')
             displayAllDeckCards();
-            filters.splice(filters.indexOf(closestHasFilter, 1));
-            console.log(filters);
-            if (filters.indexOf(closestHasFilter) < 0) {
+            filters.splice(filters.indexOf(closestHasFilter.id, 1));
+            if (filters.indexOf(closestHasFilter.id) < 0) {
                 $(closestHasFilter).hide();
+            }
+            if (filters.length == 0) {
+                $('#has-filter-global').hide();
             }
         } else {
             $(event.target).addClass('graph-bar-selected');
             doNotShowUntilDeselect.hide();
-            filters.push(closestHasFilter)
+            filters.push(closestHasFilter.id)
             $(closestHasFilter).show();
+            $('#has-filter-global').show();
         }
     }
 </script>
