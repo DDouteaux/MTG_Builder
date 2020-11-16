@@ -1,17 +1,37 @@
-<div class="card-deck">
-    <div class="card" style="width: 300px">
-        <div class="card-header">Courbe de mana</div>
-        <div class="card-body" id="svgCmc"></div>
-    </div>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="card" style="max-width: 300px">
+                <div class="card-header">Courbe de mana<div class="show-hide-card" data-show-id='svgCmc'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-body" id="svgCmc"></div>
+            </div>
+            <div class="mt-3"></div>
+            <div class="card" style="max-width: 300px">
+                <div class="card-header">Troisième graphe<div class="show-hide-card" data-show-id='svgTrois'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-body" id="svgTrois"></div>
+            </div>
+        </div>
 
-    <div class="card" style="width: 300px">
-        <div class="card-header">Types de cartes</div>
-        <div class="card-body" id="svgTypes"></div>
+        <div class="col-6">
+            <div class="card" style="max-width: 300px">
+                <div class="card-header">Types de cartes<div class="show-hide-card" data-show-id='svgTypes'><i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up" style="display:none"></i></div><div class="has-filter" style="display: none"><i class="fas fa-filter"></i></div></div>
+                <div class="card-body" id="svgTypes"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    $(document).ready(() => {
+        $('.show-hide-card').on('click', (event) => {
+            referer = $(event.currentTarget);
+            referer.find('i').toggle();
+            $('#' + referer.data('show-id')).toggle();
+        });
+    });
+
     var doNotShowDivs = [];
+    var filters = [];
 
     function filterCardsOnHover(data) {
         try {
@@ -52,12 +72,21 @@
             }
         });
 
+        closestHasFilter = $(event.target).closest('.card').find('.has-filter')[0];
+
         if ($(event.target).attr('class').includes('graph-bar-selected')) {
             $(event.target).removeClass('graph-bar-selected')
             displayAllDeckCards();
+            filters.splice(filters.indexOf(closestHasFilter, 1));
+            console.log(filters);
+            if (filters.indexOf(closestHasFilter) < 0) {
+                $(closestHasFilter).hide();
+            }
         } else {
             $(event.target).addClass('graph-bar-selected');
             doNotShowUntilDeselect.hide();
+            filters.push(closestHasFilter)
+            $(closestHasFilter).show();
         }
     }
 </script>

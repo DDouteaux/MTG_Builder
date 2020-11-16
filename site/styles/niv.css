@@ -226,3 +226,14 @@ td {
 .graph-bar-selected:hover {
     fill: rgb(128, 0, 0);
 }
+
+.show-hide-card {
+    display: inline;
+    float: right;
+}
+
+.has-filter {
+    display: inline;
+    float: right;
+    padding-right: 10px;
+}
