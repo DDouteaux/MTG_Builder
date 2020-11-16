@@ -230,6 +230,7 @@ td {
 .show-hide-card {
     display: inline;
     float: right;
+    cursor: pointer;
 }
 
 .has-filter {
