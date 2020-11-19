@@ -19,6 +19,7 @@
             },
             success: function(response) {
                 displayInfoOk(response.message)
+                $('#edit-card-' + cardId).data('count', count);
                 $('#' + $('#card-id-to-remove').val() + '-removable').remove();
                 finalizeDeckParts();
                 $('#closeRemoveCard').click();
@@ -77,6 +78,10 @@
     }
 
     $(document).ready(() => {
+        $('.comment-card-from-deck').tooltip({
+            html: true
+        })
+
         selectedFormat = "{{deck.format}}"
         Object.entries(FormatsEnum).forEach(key => {
             if (key[0] === selectedFormat) {
@@ -161,6 +166,10 @@
                         toHide.toggle();
                     }
                 });
+            })
+
+            $('.deck-build-muti-select').on('click', function(event) {
+                $(event.currentTarget).find('.far').toggle();
             })
         {{/if}}
     });
@@ -302,5 +311,6 @@
 </div>
 
 {{#if decoded}}
+    {{> modals/add_to_deck/deck_modal_update deckId=deck.deckId}}
     {{> modals/remove_from_deck/remove_from_deck_modal}}
 {{/if}}

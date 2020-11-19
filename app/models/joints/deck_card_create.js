@@ -2,7 +2,7 @@ var logger = require.main.require('./app/loader/logger');
 var Deck = require.main.require('./app/models/decks/deck');
 var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 
-async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback) {
+async function addCardToDeck(deckId, cardIds, count, deckPart, comment, altCmc, userId, callback) {
     logger.debug("Méthode models/decks/deck_cards/addCardToDeck");
 
     err = []
@@ -28,6 +28,9 @@ async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback)
     }
     if (typeof count === "undefined" || count == null || count == 0) {
         count = 1;
+    }
+    if (typeof altCmc !== "undefined" && altCmc != null && parseInt(altCmc) === NaN) {
+        altCmc = null;
     }
 
     if (err.length > 0) {
@@ -68,7 +71,9 @@ async function addCardToDeck(deckId, cardIds, count, deckPart, userId, callback)
                 {
                     cardId: cardId,
                     count: count,
-                    deckPart: deckPart
+                    deckPart: deckPart,
+                    comment: comment,
+                    altCmc: altCmc
                 },
                 {
                     upsert: true

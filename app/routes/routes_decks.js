@@ -51,6 +51,8 @@ module.exports = function(app, baseDir) {
                                     finalCards.push({
                                         count: deckCard.count,
                                         deckPart: deckCard.deckPart,
+                                        deckComment: deckCard.comment,
+                                        deckAltCmc: deckCard.altCmc,
                                         ...cards.filter(card => card.id === deckCard.cardId)[0]
                                     })
                                 });
@@ -147,7 +149,7 @@ module.exports = function(app, baseDir) {
             }
         }
         if (decks.length > 0) {
-            deck_modify.addCardToDeck(req.body.decks, req.body.cardId, req.body.count, req.body.deckPart, req.decoded.username, (err, data) => {
+            deck_modify.addCardToDeck(req.body.decks, req.body.cardId, req.body.count, req.body.deckPart, req.body.comment, req.body.altCmc, req.decoded.username, (err, data) => {
                 if (typeof err === 'undefined' || err == null) {
                     res.status(200).send({message: data});
                 } else {
@@ -218,6 +220,32 @@ module.exports = function(app, baseDir) {
             }
         });
     })
+
+    app.post('/decks/updateCard', (req, res) => {
+        logger.route("POST /decks/updateCard");
+        if (typeof req.decoded === 'undefined' || req.decoded == null) {
+            res.status(401).send({error: 'Vous devez être connecté pour réaliser cette action.'});
+            return;
+        }
+
+        if (typeof req.body === 'undefined' || req.body == null) {
+            res.status(400).send({error: 'Aucun paramètre fourni.'});
+            return;
+        }
+
+        deckId = req.body.deckId;
+        delete req.body.deckId;
+        deckPart = req.body.deckPartInit;
+        delete req.body.deckPartInit;
+
+        deck_modify.updateDeckCard(deckId, req.body, deckPart, req.decoded.username, (err, data) => {
+            if (typeof err === 'undefined' || err == null) {
+                res.status(200).send({message: data});
+            } else {
+                res.status(400).send({error: err});
+            }
+        });
+    });
 
     app.post('/decks/updateFields', (req, res) => {
         logger.route("POST /decks/updateFields");

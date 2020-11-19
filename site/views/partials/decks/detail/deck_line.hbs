@@ -16,39 +16,76 @@
     {{/if}}
     <div class="row col">
         {{#if card.card_faces}}
-            {{#if (and card.card_faces card.card_faces.0.side)}}
-                <a href="/cards/{{card.id}}" class="card-tooltip {{#if decoded}}col-8{{else}}col-9{{/if}}" 
-                    data-toggle="tooltip" data-placement="right"
-                    title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_front.jpg"><img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_back.jpg">'>
-                        {{{cardNameInDeck card.card_faces.0.name}}}
-                </a>
-            {{else}}
-                <a href="/cards/{{card.id}}" class="card-tooltip {{#if decoded}}col-8{{else}}col-9{{/if}}" 
+            <div class="{{#if decoded}}col-8{{else}}col-9{{/if}}">
+                {{#if (and card.card_faces card.card_faces.0.side)}}
+                    <a href="/cards/{{card.id}}" class="card-tooltip" 
+                        data-toggle="tooltip" data-placement="right"
+                        title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_front.jpg"><img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}_back.jpg">'>
+                            {{{cardNameInDeck card.card_faces.0.name}}}
+                    </a>
+                {{else}}
+                    <a href="/cards/{{card.id}}" class="card-tooltip" 
+                        data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>
+                        {{{cardNameInDeck card.name}}}
+                    </a>
+                {{/if}}
+                {{#if card.deckComment}}
+                    <i class="fas fa-comment hover-edit comment-card-from-deck" data-toggle="tooltip" data-placement="right" title='{{card.deckComment}}'></i>
+                {{/if}}
+                <i id="edit-card-{{card.id}}" class="fas fa-edit hover-edit edit-card-from-deck" title='Éditer les informations'
+                    data-toggle="modal" data-target="#updateCardDeckModal" onclick="updateUpdateModalContent(this)"
+                    data-deckPart="{{deckPart}}" data-count="{{card.count}}" data-comment="{{card.deckComment}}" data-altCmc="{{card.deckAltCmc}}" data-cardId="{{card.id}}"></i>
+                {{#if (and card.card_faces card.card_faces.0.side)}}
+                    <div onclick="updateRemoveFromDeckModalContent(this)" class="hover-edit remove-card-from-deck" 
+                        data-toggle="modal" data-target="#removeFromDeckModal"
+                        data-card-name="{{card.card_faces.0.name}}" data-card-id="{{card.id}}"
+                        data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
+                        data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
+                {{else}}
+                    <div onclick="updateRemoveFromDeckModalContent(this)" class="hover-edit remove-card-from-deck"
+                        data-toggle="modal" data-target="#removeFromDeckModal"
+                        data-card-name="{{{cardNameInDeck card.name}}}" data-card-id="{{card.id}}"
+                        data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
+                        data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
+                {{/if}}
+                <i class="fas fa-trash"></i>
+                </div>
+            </div>
+            <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.card_faces.0.mana_cost symbols}}}</a>
+        {{else}}
+            <div class="{{#if decoded}}col-8{{else}}col-9{{/if}}">
+                <a href="/cards/{{card.id}}" class="card-tooltip" 
                     data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>
                     {{{cardNameInDeck card.name}}}
                 </a>
-            {{/if}}
-            <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.card_faces.0.mana_cost symbols}}}</a>
-        {{else}}
-            <a href="/cards/{{card.id}}" class="card-tooltip {{#if decoded}}col-8{{else}}col-9{{/if}}" 
-                data-toggle="tooltip" data-placement="right" title='<img id="cardImage" onerror="{{card.name}}" style="width:200px" src="/images/cards/{{card.set}}/{{card.id}}.jpg">'>{{{cardNameInDeck card.name}}}</a>
-            <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.mana_cost symbols}}}</a>
-        {{/if}}
-        {{#if decoded}}
-            {{#if (and card.card_faces card.card_faces.0.side)}}
-                <div onclick="updateRemoveFromDeckModalContent(this)" class="remove-card-from-deck deck-card-after col-1" 
+                {{#if card.deckComment}}
+                    <i class="fas fa-comment hover-edit comment-card-from-deck" data-toggle="tooltip" data-placement="right" title='{{card.deckComment}}'></i>
+                {{/if}}
+                <i id="edit-card-{{card.id}}" class="fas fa-edit hover-edit edit-card-from-deck" title='Éditer les informations'
+                    data-toggle="modal" data-target="#updateCardDeckModal" onclick="updateUpdateModalContent(this)"
+                    data-deckpart="{{deckPart}}" data-count="{{card.count}}" data-comment="{{card.deckComment}}" data-altcmc="{{card.deckAltCmc}}" data-cardid="{{card.id}}"></i>
+                {{#if (and card.card_faces card.card_faces.0.side)}}
+                <div onclick="updateRemoveFromDeckModalContent(this)" class="hover-edit remove-card-from-deck" 
                     data-toggle="modal" data-target="#removeFromDeckModal"
                     data-card-name="{{card.card_faces.0.name}}" data-card-id="{{card.id}}"
                     data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
                     data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
-            {{else}}
-                <div onclick="updateRemoveFromDeckModalContent(this)" class="remove-card-from-deck deck-card-after col-1"
-                data-toggle="modal" data-target="#removeFromDeckModal"
-                data-card-name="{{{cardNameInDeck card.name}}}" data-card-id="{{card.id}}"
-                data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
-                data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
-            {{/if}}
-                <i class="fas fa-trash"></i>
+                {{else}}
+                    <div onclick="updateRemoveFromDeckModalContent(this)" class="hover-edit remove-card-from-deck"
+                    data-toggle="modal" data-target="#removeFromDeckModal"
+                    data-card-name="{{{cardNameInDeck card.name}}}" data-card-id="{{card.id}}"
+                    data-deck-part-name="{{deckPartName}}" data-deck-part="{{deckPart}}"
+                    data-deck-name="{{deck.title}}" data-deck-id="{{deck.deckId}}">
+                {{/if}}
+                    <i class="fas fa-trash"></i>
+                </div>
+            </div>
+            <a href="/cards/{{card.id}}" class="manaCardDeck col-3">{{{replaceSymbols card.mana_cost symbols}}}</a>
+        {{/if}}
+        {{#if decoded}}
+            <div class="col-1 deck-build-muti-select">
+                <i class="far fa-square"></i>
+                <i class="far fa-check-square" id="deck-build-muti-select-{{card._id}}" style="display: none;"></i>
             </div>
         {{/if}}
     </div>
