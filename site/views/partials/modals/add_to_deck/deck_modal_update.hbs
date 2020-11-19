@@ -10,13 +10,6 @@
     }
 
     function postUpdateDeckCardEvent(event) {
-        console.log("deckId : " + $('#deckId').val())
-        console.log("deckParts : " + $('#deckParts').val())
-        console.log("count : " + $('#count').val())
-        console.log("comment : " + $('#comment').val())
-        console.log("altCmc : " + $('#altCmc').val())
-        console.log("id : " + $('#cardId').val())
-
         event.preventDefault()
         $.ajax({
             url: '/decks/updateCard',
