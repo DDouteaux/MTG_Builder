@@ -1,7 +1,8 @@
 var sets_get = require.main.require('./app/controllers/sets/get');
 var symbols = require.main.require('./app/controllers/symbols/get');
 var logger = require.main.require('./app/loader/logger');
-var deck_get = require.main.require('./app/controllers/decks/get')
+var deck_get = require.main.require('./app/controllers/decks/get');
+var cards_collection = require.main.require('./app/controllers/cards/update_collection');
 
 module.exports = function(app, baseDir) {
     app.get('/sets', (req, res) => {
@@ -17,11 +18,15 @@ module.exports = function(app, baseDir) {
             symbols.getAll(symbols => {
                 if (typeof req.decoded != undefined && req.decoded != null) {
                     deck_get.getDecksOfUser(req.decoded.username, true, (err, decks) => {
-                        res.render('partials/sets/detail', {
-                            set: set,
-                            cards: cards,
-                            symbols: symbols,
-                            decks: decks
+                        cardsIds = cards.map(card => card._id);
+                        cards_collection.getCollectionCountsFromIds(cardsIds, req.decoded.username, collectionCounts => {
+                            res.render('partials/sets/detail', {
+                                set: set,
+                                cards: cards,
+                                symbols: symbols,
+                                decks: decks,
+                                counts: collectionCounts,
+                            });
                         });
                     });
                 } else {

@@ -8,6 +8,7 @@
         <th>Coût</th>
         <th>Couleur</th>
         <th>Rareté</th>
+        <th>Set principal</th>
         {{#if isCollection}}
             <th>Codes d'éditions</th>
             <th>Éditions</th>
@@ -16,6 +17,7 @@
         {{else}}
             <th>Texte</th>
             {{#if decoded}}
+                <th>Collection</th>
                 <th>Deck</th>
             {{/if}}
         {{/if}}

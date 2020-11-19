@@ -345,6 +345,39 @@ app.engine('hbs', handlebars({
                 }
             }
         },
+
+        computeIsInCollection(cardId, counts) {
+            if (typeof counts === 'undefined' || counts == null || counts.length == 0) {
+                return "Non";
+            }
+
+            if (typeof cardId === 'undefined' || cardId == null || cardId.length == 0) {
+                return "Non";
+            }
+
+            matching_counts = counts.filter(count => count.cardId === cardId && (count.foil > 0 || count.normal > 0));
+
+            if (matching_counts.length > 0) {
+                return "Oui";
+            } else {
+                return "Non";
+            }
+        },
+
+        isInPrincipalSet(card, set) {
+            cardCollectorNumber = card.collector_number
+            if (typeof set === "undefined" || set == null 
+                    || typeof set.printed_size === "undefined" || set.printed_size == null
+                    || typeof cardCollectorNumber === "undefined" || cardCollectorNumber == null) {
+                return (!card.frame_effects.includes("showcase")
+                            && !card.frame_effects.includes("extendedart")
+                            && (typeof card.promo_types === "undefined" || card.promo_types.length == 0));
+            }
+
+            cardCollectorNumber = cardCollectorNumber.match(/[0-9]+/)[0]
+
+            return typeof cardCollectorNumber !== 'undefined' && cardCollectorNumber != null 
+                    && cardCollectorNumber <= set.printed_size;
         }
     }
 }));

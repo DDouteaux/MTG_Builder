@@ -13,16 +13,18 @@
                 { "targets": 4, "visible": false },
                 { "targets": 5, "width": "10%", "orderData": [4] },
                 { "targets": 6, "visible": false },
-                { "targets": 7, "width": "5%", },
+                { "targets": 7, "width": "5%" },
+                { "targets": 8, "visible": false },
                 {{#if isCollection}}
-                    { "targets": 8, "visible": false },
-                    { "targets": 9, "width": "10%", "orderData": [8] },
-                    { "targets": 10, "width": "15%", "orderData": [10] },
-                    { "targets": 11, "width": "15%", "orderData": [11] }
+                    { "targets": 9, "visible": false },
+                    { "targets": 10, "width": "10%", "orderData": [10] },
+                    { "targets": 11, "width": "15%", "orderData": [11] },
+                    { "targets": 12, "width": "15%", "orderData": [12] }
                 {{else}}
-                    { "targets": 8, "width": "60%", "orderable": false },
+                    { "targets": 9, "width": "60%", "orderable": false },
                     {{#if decoded}}
-                        { "targets": 9, "width": "15px", "orderable": false }
+                        { "targets": 10, "width": "15px", "orderData": [10] },
+                        { "targets": 11, "width": "15px", "orderable": false }
                     {{/if}}
                 {{/if}}
             ],
@@ -57,6 +59,19 @@
 
                 columnColor.data().unique().sort().each(function(d, j) {
                     select.append('<option value="' + d + '">' + d + '</option>');
+                });
+
+                var columnInMainSet = this.api().column(8);
+                $('#cards_filter').prepend('<label id="selectMainSetFilter">Set principal&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+                var select = $('<select class="filter"><option value=""></option></select>')
+                    .appendTo('#selectMainSetFilter')
+                    .on('change', function() {
+                        var val = $(this).val();
+                        columnInMainSet.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                    });
+
+                columnInMainSet.data().unique().sort().each(function(d, j) {
+                    select.append('<option value="' + d + '">' + (d == 'true' ? 'Oui' : 'Non') + '</option>');
                 });
 
             },
