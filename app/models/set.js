@@ -1,5 +1,5 @@
 class Set {
-    constructor(element) {
+    constructor(element, icon_name) {
         this.code = element.code;
         this.name = element.name;
         this.set_type = element.set_type;
@@ -11,6 +11,7 @@ class Set {
         this.block = element.block;
         this.card_count = element.card_count;
         this.scryfall_scroll = element.search_uri;
+        this.printed_size = element.printed_size;
     }
 }
 
