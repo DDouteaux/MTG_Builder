@@ -11,9 +11,11 @@
         $('#sets').DataTable({
             "columnDefs": [
                  { "width": "40%", "targets": 0 },
-                 { "width": "20%", "targets": 1 },
-                 { "width": "20%", "targets": 2 },
-                 { "width": "20%", "orderable": false, "targets": 3 }
+                 { "width": "10%", "targets": 1 },
+                 { "width": "10%", "targets": 2 },
+                 { "width": "10%", "targets": 3 },
+                 { "width": "10%", "targets": 4 },
+                 { "width": "20%", "orderable": false, "targets": 5 }
             ],
             "order": [[ 2, "desc" ]],
             "autoWidth": false,
@@ -157,7 +159,9 @@
             <thead class="thead-dark">
                 <tr>
                     <th>Édition</th>
-                    <th>Nombre de cartes</th>
+                    <th># Cartes</th>
+                    <th># Index</th>
+                    <th>Tout ?</th>
                     <th>Date de parution</th>
                     <th>Actions</th>
                 </tr>
@@ -175,6 +179,14 @@
                             </div>
                         </th>
                         <td>{{this.card_count}}</td>
+                        <td>{{{indexedCardCount this.code ../set_counts}}}</td>
+                        <td>
+                            {{#if (eq this.card_count (indexedCardCount this.code ../set_counts))}}
+                                Oui
+                            {{else}}
+                                Non
+                            {{/if}}
+                        </td>
                         <td>{{this.released_at}}</td>
                         <td>
                             <div class="container">

@@ -335,6 +335,16 @@ app.engine('hbs', handlebars({
                 }
             });
             return cardSubTypesHist;
+        },
+
+        indexedCardCount(setCode, set_counts) {
+            for(set_count_key in Object.keys(set_counts)) {
+                set_count = set_counts[set_count_key];
+                if (set_count.set === setCode) {
+                    return set_count.count;
+                }
+            }
+        },
         }
     }
 }));

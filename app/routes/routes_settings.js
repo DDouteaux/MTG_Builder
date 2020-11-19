@@ -10,8 +10,18 @@ module.exports = function(app, baseDir) {
 
     app.get('/settings/extensions', (req, res) => {
         logger.route("GET /settings/extensions");
-        sets.getSets(sets => {
-            res.render('partials/settings/updates', {sets: sets});
+        sets.getSets(sets_details => {
+            if (typeof sets_details != "undefined" && sets_details != null) {
+                let setsCounts = sets_details.map((set) => {
+                    return new Promise((resolve) => {
+                        sets.getNumberOfIndexedCards(set.code, resolve);
+                    });
+                })
+                
+                Promise.all(setsCounts).then(set_counts => {
+                    res.render('partials/settings/updates', {sets: sets_details, set_counts: set_counts});
+                });
+            }
         });
     })
 

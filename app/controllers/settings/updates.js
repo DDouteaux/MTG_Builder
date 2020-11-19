@@ -36,9 +36,14 @@ function addOrUpdateSet(setCode, loadImages, callback) {
     return new Promise(function(resolve, reject) {
         searchIfSetExistsInES(setCode, (uri) => {
             getAllCardsFromSet(setCode, uri, [], async (cards) => {
-                cards = await enrichAllCards(cards, loadImages);
-                logger.info("[ " + setCode + " ] Fin d'enrichissement : " + cards.length);
-                resolve(await indexCards(setCode, cards, callback));
+                uriVariations = uri;
+                endOfUriRegex = new RegExp(setCode + "&unique=prints");
+                uriVariations = uriVariations.replace(endOfUriRegex, setCode + "+is%3Avariation&unique=prints")
+                getAllCardsFromSet(setCode, uriVariations, cards, async (cards) => {
+                    cards = await enrichAllCards(cards, loadImages);
+                    logger.info("[ " + setCode + " ] Fin d'enrichissement : " + cards.length);
+                    resolve(await indexCards(setCode, cards, callback));
+                })
             });
         });
     })
@@ -72,12 +77,19 @@ function searchIfSetExistsInES(setCode, callback) {
 async function getAllCardsFromSet(setCode, set_uri, cards, callback) {
     logger.debug("Méthode models/settings/updates/getAllCardsFromSet");
     logger.info("[ " + setCode + " ] Recherche des cartes du set (déjà trouvées : " + cards.length + ")");
-    res = await axios.get(set_uri);
-    cards = cards.concat(res.data.data);
-    if (res.data.has_more) {
-        getAllCardsFromSet(setCode, res.data.next_page, cards, callback);
-    } else {
+    res = await axios.get(set_uri).catch(err => {
+        logger.warn('Pas de réponse pour ' + set_uri);
         callback(cards);
+        return;
+    });
+
+    if (typeof res != undefined && res != null) {
+        cards = cards.concat(res.data.data);
+        if (res.data.has_more) {
+            getAllCardsFromSet(setCode, res.data.next_page, cards, callback);
+        } else {
+            callback(cards);
+        }
     }
 }
 
@@ -148,17 +160,21 @@ function storeCardImage(card, loadImages, callback) {
 
 async function storeImage(card, cardImagePath) {
     if (!fs.existsSync(cardImagePath)) {
-        await axios({
-            method: "get",
-            timeout: 5000,
-            url: card.image_uris.normal,
-            responseType: "stream"
-        }).then(function (response) {
-            response.data.pipe(fs.createWriteStream(cardImagePath));
-        }).catch(function (err) {
-            logger.error("[ " + card.set + " ] Erreur lors de l'enregistrement de l'image " + card.image_uris.normal + " dans le fichier " + cardImagePath);
-            fs.unlink(cardImagePath)
-        });
+        try {
+            await axios({
+                method: "get",
+                timeout: 5000,
+                url: card.image_uris.normal,
+                responseType: "stream"
+            }).then(function (response) {
+                response.data.pipe(fs.createWriteStream(cardImagePath));
+            }).catch(function (err) {
+                logger.error("[ " + card.set + " ] Erreur lors de l'enregistrement de l'image " + card.image_uris.normal + " dans le fichier " + cardImagePath);
+                fs.unlink(cardImagePath)
+            });
+        } catch(e) {
+            logger.error("[ " + card.set + " ] Retry " + card.image_uris.normal);
+        }
     }
 }
 
@@ -241,13 +257,12 @@ async function indexCards(setCode, cards, callback) {
     return new EsResult(setCode, numberAdded, numberUpdated, numberErrors);
 }
 
-function getAllPhysicalSetsFromScryfall(callback) {
+async function getAllPhysicalSetsFromScryfall(callback) {
     logger.debug("Méthode models/settings/updates/getAllPhysicalSetsFromScryfall");
 
     // Contact à l'API Scryfall pour récupérer la liste des éditions
-    https.get(config.api.scryfallSets, response => {
-        callback(xmlHttp.responseText);
-    })
+    res = await axios.get(config.api.scryfallSets);
+    callback(res.data);
 }
 
 function updateDisplayableSetsList(callback) {
@@ -255,40 +270,53 @@ function updateDisplayableSetsList(callback) {
     getAllPhysicalSetsFromScryfall((data) => {
         sets = []
 
-        data = JSON.parse(data)
-        data.data.forEach(element => {
+        //data = JSON.parse(data)
+        numberOfSets = data.data.length;
+        skipedSets = 0;
+        data.data.map(element => {
             if (element.digital) {
+                skipedSets += 1;
                 return;
             }
-            icon_name = element.icon_svg_uri.substring(element.icon_svg_uri.lastIndexOf('/') + 1).split('?')[0]
-            set = new Set(element);
 
-            es.client.index({  
-                index: 'sets',
-                id: element.id,
-                body: set
-            }, (err, resp, status) => {
-                if (err) {
-                    logger.error("Erreur lors de l'indexation de " + element.name);
-                } else {
-                    logger.info("Indexation de l'édition " + element.name + " réalisée avec succès");
+            axios.get(element.uri).then(setDetails => {
+                element = setDetails.data;
+                set = new Set(element);
+                icon_name = element.icon_svg_uri.substring(element.icon_svg_uri.lastIndexOf('/') + 1).split('?')[0]
+                set.icon = icon_name;
+
+                es.client.index({  
+                    index: 'sets',
+                    id: element.id,
+                    body: set
+                }, (err, resp, status) => {
+                    if (err) {
+                        logger.error("Erreur lors de l'indexation de " + element.name);
+                    } else {
+                        //logger.info("Indexation de l'édition " + element.name + " réalisée avec succès");
+                    }
+                });
+    
+                try {
+                    if (!fs.existsSync('site/images/sets/' + icon_name)) {
+                        const file = fs.createWriteStream('site/images/sets/' + icon_name);
+                        const request = https.get(element.icon_svg_uri, function(response) {
+                            response.pipe(file);
+                        });
+                    }
+                } catch (err) {
+                    logger.error(err);
                 }
+
+                sets.push(set);
+                if (sets.length + skipedSets == numberOfSets) {
+                    callback(sets);
+                }
+            }).catch(error => {
+                console.log("erreur")
+                consoler.log(error)
             });
-
-            try {
-                if (!fs.existsSync('site/images/sets/' + icon_name)) {
-                    const file = fs.createWriteStream('site/images/sets/' + icon_name);
-                    const request = https.get(element.icon_svg_uri, function(response) {
-                        response.pipe(file);
-                    });
-                }
-            } catch (err) {
-                logger.error(err);
-            }
-
-            sets.push(set);
-        })
-        callback(sets);
+        });
     })
 }
 
