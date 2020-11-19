@@ -35,6 +35,23 @@
             "initComplete": function() { 
                 $("#cards").show();
 
+                {{#unless isCollection}}
+                    {{#if decoded}}
+                        var columnCollection = this.api().column(10);
+                        $('#cards_filter').prepend('<label id="selectCollectionFilter">Collection&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+                        var select = $('<select class="filter"><option value=""></option></select>')
+                            .appendTo('#selectCollectionFilter')
+                            .on('change', function() {
+                                var val = $(this).val();
+                                columnCollection.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                            });
+
+                        columnCollection.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                    {{/if}}
+                {{/unless}}
+
                 var columnRarity = this.api().column(7);
                 $('#cards_filter').prepend('<label id="selectRarityFilter">Rareté&nbsp;:&nbsp;</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
                 var select = $('<select class="filter"><option value=""></option></select>')
