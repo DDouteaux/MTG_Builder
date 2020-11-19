@@ -144,13 +144,13 @@ h1 {
 }
 
 /* Style pour les contenus de decks */
-.deck-card-after {
-    padding-left: 3px;
+.deck-build-muti-select {
+    padding-left: 0px;
     font-weight: 900;
 }
 
-.deck-card-after:hover {
-    color: rgb(187, 11, 11);
+.deck-build-muti-select:hover {
+    color: rgb(15, 111, 189);
 }
 
 .deck-card>.col-md-auto {
@@ -196,9 +196,9 @@ td {
 
 .alert {
     z-index: 9999;
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
 }
 
 .alert-info {
@@ -242,4 +242,36 @@ td {
 #has-filter-global {
     display: inline;
     padding-left: 5px;
+}
+
+.card-tooltip {
+    padding-right: 8px
+}
+
+.hover-edit {
+    display: none;
+}
+
+.comment-card-from-deck:hover {
+    color: rgb(15, 111, 189);
+}
+
+.edit-card-from-deck:hover {
+    color: rgb(15, 111, 189);
+}
+
+.deck-card:hover .hover-edit {
+    display: inline;
+}
+
+.remove-card-from-deck {
+    display: none;
+}
+
+.remove-card-from-deck:hover {
+    color: rgb(187, 11, 11);
+}
+
+.deck-card:hover {
+    background-color: antiquewhite;
 }
