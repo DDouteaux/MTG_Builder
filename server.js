@@ -212,7 +212,7 @@ app.engine('hbs', handlebars({
         },
 
         getDeckParts: (cards, part) => {
-            if (['SIDEBOARD', 'COMPANION', 'COMMANDER'].indexOf(part) > -1) {
+            if (['SIDEBOARD', 'COMPANION', 'COMMANDER', 'TOBUY', 'MAYBEBOARD', 'RETIRED'].indexOf(part) > -1) {
                 return cards.filter(card => card.deckPart === part);
             } else {
                 return cards.filter(card => {

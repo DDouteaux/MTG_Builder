@@ -58,7 +58,25 @@ const DisplayDeckPartsEnum = Object.freeze({
         typeLineFilter: "SIDEBOARD",
         keyInDeckParts: "SIDEBOARD",
         valueInDeckParts: "Réserve"
-    }
+    },
+    MAYBEBOARD: {
+        deckPartTitle: "A tester",
+        typeLineFilter: "MAYBEBOARD",
+        keyInDeckParts: "MAYBEBOARD",
+        valueInDeckParts: "A tester"
+    },
+    TOBUY: {
+        deckPartTitle: "A acheter",
+        typeLineFilter: "TOBUY",
+        keyInDeckParts: "TOBUY",
+        valueInDeckParts: "A acheter"
+    },
+    RETIRED: {
+        deckPartTitle: "Retiré",
+        typeLineFilter: "RETIRED",
+        keyInDeckParts: "RETIRED",
+        valueInDeckParts: "Retiré"
+    },
 });
 
 module.exports = DisplayDeckPartsEnum;
