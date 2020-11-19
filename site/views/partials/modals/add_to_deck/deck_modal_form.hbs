@@ -1,0 +1,114 @@
+<script>
+    $(document).ready(() => {
+        Object.entries(FormatsEnum).forEach(key => {
+            toAdd = false;
+            newOptGroup = '<optgroup label="' + key[1].display + '">';
+            {{#each decks}}
+                if ("{{this.format}}" === key[0]) {
+                    newOptGroup += '<option value="{{this.deckId}}">{{this.title}}</option>';
+                    toAdd = true;
+                }
+            {{/each}}
+            newOptGroup += '</optgroup>';
+
+            if (toAdd) {
+                $('#decks').append(newOptGroup);
+            }
+        });
+
+        Object.entries(DeckPartsEnum).forEach(key => {
+            $('#deckParts').append('<option value="' + key[0] + '">' + key[1] + '</option>');
+        });
+
+        $('#decks').select2({
+            placeholder: "Decks",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+        $('#deckParts').select2({
+            placeholder: "Partie du deck",
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+
+        $('select').select2({
+            width: '100%'
+        });
+    })
+
+    function modalCountChange(div, modifier, event, defaultValue) {
+        inputDiv = $(div).parent().parent().find('input');
+        value = parseInt(inputDiv.val());
+
+        if (inputDiv.val() === defaultValue) {
+            value = 0;
+        }
+
+        if (isNaN(value)) {
+            newValue = defaultValue;
+        } else {
+            newValue = value + modifier
+            if (newValue <= 0) {
+                newValue = defaultValue;
+            }
+        }
+        inputDiv.val(newValue);
+    }
+</script>
+
+<div class="modal-body">
+    <div id="explain-modal-purpose">Choisir un ou plusieurs decks auxquels vous voulez associer cette carte.</div>
+    <div class="mt-3"></div>
+    <div class="container-fluid">
+        {{#if choseDeck}}
+            <div class="form-group row">
+                <label for="decks" class="col-sm-3 col-form-label">Decks</label>
+                <div class="col-sm-9">
+                    <select id="decks" name="decks" class="form-control js-example-basic-multiple" multiple="multiple">
+                    </select>
+                </div>
+            </div>
+        {{/if}}
+        <div class="form-group row">
+            <label for="deckParts" class="col-sm-3 col-form-label">Partie du deck</label>
+            <div class="col-sm-9">
+                <select id="deckParts" name="deckParts" class="form-control js-example-basic-single">
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="count" class="col-sm-3 col-form-label">Quantité</label>
+            <div class="col-sm-9">
+                <div class="input-group" id="countInput">
+                    <div onclick="modalCountChange(this, 1, event, 1)" class="input-group-prepend plus">
+                        <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <input type="text" class="w-auto form-control input-count" id="count" name="count" value="1"/>
+                    <div onclick="modalCountChange(this, -1, event, 1)" class="input-group-append minus">
+                        <span class="input-group-text"><i class="fas fa-minus"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="comment" class="col-sm-3 col-form-label">Comentaire</label>
+            <div class="col-sm-9">
+                <textarea id="comment" name="comment" class="form-control" rows="2"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="altCmc" class="col-sm-3 col-form-label">Cmc personnalisé</label>
+            <div class="col-sm-9">
+                <div class="input-group" id="countInput">
+                    <div onclick="modalCountChange(this, 1, event, '')" class="input-group-prepend plus">
+                        <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <input type="text" class="w-auto form-control input-count" id="altCmc" name="altCmc" value=""/>
+                    <div onclick="modalCountChange(this, -1, event, '')" class="input-group-append minus">
+                        <span class="input-group-text"><i class="fas fa-minus"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

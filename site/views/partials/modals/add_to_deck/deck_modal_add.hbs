@@ -1,0 +1,46 @@
+<!-- Définir une méthode getIds si cette modale est utilisée pour fournir la liste des ids à enregistrer. -->
+<script>
+    function postEvent(event) {
+        event.preventDefault()
+        $.ajax({
+            url: '/decks/addCard',
+            type: 'POST',
+            data: {
+                decks: $('#decks').val(),
+                deckPart: $('#deckParts').val(),
+                count: $('#count').val(),
+                cardId: getIds(),
+                comment: $('#comment').val(),
+                altCmc: $('#altCmc').val()
+            },
+            success: function(response) {
+                displayInfoOk(response.message);
+                $('#closeAddCard').click();
+            },
+            error: function(err) {
+                displayError(err.responseJSON.message);
+                $('#closeAddCard').click();
+            }
+        });
+    }
+</script>
+
+<div class="modal fade" id="cardDeckModal" tabindex="-1" role="dialog" aria-labelledby="cardDeckModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cardDeckModal">Ajouter cette carte à un deck</h5>
+                <button id="closeAddCard" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="addToDeckForm" onsubmit="postEvent(event)">
+                {{> modals/add_to_deck/deck_modal_form decks=decks choseDeck=true}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="addToDecksDismiss" data-dismiss="modal">Annuler</button>
+                    <button type="submit" id="addToDeckValidate" class="btn btn-success">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+<!-- Définir une méthode getIds si cette modale est utilisée pour fournir la liste des ids à enregistrer. -->
+<script>
+    function updateUpdateModalContent(div) {
+        $('#deckParts').val($(div).data("deckpart")).trigger('change');
+        $('#deckPartInit').val($(div).data("deckpart"));
+        $('#count').val($(div).data("count"));
+        $('#comment').val($(div).data("comment"));
+        $('#altCmc').val($(div).data("altcmc"));
+        $('#cardId').val($(div).data("cardid"));
+    }
+
+    function postUpdateDeckCardEvent(event) {
+        console.log("deckId : " + $('#deckId').val())
+        console.log("deckParts : " + $('#deckParts').val())
+        console.log("count : " + $('#count').val())
+        console.log("comment : " + $('#comment').val())
+        console.log("altCmc : " + $('#altCmc').val())
+        console.log("id : " + $('#cardId').val())
+
+        event.preventDefault()
+        $.ajax({
+            url: '/decks/updateCard',
+            type: 'POST',
+            data: {
+                deckId: $('#deckId').val(),
+                deckPartInit: $('#deckPartInit').val(),
+                deckPart: $('#deckParts').val(),
+                count: $('#count').val(),
+                cardId: $('#cardId').val(),
+                comment: $('#comment').val(),
+                altCmc: $('#altCmc').val()
+            },
+            success: function(response) {
+                displayInfoOk(response.message);
+                $('#closeUpdateCard').click();
+            },
+            error: function(err) {
+                console.log(err)
+                displayError(err.responseJSON.error);
+                $('#closeUpdateCard').click();
+            }
+        });
+    }
+</script>
+
+<div class="modal fade" id="updateCardDeckModal" tabindex="-1" role="dialog" aria-labelledby="updateCardDeckModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Mettre à jour les informations</h5>
+                <button id="closeUpdateCard" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="updateCardOfDeckForm" onsubmit="postUpdateDeckCardEvent(event)">
+                <input type="hidden" class="w-auto form-control input-count" id="deckId" name="deckId" value="{{deckId}}"/>
+                <input type="hidden" class="w-auto form-control input-count" id="cardId" name="cardId" value=""/>
+                <input type="hidden" class="w-auto form-control input-count" id="deckPartInit" name="deckPartInit" value=""/>
+                {{> modals/add_to_deck/deck_modal_form choseDeck=false}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="updateCardOfDecksDismiss" data-dismiss="modal">Annuler</button>
+                    <button type="submit" id="updateCardOfDeckValidate" class="btn btn-success">Mettre à jour</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
