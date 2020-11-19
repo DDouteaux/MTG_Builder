@@ -171,7 +171,13 @@ app.engine('hbs', handlebars({
 
         formatRarity: (rarity) => {
             if (rarity) {
-                return rarity.charAt(0).toUpperCase() + rarity.slice(1);
+                withUpperCase = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+                switch(withUpperCase) {
+                    case "Uncommon":
+                        return "Unco";
+                    default:
+                        return withUpperCase;
+                }
             }
         },
 
