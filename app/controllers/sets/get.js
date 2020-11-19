@@ -70,5 +70,30 @@ function getAllData(setCode, callback) {
     });
 }
 
+function getNumberOfIndexedCards(setCode, callback) {
+    logger.debug("Méthode models/controllers/sets/getNumberOfIndexedCards");
+
+    if (typeof setCode === 'undefined' && setCode == null) {
+        callback({});
+        return;
+    }
+
+    const findSetBody = esb.requestBodySearch()
+        .query(esb.termQuery('set.keyword', setCode));
+
+    es.client.count({
+        index: 'cards',
+        body: findSetBody.toJSON()
+    }, (err, res) => {
+        if (err) {
+            error = "Erreur lors de la récupération du nombre de cartes de " + setCode
+            logger.error(error);
+            callback({set: setCode, count: 0});
+        }
+        callback({set: setCode, count: res.count});
+    });
+}
+
 module.exports = { getSets: getDisplayableSets,
-                   getAllData: getAllData };
+                   getAllData: getAllData,
+                   getNumberOfIndexedCards: getNumberOfIndexedCards };
