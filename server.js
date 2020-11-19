@@ -157,6 +157,10 @@ app.engine('hbs', handlebars({
             return op1 || op2;
         },
 
+        eq: (op1, op2) => {
+            return op1 === op2;
+        },
+
         formatEquals: (key, value, formats) => {
             return formats[key] === value;
         },
