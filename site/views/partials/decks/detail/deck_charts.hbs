@@ -186,6 +186,11 @@
         xMin = 0;
         xMax = width;
         xValues = data.map(d => d[displayKey])
+
+        if (xValues.reduce((acc, val) => { return acc && !isNaN(parseInt(val))}, true)) {
+            xValues = [...Array(d3.max(data, d => d[displayKey]) + 1).keys()];
+        }
+
         var x = d3.scaleBand()
                     .domain(xValues)
                     .rangeRound([xMin, xMax])
