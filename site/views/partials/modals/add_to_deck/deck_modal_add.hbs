@@ -11,7 +11,8 @@
                 count: $('#count').val(),
                 cardId: getIds(),
                 comment: $('#comment').val(),
-                altCmc: $('#altCmc').val()
+                altCmc: $('#altCmc').val(),
+                customPrice: $('#customPrice').val()
             },
             success: function(response) {
                 displayInfoOk(response.message);

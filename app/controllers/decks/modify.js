@@ -3,10 +3,10 @@ var DeckCard = require.main.require('./app/models/joints/deck_card');
 var Deck = require.main.require('./app/models/decks/deck');
 var DeckPartsEnum = require.main.require('./app/models/enums/deck_parts');
 
-function addCardToDeck(deckId, cardIds, count, deckPart, comment, altCmc, userId, callback) {
+function addCardToDeck(deckId, cardIds, count, deckPart, comment, altCmc, customPrice, userId, callback) {
     logger.debug("Méthode models/controllers/decks/modify/addCardToDeck");
 
-    DeckCard.addCardToDeck(deckId, cardIds, count, deckPart, comment, altCmc, userId, callback)
+    DeckCard.addCardToDeck(deckId, cardIds, count, deckPart, comment, altCmc, customPrice, userId, callback)
 }
 
 function removeCardFromDeck(deckId, cardId, deckPart, userId, callback) {

@@ -6,6 +6,7 @@
         $('#count').val($(div).data("count"));
         $('#comment').val($(div).data("comment"));
         $('#altCmc').val($(div).data("altcmc"));
+        $('#customPrice').val($(div).data("customprice"));
         $('#cardId').val($(div).data("cardid"));
     }
 
@@ -21,7 +22,8 @@
                 count: $('#count').val(),
                 cardId: $('#cardId').val(),
                 comment: $('#comment').val(),
-                altCmc: $('#altCmc').val()
+                altCmc: $('#altCmc').val(),
+                customPrice: $('#customPrice').val(),
             },
             success: function(response) {
                 displayInfoOk(response.message);

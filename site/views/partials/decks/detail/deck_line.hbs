@@ -34,7 +34,7 @@
                 {{/if}}
                 <i id="edit-card-{{card.id}}" class="fas fa-edit hover-edit edit-card-from-deck" title='Éditer les informations'
                     data-toggle="modal" data-target="#updateCardDeckModal" onclick="updateUpdateModalContent(this)"
-                    data-deckPart="{{deckPart}}" data-count="{{card.count}}" data-comment="{{card.deckComment}}" data-altCmc="{{card.deckAltCmc}}" data-cardId="{{card.id}}"></i>
+                    data-deckPart="{{deckPart}}" data-count="{{card.count}}" data-comment="{{card.deckComment}}" data-customPrice="{{card.customPrice}}" data-altCmc="{{card.deckAltCmc}}" data-cardId="{{card.id}}"></i>
                 {{#if (and card.card_faces card.card_faces.0.side)}}
                     <div onclick="updateRemoveFromDeckModalContent(this)" class="hover-edit remove-card-from-deck" 
                         data-toggle="modal" data-target="#removeFromDeckModal"
@@ -63,7 +63,7 @@
                 {{/if}}
                 <i id="edit-card-{{card.id}}" class="fas fa-edit hover-edit edit-card-from-deck" title='Éditer les informations'
                     data-toggle="modal" data-target="#updateCardDeckModal" onclick="updateUpdateModalContent(this)"
-                    data-deckpart="{{deckPart}}" data-count="{{card.count}}" data-comment="{{card.deckComment}}" data-altcmc="{{card.deckAltCmc}}" data-cardid="{{card.id}}"></i>
+                    data-deckpart="{{deckPart}}" data-count="{{card.count}}" data-comment="{{card.deckComment}}" data-customPrice="{{card.customPrice}}" data-altcmc="{{card.deckAltCmc}}" data-cardid="{{card.id}}"></i>
                 {{#if (and card.card_faces card.card_faces.0.side)}}
                 <div onclick="updateRemoveFromDeckModalContent(this)" class="hover-edit remove-card-from-deck" 
                     data-toggle="modal" data-target="#removeFromDeckModal"

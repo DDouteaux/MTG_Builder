@@ -36,22 +36,55 @@
         });
     })
 
+    function formatPrice(div) {
+        inputDiv = $(div).parent().parent().find('input');
+        inputDiv.val(inputDiv.val().replace(',', '.'));
+        if (!isNaN(parseFloat(inputDiv.val()))) {
+            inputDiv.val(parseFloat(inputDiv.val()).toFixed(1));
+        } else {
+            inputDiv.val("");
+        }
+    }
+
     function modalCountChange(div, modifier, event, defaultValue) {
         inputDiv = $(div).parent().parent().find('input');
-        value = parseInt(inputDiv.val());
+        useOnlyModifier = false;
 
         if (inputDiv.val() === defaultValue) {
-            value = 0;
+            modifier = parseFloat(modifier);
+
+            if (modifier < 0) {
+                newValue = 0;
+            } else {
+                newValue = modifier
+            }
+
+            useOnlyModifier = true;
         }
 
-        if (isNaN(value)) {
-            newValue = defaultValue;
-        } else {
-            newValue = value + modifier
-            if (newValue <= 0) {
+        if (!useOnlyModifier) {
+            if (inputDiv.val().indexOf('.') > -1 || inputDiv.val().indexOf(',') > -1) {
+                value = parseFloat(inputDiv.val());
+
+                if (isNaN(value)) {
+                    newValue = defaultValue;
+                } else {
+                    newValue = (parseFloat(modifier) + value).toFixed(1);
+                }
+            } else {
+                value = parseInt(inputDiv.val());
+                if (isNaN(value)) {
                 newValue = defaultValue;
+                } else {
+                    newValue = value + modifier
+                }
             }
         }
+        
+        if (newValue <= 0) {
+            newValue = defaultValue;
+        }
+        
         inputDiv.val(newValue);
     }
 </script>
@@ -105,6 +138,20 @@
                     </div>
                     <input type="text" class="w-auto form-control input-count" id="altCmc" name="altCmc" value=""/>
                     <div onclick="modalCountChange(this, -1, event, '')" class="input-group-append minus">
+                        <span class="input-group-text"><i class="fas fa-minus"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="customPrice" class="col-sm-3 col-form-label">Coûts personnalisé</label>
+            <div class="col-sm-9">
+                <div class="input-group" id="countInput">
+                    <div onclick="modalCountChange(this, 0.1, event, '')" class="input-group-prepend plus">
+                        <span class="input-group-text"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <input type="text" onChange="formatPrice(this)" class="w-auto form-control input-count" id="customPrice" name="customPrice" value="" step="0.1"/>
+                    <div onclick="modalCountChange(this, -0.1, event, '')" class="input-group-append minus">
                         <span class="input-group-text"><i class="fas fa-minus"></i></span>
                     </div>
                 </div>

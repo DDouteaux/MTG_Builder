@@ -12,7 +12,8 @@ const CardForDeckSchema = mongoose.Schema({
         count: Number,
         deckPart: String,
         comment: String,
-        altCmc: Number
+        altCmc: Number,
+        customPrice: Number
 })
 
 CardForDeckSchema.index({ deckId: 1, cardId: 1, deckPart: 1}, { unique: true });

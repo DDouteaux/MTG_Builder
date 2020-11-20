@@ -128,6 +128,10 @@ async function updateDeckCard(deckId, cardData, deckPart, userId, callback) {
             data_to_update['altCmc'] = cardData.altCmc;
         }
 
+        if (typeof cardData.customPrice != "undefined" && cardData.customPrice != null && !isNaN(parseFloat(cardData.customPrice))) {
+            data_to_update['customPrice'] = cardData.customPrice;
+        }
+        
         if (typeof cardData.comment != "undefined" && cardData.comment != null) {
             data_to_update['comment'] = cardData.comment;
         }

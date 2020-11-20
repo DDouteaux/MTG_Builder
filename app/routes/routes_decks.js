@@ -53,6 +53,7 @@ module.exports = function(app, baseDir) {
                                         deckPart: deckCard.deckPart,
                                         deckComment: deckCard.comment,
                                         deckAltCmc: deckCard.altCmc,
+                                        customPrice: deckCard.customPrice,
                                         ...cards.filter(card => card.id === deckCard.cardId)[0]
                                     })
                                 });
@@ -149,7 +150,7 @@ module.exports = function(app, baseDir) {
             }
         }
         if (decks.length > 0) {
-            deck_modify.addCardToDeck(req.body.decks, req.body.cardId, req.body.count, req.body.deckPart, req.body.comment, req.body.altCmc, req.decoded.username, (err, data) => {
+            deck_modify.addCardToDeck(req.body.decks, req.body.cardId, req.body.count, req.body.deckPart, req.body.comment, req.body.altCmc, req.body.customPrice, req.decoded.username, (err, data) => {
                 if (typeof err === 'undefined' || err == null) {
                     res.status(200).send({message: data});
                 } else {
